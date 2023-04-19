@@ -8,6 +8,7 @@ The ffcv python package is a bit moody when you are not using conda. Before inst
 
 ```
 sudo apt update
-sudo apt install pkg-config libturbojpeg0-dev libopencv-dev build-essential python3-dev cupy-cuda133 numba -y
+sudo apt install pkg-config libturbojpeg0-dev libopencv-dev build-essential python3-dev -y
+sudo apt install cupy-cuda133 numba -y
 ```
 
