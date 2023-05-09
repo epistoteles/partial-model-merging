@@ -21,7 +21,7 @@ class VGG(nn.Module):
         self.bn = bn
         self.width_multiplier = width_multiplier
         self.features = self._make_layers(cfg[vgg_size])
-        self.classifier = nn.Linear(self.w * 512, 10)
+        self.classifier = nn.Linear(self.width_multiplier * 512, 10)
 
     def forward(self, x):
         out = self.features(x)
