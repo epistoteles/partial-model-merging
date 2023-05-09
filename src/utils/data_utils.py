@@ -66,12 +66,14 @@ def _get_CIFAR10_beton() -> tuple[str, str]:
     :return: (train .beton filepath, test .beton filepath)
     """
     data_dir = _get_data_dir()
-    train_dset, test_dset = _download_CIFAR10()
-    _convert_dataset(train_dset, os.path.join(data_dir, "cifar_train"))
-    _convert_dataset(test_dset, os.path.join(data_dir, "cifar_test"))
-    return os.path.join(data_dir, "cifar_train.beton"), os.path.join(
-        data_dir, "cifar_test.beton"
-    )
+    train_beton_path = os.path.join(data_dir, "cifar_train.beton")
+    test_beton_path = os.path.join(data_dir, "cifar_test.beton")
+    if not (os.path.exists(train_beton_path) and os.path.exists(test_beton_path)):
+        print("CIFAR10 dataset not present - downloading and/or converting ...")
+        train_dset, test_dset = _download_CIFAR10()
+        _convert_dataset(train_dset, train_beton_path)
+        _convert_dataset(test_dset, test_beton_path)
+    return train_beton_path, test_beton_path
 
 
 def get_loaders_CIFAR10() -> tuple[Loader, Loader, Loader]:
