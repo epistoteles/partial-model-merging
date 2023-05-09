@@ -21,6 +21,11 @@ from ffcv.transforms import (
 from ffcv.transforms.common import Squeeze
 
 
+##############################
+# directory helper functions #
+##############################
+
+
 def _get_root_dir() -> str:
     """
     Returns the root directory of the git repository
@@ -51,6 +56,11 @@ def _get_checkpoints_dir() -> str:
     return checkpoints_dir
 
 
+############################
+# model saving and loading #
+############################
+
+
 def save_model(model, filename: str):
     """
     Saves a PyTorch model state dict as .pt file
@@ -79,6 +89,11 @@ def load_model(model: torch.nn.Module, filename: str) -> torch.nn.Module:
     sd = torch.load(filename)
     model.load_state_dict(sd)
     return model
+
+
+############################
+# datasets and dataloaders #
+############################
 
 
 def _convert_dataset_to_beton(dataset: torch.utils.data.Dataset, filename: str):

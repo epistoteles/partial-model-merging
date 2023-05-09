@@ -13,7 +13,7 @@ from torch.optim import SGD, lr_scheduler
 import torchvision.transforms as T
 
 from models import VGG
-from utils.data_utils import get_loaders_CIFAR10
+from utils.data_utils import get_loaders_CIFAR10, save_model
 
 
 # evaluates accuracy
@@ -31,9 +31,11 @@ def evaluate(model, loader):
 def main():
     train_aug_loader, _, test_loader = get_loaders_CIFAR10()
 
-    model = VGG(vgg_size=args.size, width_multiplier=args.width).cuda()
+    model = VGG(vgg_size=args.vgg_size, width_multiplier=args.width).cuda()
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
 
+    # this lr schedule will start and end with a lr of 0, which should have no effect on the weights,
+    # but recalibrates the batch norm layers (if they exist)
     ne_iters = len(train_aug_loader)
     lr_schedule = np.interp(np.arange(1 + args.epochs * ne_iters), [0, 5 * ne_iters, args.epochs * ne_iters], [0, 1, 0])
     scheduler = lr_scheduler.LambdaLR(optimizer, lr_schedule.__getitem__)
@@ -55,10 +57,11 @@ def main():
             scheduler.step()
             losses.append(loss.item())
 
-    return model
+    save_model(model, f"VGG{args.vgg_size}-{args.width}x-a.pt")
 
 
 parser = argparse.ArgumentParser()
+parser.add_argument("--vgg_size", type=int, default=11)
 parser.add_argument("--width", type=int, default=1)
 parser.add_argument("--epochs", type=int, default=100)
 parser.add_argument("--lr", type=float, default=0.08)
