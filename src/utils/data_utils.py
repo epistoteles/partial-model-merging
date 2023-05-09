@@ -1,0 +1,127 @@
+import git
+import os
+
+import torch
+import torchvision
+import torchvision.transforms as T
+
+from ffcv.writer import DatasetWriter
+from ffcv.fields import IntField, RGBImageField
+from ffcv.fields.decoders import IntDecoder, SimpleRGBImageDecoder
+from ffcv.loader import Loader, OrderOption
+from ffcv.transforms import (
+    RandomHorizontalFlip,
+    Cutout,
+    RandomTranslate,
+    Convert,
+    ToDevice,
+    ToTensor,
+    ToTorchImage,
+)
+from ffcv.transforms.common import Squeeze
+
+
+def _get_root_dir() -> str:
+    """
+    Returns the root directory of the git repository
+    :return: the root directory path
+    """
+    return git.Repo(search_parent_directories=True).git.rev_parse("--show-toplevel")
+
+
+def _get_data_dir() -> str:
+    """
+    Returns the data directory of the git repository (and creates it if it doesn't exist)
+    :return: the data directory path
+    """
+    root_dir = _get_root_dir()
+    data_dir = os.path.join(root_dir, "data")
+    os.makedirs(data_dir, exist_ok=True)
+    return data_dir
+
+
+def _convert_dataset(dataset: torch.utils.data.Dataset, name: str):
+    """
+    Converts a torchvision dataset into a ffcv-compatible .beton dataset
+    :param dataset: an RGB torchvision dataset
+    :param name: the name of the output file (optionally including path)
+    :return: None
+    """
+    writer = DatasetWriter(
+        name + ".beton", {"image": RGBImageField(), "label": IntField()}
+    )
+    writer.from_indexed_dataset(dataset)
+
+
+def _download_CIFAR10():
+    data_dir = _get_data_dir()
+    train_dset = torchvision.datasets.CIFAR10(data_dir, train=True, download=True)
+    test_dset = torchvision.datasets.CIFAR10(data_dir, train=False, download=True)
+    return train_dset, test_dset
+
+
+def _get_CIFAR10_beton() -> tuple[str, str]:
+    """
+    Returns the .beton filepaths, downloads and converts the dataset first if they don't already exist.
+    :return: (train .beton filepath, test .beton filepath)
+    """
+    data_dir = _get_data_dir()
+    train_dset, test_dset = _download_CIFAR10()
+    _convert_dataset(train_dset, os.path.join(data_dir, "cifar_train"))
+    _convert_dataset(test_dset, os.path.join(data_dir, "cifar_test"))
+    return os.path.join(data_dir, "cifar_train.beton"), os.path.join(
+        data_dir, "cifar_test.beton"
+    )
+
+
+def get_loaders_CIFAR10() -> tuple[Loader, Loader, Loader]:
+    """
+    Creates and returns three FFCV CIFAR10 loaders. Downloads and converts CIFAR10 if necessary.
+    :return: (train_aug_loader, train_noaug_loader, test_loader)
+    """
+    CIFAR_MEAN = [125.307, 122.961, 113.8575]
+    CIFAR_STD = [51.5865, 50.847, 51.255]
+
+    device = torch.device("cuda:0")
+    label_pipeline = [IntDecoder(), ToTensor(), ToDevice(device), Squeeze()]
+    pre_p = [SimpleRGBImageDecoder()]
+    post_p = [
+        ToTensor(),
+        ToDevice(device, non_blocking=True),
+        ToTorchImage(),
+        Convert(torch.float16),
+        T.Normalize(CIFAR_MEAN, CIFAR_STD),
+    ]
+    aug_p = [
+        RandomHorizontalFlip(),
+        RandomTranslate(padding=4),
+    ]
+
+    train_beton_path, test_beton_path = _get_CIFAR10_beton()
+
+    train_aug_loader = Loader(
+        train_beton_path,
+        batch_size=500,
+        num_workers=min(8, os.cpu_count()),
+        order=OrderOption.RANDOM,
+        drop_last=True,
+        pipelines={"image": pre_p + aug_p + post_p, "label": label_pipeline},
+    )
+    train_noaug_loader = Loader(
+        train_beton_path,
+        batch_size=1000,
+        num_workers=min(8, os.cpu_count()),
+        order=OrderOption.SEQUENTIAL,
+        drop_last=False,
+        pipelines={"image": pre_p + post_p, "label": label_pipeline},
+    )
+    test_loader = Loader(
+        test_beton_path,
+        batch_size=1000,
+        num_workers=min(8, os.cpu_count()),
+        order=OrderOption.SEQUENTIAL,
+        drop_last=False,
+        pipelines={"image": pre_p + post_p, "label": label_pipeline},
+    )
+
+    return train_aug_loader, train_noaug_loader, test_loader
