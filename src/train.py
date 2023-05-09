@@ -31,15 +31,11 @@ def evaluate(model, loader):
 def main():
     train_aug_loader, _, test_loader = get_loaders_CIFAR10()
 
-    model = VGG(args.width).cuda()
-    optimizer = SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4)
+    model = VGG(vgg_size=args.size, width_multiplier=args.width).cuda()
+    optimizer = SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
 
     ne_iters = len(train_aug_loader)
-    warmup = np.interp(np.arange(1 + 5 * ne_iters), [0, 5 * ne_iters], [1e-6, 1])
-    ni = (args.epochs - 5) * ne_iters
-    xx = np.arange(ni) / ni
-    cosine = (np.cos(np.pi * xx) + 1) / 2
-    lr_schedule = np.concatenate([warmup, cosine])
+    lr_schedule = np.interp(np.arange(1 + args.epochs * ne_iters), [0, 5 * ne_iters, args.epochs * ne_iters], [0, 1, 0])
     scheduler = lr_scheduler.LambdaLR(optimizer, lr_schedule.__getitem__)
 
     scaler = GradScaler()
@@ -58,19 +54,14 @@ def main():
             scaler.update()
             scheduler.step()
             losses.append(loss.item())
-        print("Acc=%.2f%%" % (evaluate(model, loader=test_loader) / 100))
 
-    sd = model.state_dict()
-    torch.save(
-        sd,
-        "./checkpoints/layernorm_resnet20x%d_e%d_%s.pt" % (args.width, args.epochs, str(uuid.uuid4())),
-    )
+    return model
 
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--width", type=int, default=1)
-parser.add_argument("--epochs", type=int, default=250)
-parser.add_argument("--lr", type=float, default=0.1)
+parser.add_argument("--epochs", type=int, default=100)
+parser.add_argument("--lr", type=float, default=0.08)
 if __name__ == "__main__":
     args = parser.parse_args()
     main()

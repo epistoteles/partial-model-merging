@@ -35,25 +35,70 @@ def _get_data_dir() -> str:
     :return: the data directory path
     """
     root_dir = _get_root_dir()
-    data_dir = os.path.join(root_dir, "data")
+    data_dir = os.path.join(root_dir, "data/")
     os.makedirs(data_dir, exist_ok=True)
     return data_dir
 
 
-def _convert_dataset_to_beton(dataset: torch.utils.data.Dataset, name: str):
+def _get_checkpoints_dir() -> str:
+    """
+    Returns the checkpoints directory of the git repository (and creates it if it doesn't exist)
+    :return: the checkpoints directory path
+    """
+    root_dir = _get_root_dir()
+    checkpoints_dir = os.path.join(root_dir, "checkpoints/")
+    os.makedirs(checkpoints_dir, exist_ok=True)
+    return checkpoints_dir
+
+
+def save_model(model, filename: str):
+    """
+    Saves a PyTorch model state dict as .pt file
+    :param model: the model whose state dict we want to save
+    :param filename: the name of the output .pt file (optionally including path)
+    :return: None
+    """
+    if not filename.endswith(".pt"):
+        filename += ".pt"
+    checkpoints_dir = _get_checkpoints_dir()
+    if checkpoints_dir not in filename:
+        filename = os.path.join(checkpoints_dir, filename)
+    torch.save(model.state_dict(), filename)
+
+
+def load_model(model: torch.nn.Module, filename: str) -> torch.nn.Module:
+    """
+    Loads a PyTorch model state dict from a .pt file
+    :param model: the model to apply the state dict to
+    :param filename: the name of the state dict .pt file (optionally including path)
+    :return: None
+    """
+    checkpoints_dir = _get_checkpoints_dir()
+    if checkpoints_dir not in filename:
+        filename = os.path.join(checkpoints_dir, filename)
+    sd = torch.load(filename)
+    model.load_state_dict(sd)
+    return model
+
+
+def _convert_dataset_to_beton(dataset: torch.utils.data.Dataset, filename: str):
     """
     Converts a torchvision dataset into a ffcv-compatible .beton dataset
     :param dataset: a RGB torchvision dataset
-    :param name: the name of the output .beton file (optionally including path)
+    :param filename: the name of the output .beton file (optionally including path)
     :return: None
     """
-    if not name.endswith(".beton"):
-        name += ".beton"
-    writer = DatasetWriter(name, {"image": RGBImageField(), "label": IntField()})
+    if not filename.endswith(".beton"):
+        filename += ".beton"
+    writer = DatasetWriter(filename, {"image": RGBImageField(), "label": IntField()})
     writer.from_indexed_dataset(dataset)
 
 
-def _download_CIFAR10():
+def _download_CIFAR10() -> tuple[torch.utils.data.Dataset, torch.utils.data.Dataset]:
+    """
+    Returns (and downloads, if necessary) the CIFAR10 train and test dataset
+    :return:
+    """
     data_dir = _get_data_dir()
     train_dset = torchvision.datasets.CIFAR10(data_dir, train=True, download=True)
     test_dset = torchvision.datasets.CIFAR10(data_dir, train=False, download=True)
