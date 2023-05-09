@@ -12,8 +12,8 @@ from torch.nn import CrossEntropyLoss
 from torch.optim import SGD, lr_scheduler
 import torchvision.transforms as T
 
-from model import resnet20
-from data import get_loaders
+from models import VGG
+from utils.data_utils import get_loaders_CIFAR10
 
 
 # evaluates accuracy
@@ -29,9 +29,9 @@ def evaluate(model, loader):
 
 
 def main():
-    train_aug_loader, _, test_loader = get_loaders()
+    train_aug_loader, _, test_loader = get_loaders_CIFAR10()
 
-    model = resnet20(args.width).cuda()
+    model = VGG(args.width).cuda()
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4)
 
     ne_iters = len(train_aug_loader)
@@ -63,8 +63,7 @@ def main():
     sd = model.state_dict()
     torch.save(
         sd,
-        "./checkpoints/layernorm_resnet20x%d_e%d_%s.pt"
-        % (args.width, args.epochs, str(uuid.uuid4())),
+        "./checkpoints/layernorm_resnet20x%d_e%d_%s.pt" % (args.width, args.epochs, str(uuid.uuid4())),
     )
 
 

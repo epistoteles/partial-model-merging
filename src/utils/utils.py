@@ -25,9 +25,7 @@ def extend_cost_matrix(cost_matrix, buffer_size, buffer_min=0.0, buffer_max=1.0)
     :return: the extended cost_matrix of size (a + buffer_size, a + buffer_size)
     """
     size = cost_matrix.shape[0]
-    extended_cost_matrix = (
-        np.ones((size + buffer_size, size + buffer_size)) * buffer_max
-    )
+    extended_cost_matrix = np.ones((size + buffer_size, size + buffer_size)) * buffer_max
     extended_cost_matrix[0:size, 0:size] = cost_matrix
     extended_cost_matrix[size:, size:] = buffer_min
     return extended_cost_matrix
@@ -41,20 +39,17 @@ def print_cost_matrix(cost_matrix, lap_solution=None, buffer_size=None):
     :param buffer_size: the size of the used buffer
     :return: prints the matrix on the console
     """
-    l = cost_matrix.tolist()
-    l = [[f" {x:.2f} " for x in line] for line in l]
+    cml = cost_matrix.tolist()
+    cml = [[f" {x:.2f} " for x in line] for line in cml]
     if lap_solution is not None:
-        for (y, x) in zip(*lap_solution):
-            if (
-                buffer_size is not None
-                and max(x, y) >= cost_matrix.shape[0] - buffer_size
-            ):
+        for y, x in zip(*lap_solution):
+            if buffer_size is not None and max(x, y) >= cost_matrix.shape[0] - buffer_size:
                 if min(x, y) >= cost_matrix.shape[0] - buffer_size:
-                    l[y][x] = red(l[y][x])
+                    cml[y][x] = red(cml[y][x])
                 else:
-                    l[y][x] = yellow(l[y][x])
+                    cml[y][x] = yellow(cml[y][x])
             else:
-                l[y][x] = green(l[y][x])
+                cml[y][x] = green(cml[y][x])
     # if buffer_size is not None:
     #     for y in range(cost_matrix.shape[0] - buffer_size):
     #         for x in range(cost_matrix.shape[0] - buffer_size):
@@ -66,7 +61,7 @@ def print_cost_matrix(cost_matrix, lap_solution=None, buffer_size=None):
     #     for x in range(cost_matrix.shape[0] - buffer_size, cost_matrix.shape[0]):
     #         l[y][x] = purple(l[y][x])
     print(f"╭{'─' * (cost_matrix.shape[0] * 6)}╮")
-    for line in l:
+    for line in cml:
         print("".join(["│"] + line + ["│"]))
     print(f"╰{'─' * (cost_matrix.shape[0] * 6)}╯")
 

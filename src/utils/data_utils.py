@@ -43,8 +43,8 @@ def _get_data_dir() -> str:
 def _convert_dataset_to_beton(dataset: torch.utils.data.Dataset, name: str):
     """
     Converts a torchvision dataset into a ffcv-compatible .beton dataset
-    :param dataset: an RGB torchvision dataset
-    :param name: the name of the output file (optionally including path)
+    :param dataset: a RGB torchvision dataset
+    :param name: the name of the output .beton file (optionally including path)
     :return: None
     """
     if not name.endswith(".beton"):

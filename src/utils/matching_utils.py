@@ -1,20 +1,13 @@
 import torch
 import tqdm
+from ffcv.loader import Loader
 
 
-def run_corr_matrix(
-    model_a, model_b, epochs=1, norm: bool = True, loader=train_aug_loader
-):
+def run_corr_matrix(model_a: torch.Module, model_b: torch.Module, loader: Loader, epochs: int = 1, norm: bool = True):
     """
     given two networks net0, net1 which each output a feature map of shape NxCxWxH this will reshape
     both outputs to (N*W*H)xC and then compute a CxC correlation matrix between the outputs of the two networks
     N = dataset size, C = # of individual feature maps, H, W = height and width of one feature map
-    :param model_a:
-    :param model_b:
-    :param epochs:
-    :param norm:
-    :param loader:
-    :return:
     """
     n = epochs * len(loader)
     mean0 = mean1 = std0 = std1 = None
@@ -25,15 +18,11 @@ def run_corr_matrix(
             for i, (images, _) in enumerate(tqdm(loader)):
                 img_t = images.float().cuda()
                 out_a = model_a(img_t)
-                out_a = out_a.reshape(out_a.shape[0], out_a.shape[1], -1).permute(
-                    0, 2, 1
-                )
+                out_a = out_a.reshape(out_a.shape[0], out_a.shape[1], -1).permute(0, 2, 1)
                 out_a = out_a.reshape(-1, out_a.shape[2]).double()
 
                 out_b = model_b(img_t)
-                out_b = out_b.reshape(out_b.shape[0], out_b.shape[1], -1).permute(
-                    0, 2, 1
-                )
+                out_b = out_b.reshape(out_b.shape[0], out_b.shape[1], -1).permute(0, 2, 1)
                 out_b = out_b.reshape(-1, out_b.shape[2]).double()
 
                 mean0_b = out_a.mean(dim=0)
