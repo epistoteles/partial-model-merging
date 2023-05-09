@@ -40,16 +40,16 @@ def _get_data_dir() -> str:
     return data_dir
 
 
-def _convert_dataset(dataset: torch.utils.data.Dataset, name: str):
+def _convert_dataset_to_beton(dataset: torch.utils.data.Dataset, name: str):
     """
     Converts a torchvision dataset into a ffcv-compatible .beton dataset
     :param dataset: an RGB torchvision dataset
     :param name: the name of the output file (optionally including path)
     :return: None
     """
-    writer = DatasetWriter(
-        name + ".beton", {"image": RGBImageField(), "label": IntField()}
-    )
+    if not name.endswith(".beton"):
+        name += ".beton"
+    writer = DatasetWriter(name, {"image": RGBImageField(), "label": IntField()})
     writer.from_indexed_dataset(dataset)
 
 
@@ -71,8 +71,8 @@ def _get_CIFAR10_beton() -> tuple[str, str]:
     if not (os.path.exists(train_beton_path) and os.path.exists(test_beton_path)):
         print("CIFAR10 dataset not present - downloading and/or converting ...")
         train_dset, test_dset = _download_CIFAR10()
-        _convert_dataset(train_dset, train_beton_path)
-        _convert_dataset(test_dset, test_beton_path)
+        _convert_dataset_to_beton(train_dset, train_beton_path)
+        _convert_dataset_to_beton(test_dset, test_beton_path)
     return train_beton_path, test_beton_path
 
 
