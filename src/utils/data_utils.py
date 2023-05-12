@@ -136,9 +136,10 @@ def _get_CIFAR10_beton() -> tuple[str, str]:
     return train_beton_path, test_beton_path
 
 
-def get_loaders_CIFAR10() -> tuple[Loader, Loader, Loader]:
+def get_loaders_CIFAR10(loader: str = None) -> tuple[Loader, Loader, Loader]:
     """
     Creates and returns three FFCV CIFAR10 loaders. Downloads and converts CIFAR10 if necessary.
+    :param loader: only returns the specified loader if set (options: 'train_aug', 'train_noaug', 'test')  TODO
     :return: (train_aug_loader, train_noaug_loader, test_loader)
     """
     CIFAR_MEAN = [125.307, 122.961, 113.8575]

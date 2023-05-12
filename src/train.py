@@ -36,8 +36,8 @@ def main():
 
     # this lr schedule will start and end with a lr of 0, which should have no effect on the weights,
     # but recalibrates the batch norm layers (if they exist)
-    ne_iters = len(train_aug_loader)
-    lr_schedule = np.interp(np.arange(1 + args.epochs * ne_iters), [0, 5 * ne_iters, args.epochs * ne_iters], [0, 1, 0])
+    n_iters = len(train_aug_loader)
+    lr_schedule = np.interp(np.arange(1 + args.epochs * n_iters), [0, 5 * n_iters, args.epochs * n_iters], [0, 1, 0])
     scheduler = lr_scheduler.LambdaLR(optimizer, lr_schedule.__getitem__)
 
     scaler = GradScaler()
