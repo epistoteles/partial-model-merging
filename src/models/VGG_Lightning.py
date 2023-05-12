@@ -6,7 +6,7 @@ from torch.cuda.amp import GradScaler, autocast
 from torch.nn import CrossEntropyLoss
 from torch.optim import SGD, lr_scheduler
 
-from ..utils.data_utils import get_loaders_CIFAR10, save_model
+from src.utils.data_utils import get_loaders_CIFAR10, save_model
 
 
 class VGG(pl.LightningModule):
