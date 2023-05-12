@@ -1,19 +1,19 @@
-import os
-import uuid
 import argparse
-
 from tqdm import tqdm
 import numpy as np
 
 import torch
-from torch import nn
 from torch.cuda.amp import GradScaler, autocast
 from torch.nn import CrossEntropyLoss
 from torch.optim import SGD, lr_scheduler
-import torchvision.transforms as T
 
 from models.VGG import VGG
 from utils.data_utils import get_loaders_CIFAR10, save_model
+
+from rich import print
+from rich import pretty
+
+pretty.install()
 
 
 # evaluates accuracy
