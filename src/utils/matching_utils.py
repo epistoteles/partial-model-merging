@@ -1,27 +1,29 @@
 import torch
 import tqdm
 from ffcv.loader import Loader
+import scipy
+import numpy as np
 
 
-def run_corr_matrix(model_a: torch.Module, model_b: torch.Module, loader: Loader, epochs: int = 1, norm: bool = True):
+def run_corr_matrix(subnet_a: torch.Module, subnet_b: torch.Module, loader: Loader, epochs: int = 1, norm: bool = True):
     """
-    given two networks net0, net1 which each output a feature map of shape NxCxWxH this will reshape
+    Given two networks subnet_a, subnet_b which each output a feature map of shape NxCxWxH this will reshape
     both outputs to (N*W*H)xC and then compute a CxC correlation matrix between the outputs of the two networks
     N = dataset size, C = # of individual feature maps, H, W = height and width of one feature map
     """
     n = epochs * len(loader)
     mean0 = mean1 = std0 = std1 = None
     with torch.no_grad():
-        model_a.eval()
-        model_b.eval()
+        subnet_a.eval()
+        subnet_b.eval()
         for _ in range(epochs):
             for i, (images, _) in enumerate(tqdm(loader)):
                 img_t = images.float().cuda()
-                out_a = model_a(img_t)
+                out_a = subnet_a(img_t)
                 out_a = out_a.reshape(out_a.shape[0], out_a.shape[1], -1).permute(0, 2, 1)
                 out_a = out_a.reshape(-1, out_a.shape[2]).double()
 
-                out_b = model_b(img_t)
+                out_b = subnet_b(img_t)
                 out_b = out_b.reshape(out_b.shape[0], out_b.shape[1], -1).permute(0, 2, 1)
                 out_b = out_b.reshape(-1, out_b.shape[2]).double()
 
@@ -49,3 +51,23 @@ def run_corr_matrix(model_a: torch.Module, model_b: torch.Module, loader: Loader
         return corr
     else:
         return cov
+
+
+def _get_layer_perm(corr_mtx):
+    corr_mtx = corr_mtx.cpu().numpy()
+    row_ind, col_ind = scipy.optimize.linear_sum_assignment(corr_mtx, maximize=True)
+    assert (row_ind == np.arange(len(corr_mtx))).all()
+    perm_map = torch.tensor(col_ind).long()
+    return perm_map
+
+
+def get_layer_perm(subnet_a, subnet_b):
+    """
+    Returns the channel permutation map to make the activations of layer 1..n in subnet_a most closely
+    match those in subnet_b.  TODO(Check if this actually right - only last layer?)
+    :param subnet_a: The reference subnet that stays the same
+    :param subnet_b: The subnet for which we want the permutation map
+    :return: the permutation map
+    """
+    corr_mtx = run_corr_matrix(subnet_a, subnet_b)
+    return _get_layer_perm(corr_mtx)

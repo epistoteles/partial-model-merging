@@ -57,7 +57,7 @@ def main():
             scheduler.step()
             losses.append(loss.item())
 
-    save_model(model, f"VGG{args.vgg_size}-{args.width}x-a.pt")
+    save_model(model, f"VGG{args.vgg_size}-{args.width}x-{args.name}.pt")
 
 
 parser = argparse.ArgumentParser()
@@ -65,6 +65,7 @@ parser.add_argument("--vgg_size", type=int, default=11)
 parser.add_argument("--width", type=int, default=1)
 parser.add_argument("--epochs", type=int, default=100)
 parser.add_argument("--lr", type=float, default=0.08)
+parser.add_argument("--name", type=str, default="a")
 if __name__ == "__main__":
     args = parser.parse_args()
     main()
