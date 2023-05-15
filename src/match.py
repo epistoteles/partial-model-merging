@@ -1,7 +1,7 @@
 from torch import nn
-from src.models.VGG import VGG
-from src.utils.data_utils import get_loaders_CIFAR10, load_model
-from src.utils.matching_utils import subnet, run_corr_matrix
+from models.VGG import VGG
+from utils.data_utils import get_loaders_CIFAR10, load_model
+from utils.matching_utils import subnet, run_corr_matrix
 import scipy
 
 
