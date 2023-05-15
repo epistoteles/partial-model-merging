@@ -5,7 +5,9 @@ import scipy
 import numpy as np
 
 
-def run_corr_matrix(subnet_a: torch.Module, subnet_b: torch.Module, loader: Loader, epochs: int = 1, norm: bool = True):
+def run_corr_matrix(
+    subnet_a: torch.nn.Module, subnet_b: torch.nn.Module, loader: Loader, epochs: int = 1, norm: bool = True
+):
     """
     Given two networks subnet_a, subnet_b which each output a feature map of shape NxCxWxH this will reshape
     both outputs to (N*W*H)xC and then compute a CxC correlation matrix between the outputs of the two networks
