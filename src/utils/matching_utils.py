@@ -1,5 +1,5 @@
 import torch
-import tqdm
+from tqdm import tqdm
 from ffcv.loader import Loader
 import scipy
 import numpy as np
