@@ -55,6 +55,10 @@ def run_corr_matrix(
         return cov
 
 
+def subnet(model, n_layers):
+    return model.features[:n_layers]
+
+
 def _get_layer_perm(corr_mtx):
     corr_mtx = corr_mtx.cpu().numpy()
     row_ind, col_ind = scipy.optimize.linear_sum_assignment(corr_mtx, maximize=True)
@@ -63,7 +67,7 @@ def _get_layer_perm(corr_mtx):
     return perm_map
 
 
-def get_layer_perm(subnet_a, subnet_b):
+def get_layer_perm(subnet_a, subnet_b, loader):
     """
     Returns the channel permutation map to make the activations of layer 1..n in subnet_a most closely
     match those in subnet_b.  TODO(Check if this actually right - only last layer?)
@@ -71,5 +75,5 @@ def get_layer_perm(subnet_a, subnet_b):
     :param subnet_b: The subnet for which we want the permutation map
     :return: the permutation map
     """
-    corr_mtx = run_corr_matrix(subnet_a, subnet_b)
+    corr_mtx = run_corr_matrix(subnet_a, subnet_b, loader)
     return _get_layer_perm(corr_mtx)
