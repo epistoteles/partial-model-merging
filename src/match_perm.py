@@ -25,7 +25,9 @@ for i in range(n):
         # get permutation and permute output of conv and maybe bn
         if isinstance(feats_b[i + 1], nn.BatchNorm2d):
             assert isinstance(feats_b[i + 2], nn.ReLU)
-            corr = get_corr_matrix(subnet(model_a, i + 3), subnet(model_b, i + 3), train_noaug_loader).cpu().numpy()
+            corr = np.abs(
+                get_corr_matrix(subnet(model_a, i + 3), subnet(model_b, i + 3), train_noaug_loader).cpu().numpy()
+            )
             lap_solution = scipy.optimize.linear_sum_assignment(corr, maximize=True)
             perm_map = get_layer_perm_from_corr(corr)
             permute_output(perm_map, feats_b[i], feats_b[i + 1])
@@ -35,7 +37,9 @@ for i in range(n):
             best_corrs += [best_corr]
         else:
             assert isinstance(feats_b[i + 1], nn.ReLU)
-            corr = get_corr_matrix(subnet(model_a, i + 2), subnet(model_b, i + 2), train_noaug_loader).cpu().numpy()
+            corr = np.abs(
+                get_corr_matrix(subnet(model_a, i + 2), subnet(model_b, i + 2), train_noaug_loader).cpu().numpy()
+            )
             lap_solution = scipy.optimize.linear_sum_assignment(corr, maximize=True)
             perm_map = get_layer_perm_from_corr(corr)
             permute_output(perm_map, feats_b[i], None)
@@ -78,3 +82,9 @@ for i, (best_corr, corr) in enumerate(zip(best_corrs, corrs)):
     histogram_counts = histogram_counts / histogram_counts.sum()
     plotext.bar(labels, histogram_counts, orientation="h", label="selected by LAP", color="blue+")
 plotext.show()
+
+for corr in corrs:
+    print(f"Max: {corr.max()}")
+    print(f"Avg: {corr.mean()}")
+    print(f"Min: {corr.min()}")
+    print("")
