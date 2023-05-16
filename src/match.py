@@ -3,6 +3,7 @@ from models.VGG import VGG
 from utils.data_utils import get_loaders_CIFAR10, load_model
 from utils.matching_utils import subnet, run_corr_matrix
 import scipy
+import plotext
 
 
 model_a = VGG(11).cuda()
@@ -45,3 +46,9 @@ for i in range(n):
                 break
         if next_layer is None:
             next_layer = model_b.classifier
+
+for i, best_corr in enumerate(best_corrs):
+    plotext.hist(best_corr, 20, label=f"Conv2d #{i}")
+
+plotext.title("Histogram Plot")
+plotext.show()
