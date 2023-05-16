@@ -70,11 +70,11 @@ for i, (best_corr, corr) in enumerate(zip(best_corrs, corrs)):
         ]
     )
     histogram_counts = histogram_counts / histogram_counts.sum()
-    plotext.bar(labels, histogram_counts, orientation="h", label="all", color="gray")
+    plotext.bar(labels, histogram_counts, orientation="h", label="all", color="blue")
 
     histogram_counts = np.array(
         [sum(1 for x in best_corr if thresholds[idx] <= x < thresholds[idx + 1]) for idx in range(len(thresholds) - 1)]
     )
-    histogram_counts = histogram_counts / (histogram_counts.sum() ** 2)
-    plotext.bar(labels, histogram_counts, orientation="h", label="selected by LAP", color="blue")
+    histogram_counts = histogram_counts / histogram_counts.sum()
+    plotext.bar(labels, histogram_counts, orientation="h", label="selected by LAP", color="blue+")
 plotext.show()
