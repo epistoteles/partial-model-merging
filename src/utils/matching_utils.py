@@ -5,6 +5,18 @@ import scipy
 import numpy as np
 
 
+def ensure_numpy(x):
+    """
+    Ensures that x is a numpy array
+    :param x: numpy array or Torch tensor
+    :return: numpy array
+    """
+    if torch.is_tensor(x):
+        x = x.cpu().numpy()
+    assert isinstance(x, np.ndarray)
+    return x
+
+
 def run_corr_matrix(
     subnet_a: torch.nn.Module, subnet_b: torch.nn.Module, loader: Loader, epochs: int = 1, norm: bool = True
 ):
@@ -60,7 +72,7 @@ def subnet(model, n_layers):
 
 
 def get_layer_perm_from_corr(corr_mtx):
-    corr_mtx = corr_mtx.cpu().numpy()
+    corr_mtx = ensure_numpy(corr_mtx)
     row_ind, col_ind = scipy.optimize.linear_sum_assignment(corr_mtx, maximize=True)
     assert (row_ind == np.arange(len(corr_mtx))).all()
     perm_map = torch.tensor(col_ind).long()
