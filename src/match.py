@@ -48,14 +48,19 @@ for i in range(n):
         if next_layer is None:
             next_layer = model_b.classifier
 
+
+# plot the histograms in terminal
+plotext.subplots(1, len(best_corrs))
+thresholds = np.linspace(-1, 1, 21)
+labels = [f">{x:.1f}" for x in thresholds[:-1]]
 for i, best_corr in enumerate(best_corrs):
-    thresholds = np.linspace(-1, 1, 21)
+    plotext.subplot(1, i).plotsize(plotext.tw() // len(best_corrs), None)
+    plotext.subplot(1, i).title(f"Conv2d #{i}")
     histogram_counts = np.array(
         [sum(1 for x in best_corr if thresholds[i] <= x < thresholds[i + 1]) for i in range(20)]
     )
     histogram_counts = histogram_counts / histogram_counts.sum()
-    plotext.bar([f"{x:.1f}" for x in thresholds[:-1]], histogram_counts, orientation="v")
-    # plotext.xlim(-1, 1)
+    plotext.bar(labels, histogram_counts, orientation="v")
     plotext.show()
     plotext.clear_data()
     plotext.clear_figure()
