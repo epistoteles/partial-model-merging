@@ -54,10 +54,10 @@ plotext.subplots(1, len(best_corrs))
 thresholds = np.linspace(-1, 1, 41)
 labels = [f">{x:.1f}" for x in thresholds[:-1]]
 for i, best_corr in enumerate(best_corrs):
-    plotext.subplot(1, i).plotsize(plotext.tw() // len(best_corrs), None)
-    plotext.subplot(1, i).title(f"Conv2d #{i}")
+    plotext.subplot(1, i + 1).plotsize(plotext.tw() // len(best_corrs), None)
+    plotext.subplot(1, i + 1).title(f"Conv2d #{i}")
     histogram_counts = np.array(
-        [sum(1 for x in best_corr if thresholds[i] <= x < thresholds[i + 1]) for i in range(len(thresholds) - 1)]
+        [sum(1 for x in best_corr if thresholds[idx] <= x < thresholds[idx + 1]) for idx in range(len(thresholds) - 1)]
     )
     histogram_counts = histogram_counts / histogram_counts.sum()
     plotext.bar(labels, histogram_counts, orientation="h")
