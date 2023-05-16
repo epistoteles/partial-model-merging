@@ -55,8 +55,8 @@ for i in range(n):
 
 
 # plot the histograms in terminal
-plotext.title("Histogram of correlation coefficients of activation matched/aligned feature maps")
 plotext.subplots(1, len(best_corrs))
+plotext.title("Histogram of correlation coefficients of feature maps")
 thresholds = np.linspace(-1, 1, 41)
 labels = [f">{x:.2f}" for x in thresholds[:-1]]
 for i, (best_corr, corr) in enumerate(zip(best_corrs, corrs)):
@@ -70,11 +70,11 @@ for i, (best_corr, corr) in enumerate(zip(best_corrs, corrs)):
         ]
     )
     histogram_counts = histogram_counts / histogram_counts.sum()
-    plotext.bar(labels, histogram_counts, orientation="h", label="all", color="grey")
+    plotext.bar(labels, histogram_counts, orientation="h", label="all", color="gray")
 
     histogram_counts = np.array(
         [sum(1 for x in best_corr if thresholds[idx] <= x < thresholds[idx + 1]) for idx in range(len(thresholds) - 1)]
     )
-    histogram_counts = histogram_counts / histogram_counts.sum()
-    plotext.bar(labels, histogram_counts, orientation="h", label="assigned", color="blue")
+    histogram_counts = histogram_counts / (histogram_counts.sum() ** 2)
+    plotext.bar(labels, histogram_counts, orientation="h", label="selected by LAP", color="blue")
 plotext.show()
