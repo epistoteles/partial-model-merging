@@ -60,7 +60,7 @@ for i, best_corr in enumerate(best_corrs):
         [sum(1 for x in best_corr if thresholds[i] <= x < thresholds[i + 1]) for i in range(20)]
     )
     histogram_counts = histogram_counts / histogram_counts.sum()
-    plotext.bar(labels, histogram_counts, orientation="v")
+    plotext.bar(labels, histogram_counts, orientation="h")
     plotext.show()
     plotext.clear_data()
     plotext.clear_figure()
