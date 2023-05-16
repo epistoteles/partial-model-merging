@@ -61,6 +61,7 @@ for i, best_corr in enumerate(best_corrs):
     )
     histogram_counts = histogram_counts / histogram_counts.sum()
     plotext.bar(labels, histogram_counts, orientation="h")
-    plotext.show()
-    plotext.clear_data()
-    plotext.clear_figure()
+    # plotext.clear_data()
+    # plotext.clear_figure()
+
+plotext.show()
