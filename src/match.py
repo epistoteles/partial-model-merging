@@ -49,6 +49,4 @@ for i in range(n):
 
 for i, best_corr in enumerate(best_corrs):
     plotext.hist(best_corr, 20, label=f"Conv2d #{i}")
-
-plotext.title("Histogram Plot")
-plotext.show()
+    plotext.show()
