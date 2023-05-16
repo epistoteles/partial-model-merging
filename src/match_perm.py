@@ -1,7 +1,7 @@
 from torch import nn
 from models.VGG import VGG
 from utils.data_utils import get_loaders_CIFAR10, load_model
-from utils.matching_utils import subnet, run_corr_matrix, permute_input
+from utils.matching_utils import subnet, run_corr_matrix, permute_input, get_layer_perm_from_corr
 import scipy
 import plotext
 import numpy as np
@@ -27,6 +27,7 @@ for i in range(n):
             assert isinstance(feats_b[i + 2], nn.ReLU)
             corr = run_corr_matrix(subnet(model_a, i + 3), subnet(model_b, i + 3), train_aug_loader).cpu().numpy()
             lap_solution = scipy.optimize.linear_sum_assignment(corr, maximize=True)
+            perm_map = get_layer_perm_from_corr(corr)
             best_corr = corr[lap_solution]
             corrs += [corr]
             lap_solutions += [lap_solution]
@@ -35,6 +36,7 @@ for i in range(n):
             assert isinstance(feats_b[i + 1], nn.ReLU)
             corr = run_corr_matrix(subnet(model_a, i + 2), subnet(model_b, i + 2), train_aug_loader).cpu().numpy()
             lap_solution = scipy.optimize.linear_sum_assignment(corr, maximize=True)
+            perm_map = get_layer_perm_from_corr(corr)
             best_corr = corr[lap_solution]
             corrs += [corr]
             lap_solutions += [lap_solution]
@@ -47,6 +49,7 @@ for i in range(n):
                 break
         if next_layer is None:
             next_layer = model_b.classifier
+        permute_input(perm_map, next_layer)
 
 
 # plot the histograms in terminal
