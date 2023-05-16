@@ -18,15 +18,21 @@ def ensure_numpy(x):
 
 
 def run_corr_matrix(
-    subnet_a: torch.nn.Module, subnet_b: torch.nn.Module, loader: Loader, epochs: int = 1, norm: bool = True
+    subnet_a: torch.nn.Module, subnet_b: torch.nn.Module, loader: Loader, epochs: int = 1, normalize: bool = True
 ):
     """
     Given two networks subnet_a, subnet_b which each output a feature map of shape NxCxWxH this will reshape
     both outputs to (N*W*H)xC and then compute a CxC correlation matrix between the outputs of the two networks
     N = dataset size, C = # of individual feature maps, H, W = height and width of one feature map
+    :param subnet_a:
+    :param subnet_b:
+    :param loader: a data loader that resembles the input distribution (typically the train_aug_loader)
+    :param epochs: for how many epochs to collect feature maps - values >1 only make a difference if the loader
+                   uses augmentations
+    :param normalize:
     """
     n = epochs * len(loader)
-    mean0 = mean1 = std0 = std1 = None
+    mean_a = mean_b = std_a = std_b = None
     with torch.no_grad():
         subnet_a.eval()
         subnet_b.eval()
@@ -41,27 +47,27 @@ def run_corr_matrix(
                 out_b = out_b.reshape(out_b.shape[0], out_b.shape[1], -1).permute(0, 2, 1)
                 out_b = out_b.reshape(-1, out_b.shape[2]).double()
 
-                mean0_b = out_a.mean(dim=0)
-                mean1_b = out_b.mean(dim=0)
-                std0_b = out_a.std(dim=0)
-                std1_b = out_b.std(dim=0)
-                outer_b = (out_a.T @ out_b) / out_a.shape[0]
+                mean_a_batch = out_a.mean(dim=0)
+                mean_b_batch = out_b.mean(dim=0)
+                std_a_batch = out_a.std(dim=0)
+                std_b_batch = out_b.std(dim=0)
+                outer_batch = (out_a.T @ out_b) / out_a.shape[0]
 
                 if i == 0:
-                    mean0 = torch.zeros_like(mean0_b)
-                    mean1 = torch.zeros_like(mean1_b)
-                    std0 = torch.zeros_like(std0_b)
-                    std1 = torch.zeros_like(std1_b)
-                    outer = torch.zeros_like(outer_b)
-                mean0 += mean0_b / n
-                mean1 += mean1_b / n
-                std0 += std0_b / n
-                std1 += std1_b / n
-                outer += outer_b / n
+                    mean_a = torch.zeros_like(mean_a_batch)
+                    mean_b = torch.zeros_like(mean_b_batch)
+                    std_a = torch.zeros_like(std_a_batch)
+                    std_b = torch.zeros_like(std_b_batch)
+                    outer = torch.zeros_like(outer_batch)
+                mean_a += mean_a_batch / n
+                mean_b += mean_b_batch / n
+                std_a += std_a_batch / n
+                std_b += std_b_batch / n
+                outer += outer_batch / n
 
-    cov = outer - torch.outer(mean0, mean1)
-    if norm:
-        corr = cov / (torch.outer(std0, std1) + 1e-4)
+    cov = outer - torch.outer(mean_a, mean_b)
+    if normalize:
+        corr = cov / (torch.outer(std_a, std_b) + 1e-4)
         return corr
     else:
         return cov
