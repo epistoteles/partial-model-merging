@@ -17,7 +17,7 @@ def ensure_numpy(x):
     return x
 
 
-def run_corr_matrix(
+def get_corr_matrix(
     subnet_a: torch.nn.Module, subnet_b: torch.nn.Module, loader: Loader, epochs: int = 1, normalize: bool = True
 ):
     """
@@ -73,7 +73,13 @@ def run_corr_matrix(
         return cov
 
 
-def subnet(model, n_layers):
+def subnet(model: torch.nn.Module, n_layers: int):
+    """
+    Returns a subnet from layer 1 to layer n_layers (in the feature extractor)
+    :param model: the original model
+    :param n_layers: the first n_layers will be sliced
+    :return: torch.nn.Module
+    """
     return model.features[:n_layers]
 
 
@@ -93,7 +99,7 @@ def get_layer_perm(subnet_a, subnet_b, loader):
     :param subnet_b: The subnet for which we want the permutation map
     :return: the permutation map
     """
-    corr_mtx = run_corr_matrix(subnet_a, subnet_b, loader)
+    corr_mtx = get_corr_matrix(subnet_a, subnet_b, loader)
     return get_layer_perm_from_corr(corr_mtx)
 
 
