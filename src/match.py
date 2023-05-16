@@ -4,6 +4,7 @@ from utils.data_utils import get_loaders_CIFAR10, load_model
 from utils.matching_utils import subnet, run_corr_matrix
 import scipy
 import plotext
+import numpy as np
 
 
 model_a = VGG(11).cuda()
@@ -48,5 +49,13 @@ for i in range(n):
             next_layer = model_b.classifier
 
 for i, best_corr in enumerate(best_corrs):
-    plotext.hist(best_corr, 20, label=f"Conv2d #{i}")
+    thresholds = np.linspace(-1, 1, 21)
+    histogram_counts = np.array(
+        [sum(1 for x in best_corr if thresholds[i] <= x < thresholds[i + 1]) for i in range(20)]
+    )
+    histogram_counts = histogram_counts / histogram_counts.sum()
+    plotext.bar([f"{x:.1f}" for x in thresholds[:-1]], histogram_counts, orientation="v")
+    # plotext.xlim(-1, 1)
     plotext.show()
+    plotext.clear_data()
+    plotext.clear_figure()
