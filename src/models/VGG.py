@@ -2,7 +2,7 @@ from torch import nn
 
 
 class VGG(nn.Module):
-    def __init__(self, vgg_size: int, width_multiplier: int = 1, bn: bool = False):
+    def __init__(self, vgg_size: int, width_multiplier: float = 1.0, bn: bool = False):
         """
         A custom VGG module
         :param vgg_size: size of the VGG, one of {11, 13, 16, 19}
@@ -21,7 +21,7 @@ class VGG(nn.Module):
         self.bn = bn
         self.width_multiplier = width_multiplier
         self.features = self._make_layers(cfg[vgg_size])
-        self.classifier = nn.Linear(self.width_multiplier * 512, 10)
+        self.classifier = nn.Linear(round(self.width_multiplier * 512), 10)
 
     def forward(self, x):
         out = self.features(x)
@@ -38,14 +38,14 @@ class VGG(nn.Module):
             else:
                 layers.append(
                     nn.Conv2d(
-                        in_channels if in_channels == 3 else self.width_multiplier * in_channels,
-                        self.width_multiplier * x,
+                        in_channels if in_channels == 3 else round(self.width_multiplier * in_channels),
+                        round(self.width_multiplier * x),
                         kernel_size=3,
                         padding=1,
                     )
                 )
                 if self.bn:
-                    layers.append(nn.BatchNorm2d(self.width_multiplier * x))
+                    layers.append(nn.BatchNorm2d(round(self.width_multiplier * x)))
                 layers.append(nn.ReLU(inplace=True))
                 in_channels = x
         layers += [nn.AvgPool2d(kernel_size=1, stride=1)]
