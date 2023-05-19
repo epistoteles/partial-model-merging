@@ -3,6 +3,7 @@ from tqdm import tqdm
 from ffcv.loader import Loader
 import scipy
 import numpy as np
+from src.models.VGG import VGG
 
 
 def ensure_numpy(x):
@@ -15,6 +16,25 @@ def ensure_numpy(x):
         x = x.cpu().numpy()
     assert isinstance(x, np.ndarray)
     return x
+
+
+def expand_model(model: torch.nn.Module, expansion_factor: float):
+    """
+    Returns a functionally equivalent but wider model. The (right-appended) weights and biases are all zero.
+    :param model: the original model
+    :param expansion_factor: the factor by which to expand/widen the model (must be >1)
+    :return: the expanded model
+    """
+    assert expansion_factor > 1, "Expansion factor must be greater than 1.0"
+    model_expanded = VGG(model.size, width_multiplier=model.width_multiplier * expansion_factor)
+    sd_expanded = model_expanded.state_dict()
+    sd = model.state_dict()
+    for key in sd.keys():
+        sd_expanded[key] = torch.zeros_like(sd_expanded[key])
+        slice_indices = tuple(slice(0, sd[key].size(i)) for i in range(sd[key].dim()))
+        sd_expanded[key][slice_indices] = sd[key]
+    model_expanded.load_state_dict(sd_expanded)
+    return model_expanded
 
 
 def get_corr_matrix(
