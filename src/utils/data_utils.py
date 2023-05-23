@@ -4,6 +4,7 @@ import os
 import torch
 import torchvision
 import torchvision.transforms as T
+from safetensors.torch import save_file, load_file
 
 from ffcv.writer import DatasetWriter
 from ffcv.fields import IntField, RGBImageField
@@ -65,29 +66,31 @@ def save_model(model, filename: str):
     """
     Saves a PyTorch model state dict as .pt file
     :param model: the model whose state dict we want to save
-    :param filename: the name of the output .pt file (optionally including path)
+    :param filename: the name of the output .safetensors file (optionally including path)
     :return: None
     """
-    if not filename.endswith(".pt"):
-        filename += ".pt"
+    if not filename.endswith(".safetensors"):
+        filename += ".safetensors"
     checkpoints_dir = _get_checkpoints_dir()
     if checkpoints_dir not in filename:
         filename = os.path.join(checkpoints_dir, filename)
-    torch.save(model.state_dict(), filename)
+    save_file(model.state_dict(), filename)
 
 
 def load_model(model: torch.nn.Module, filename: str) -> torch.nn.Module:
     """
-    Loads a PyTorch model state dict from a .pt file
+    Loads a PyTorch model state dict from a .safetensors file
     :param model: the model to apply the state dict to
-    :param filename: the name of the state dict .pt file (optionally including path)
+    :param filename: the name of the state dict .safetensors file (optionally including path)
     :return: None
     """
+    if not filename.endswith(".safetensors"):
+        filename += ".safetensors"
     checkpoints_dir = _get_checkpoints_dir()
     if checkpoints_dir not in filename:
         filename = os.path.join(checkpoints_dir, filename)
-    sd = torch.load(filename)
-    model.load_state_dict(sd)
+    state_dict = load_file(filename)
+    model.load_state_dict(state_dict)
     return model
 
 
