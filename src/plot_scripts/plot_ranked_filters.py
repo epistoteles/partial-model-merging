@@ -10,6 +10,8 @@ from src.utils.utils import load_model, normalize, get_plots_dir, parse_model_na
 
 def plot_model_filters(model_name):
     model_type, size, width, variant = parse_model_name(model_name)
+    print(type(size))
+    print(size)
     model = VGG(size)
     model = load_model(model, model_name)
     sd = model.state_dict()
