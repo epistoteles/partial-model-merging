@@ -29,4 +29,5 @@ num_convs = len(sums)
 for i, s in enumerate(sums):
     sns.lineplot(x=np.linspace(0, 1, len(s)), y=s, label=f"Conv2d {i+1}")
 
+plt.legend()
 plt.savefig(os.path.join(get_plots_dir(), "plot_ranked_filters.png"))
