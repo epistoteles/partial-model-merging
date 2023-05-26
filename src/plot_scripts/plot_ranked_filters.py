@@ -8,7 +8,7 @@ from src.models.VGG import VGG
 from src.utils.utils import load_model, normalize, get_plots_dir
 
 
-TITLE = "CIFAR10, VGG11, 1× width"
+TITLE = "CIFAR10, VGG11, 1×width"
 MODEL_TO_PLOT = "VGG11-1x-a"
 model = VGG(11)
 
