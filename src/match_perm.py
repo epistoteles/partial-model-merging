@@ -1,6 +1,6 @@
 from torch import nn
 from models.VGG import VGG
-from utils.data_utils import (
+from utils.utils import (
     get_loaders_CIFAR10,
     load_model,
     subnet,

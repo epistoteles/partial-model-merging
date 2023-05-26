@@ -8,7 +8,7 @@ from torch.nn import CrossEntropyLoss
 from torch.optim import SGD, lr_scheduler
 
 from models.VGG import VGG
-from utils.data_utils import get_loaders_CIFAR10, save_model
+from utils.utils import get_loaders_CIFAR10, save_model
 
 from rich import print
 from rich import pretty
