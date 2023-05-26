@@ -26,7 +26,7 @@ for i, key in enumerate(sd.keys()):
 
 num_convs = len(sums)
 
-plt.figure(figsize=(5, 5))
+plt.figure(figsize=(6, 6))
 
 for i, s in enumerate(sums):
     sns.lineplot(x=np.linspace(0, 1, len(s)), y=s, label=f"Conv. {i+1}")
