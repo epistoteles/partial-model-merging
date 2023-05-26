@@ -26,6 +26,8 @@ for i, key in enumerate(sd.keys()):
 
 num_convs = len(sums)
 
+plt.figure(figsize=(10, 10))
+
 for i, s in enumerate(sums):
     sns.lineplot(x=np.linspace(0, 1, len(s)), y=s, label=f"Conv. {i+1}")
 
@@ -33,5 +35,4 @@ plt.xlabel("filter index / # filter (%)")
 plt.ylabel("normalized abs. sum of filter weights")
 plt.title(TITLE)
 
-sns.set(rc={"figure.figsize": (10, 10)})
 plt.savefig(os.path.join(get_plots_dir(), "plot_ranked_filters.png"), dpi=600)
