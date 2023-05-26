@@ -209,7 +209,7 @@ def get_corr_matrix(
     :param loader: a data loader that resembles the input distribution (typically the train_aug_loader)
     :param epochs: for how many epochs to collect feature maps - values >1 only make a difference if the loader
                    uses augmentations
-    :param normalize:
+    :param normalize: only returns covariance matrix if false, Pearson's correlation if true
     """
     n = epochs * len(loader)
     mean_a = mean_b = std_a = std_b = None
