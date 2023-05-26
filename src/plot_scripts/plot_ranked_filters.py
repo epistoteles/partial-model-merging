@@ -12,7 +12,7 @@ def plot_model_filters(model_name):
     model_type, size, width, variant = parse_model_name(model_name)
     model = VGG(size)
     model = load_model(model, model_name)
-    model = expand_model(model, 1.2)
+    # model = expand_model(model, 1.2)
     sd = model.state_dict()
 
     sums = []
