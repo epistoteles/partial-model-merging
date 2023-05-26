@@ -18,6 +18,17 @@ def ensure_numpy(x):
     return x
 
 
+def normalize(x):
+    """
+    Normalizes a tensor or numpy array between 0 and 1
+    :param x: the tensor or numpy array
+    :return: the normalized tensor or numpy array
+    """
+    x -= x.min()
+    x /= x.max()
+    return x
+
+
 def expand_model(model: torch.nn.Module, expansion_factor: float):
     """
     Returns a functionally equivalent but wider model. The (right-appended) weights and biases are all zero.
