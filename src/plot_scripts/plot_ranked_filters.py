@@ -33,5 +33,5 @@ plt.xlabel("filter index / # filter (%)")
 plt.ylabel("normalized abs. sum of filter weights")
 plt.title(TITLE)
 
-sns.set(rc={"figure.figsize": (11.7, 8.27)})
+sns.set(rc={"figure.figsize": (10, 10)})
 plt.savefig(os.path.join(get_plots_dir(), "plot_ranked_filters.png"), dpi=600)
