@@ -63,6 +63,17 @@ def _get_checkpoints_dir() -> str:
     return checkpoints_dir
 
 
+def get_plots_dir() -> str:
+    """
+    Returns the plots directory of the git repository (and creates it if it doesn't exist)
+    :return: the plots directory path
+    """
+    root_dir = _get_root_dir()
+    plots_dir = os.path.join(root_dir, "plots/")
+    os.makedirs(plots_dir, exist_ok=True)
+    return plots_dir
+
+
 ###########################
 # basic tensor operations #
 ###########################

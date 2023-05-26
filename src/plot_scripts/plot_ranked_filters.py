@@ -2,9 +2,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import torch
 import numpy as np
+import os
 
 from src.models.VGG import VGG
-from src.utils.utils import load_model, normalize
+from src.utils.utils import load_model, normalize, get_plots_dir
 
 
 TITLE = "CIFAR10, VGG11"
@@ -28,4 +29,4 @@ num_convs = len(sums)
 for s in sums:
     sns.lineplot(x=np.linspace(0, 1, len(s)), y=s)
 
-# plt.show()
+plt.savefig(os.path.join(get_plots_dir(), "plot_ranked_filters.png"))
