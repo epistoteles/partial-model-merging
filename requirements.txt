@@ -5,10 +5,23 @@ ffcv==1.0.2
 GitPython==3.1.29
 # Editable install with no version control (matplotlib==3.5.1)
 -e /usr/lib/python3/dist-packages/matplotlib-3.5.1.egg-info
+models==0.9.3
 # Editable install with no version control (numpy==1.21.5)
 -e /usr/lib/python3/dist-packages/numpy-1.21.5.egg-info
+plotext==5.2.8
+rich==13.3.5
+safetensors==0.3.1
 # Editable install with no version control (scipy==1.8.0)
 -e /usr/lib/python3/dist-packages/scipy-1.8.0.egg-info
+seaborn==0.12.1
+# Editable install with no version control (setuptools==59.6.0)
+-e /usr/lib/python3/dist-packages/setuptools-59.6.0.egg-info
 torch==1.13.0
 torchvision==0.14.0
 tqdm==4.64.1
+utils==1.0.1
+
+WARNING(pigar): some manual fixes are required since pigar has found duplicate requirements for the same import name.
+# WARNING(pigar): the following duplicate requirements are for import name: pytorch_lightning
+lightning==2022.10.25
+pytorch-lightning==2.0.2
