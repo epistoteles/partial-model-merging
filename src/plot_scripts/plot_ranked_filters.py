@@ -5,13 +5,14 @@ import numpy as np
 import os
 
 from src.models.VGG import VGG
-from src.utils.utils import load_model, normalize, get_plots_dir, parse_model_name
+from src.utils.utils import load_model, normalize, get_plots_dir, parse_model_name, expand_model
 
 
 def plot_model_filters(model_name):
     model_type, size, width, variant = parse_model_name(model_name)
     model = VGG(size)
     model = load_model(model, model_name)
+    model = expand_model(model, 1.2)
     sd = model.state_dict()
 
     sums = []
