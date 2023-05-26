@@ -26,7 +26,7 @@ for i, key in enumerate(sd.keys()):
 
 num_convs = len(sums)
 
-for s in sums:
-    sns.lineplot(x=np.linspace(0, 1, len(s)), y=s)
+for i, s in enumerate(sums):
+    sns.lineplot(x=np.linspace(0, 1, len(s)), y=s, label=f"Conv2d {i+1}")
 
 plt.savefig(os.path.join(get_plots_dir(), "plot_ranked_filters.png"))
