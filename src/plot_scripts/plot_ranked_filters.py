@@ -9,7 +9,7 @@ from src.utils.utils import load_model, normalize, get_plots_dir
 
 
 TITLE = "CIFAR10, VGG11, 1×width"
-MODEL_TO_PLOT = "VGG11-1x-b"
+MODEL_TO_PLOT = "VGG11-1x-a"
 model = VGG(11)
 
 
@@ -35,4 +35,4 @@ plt.xlabel("filter index / # filter (%)")
 plt.ylabel("normalized abs. sum of filter weights")
 plt.title(TITLE)
 
-plt.savefig(os.path.join(get_plots_dir(), "plot_ranked_filters.png"), dpi=600)
+plt.savefig(os.path.join(get_plots_dir(), "plot_ranked_filters_a.png"), dpi=600)
