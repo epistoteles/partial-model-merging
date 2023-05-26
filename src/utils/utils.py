@@ -139,6 +139,21 @@ def load_model(model: torch.nn.Module, filename: str) -> torch.nn.Module:
     return model
 
 
+def parse_model_name(model_name):
+    """
+    Extracts hyperparameters from the model name (or full path)
+    :param model_name: the model name, e.g. "VGG11-2x-a.safetensors"
+    :return: a hyperparameter dict
+    """
+    model_name = model_name.replace(".safetensors", "")
+    model_name = model_name.split("/")[-1]
+    model, width, variant = model_name.split("-")
+    model_type = "".join([x for x in model if not x.isdigit()])
+    size = int("".join([x for x in model if x.isdigit()]))
+    width = int(width.rstrip("x"))
+    return {"model_type": model_type, "size": size, "width": width, "variant": variant}
+
+
 #######################
 # model manipulations #
 #######################
