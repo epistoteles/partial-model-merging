@@ -126,9 +126,7 @@ def get_layer_perm(subnet_a, subnet_b, loader):
 # modifies the weight matrices of a convolution and batchnorm
 # layer given a permutation of the output channels
 def permute_output(perm_map, conv, bn):
-    pre_weights = [
-        conv.weight,
-    ]
+    pre_weights = [conv.weight]
     if conv.bias is not None:
         pre_weights.append(conv.bias)
     if bn is not None:
