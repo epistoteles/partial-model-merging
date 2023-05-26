@@ -1,7 +1,6 @@
 from torch import nn
 from models.VGG import VGG
-from utils.data_utils import get_loaders_CIFAR10, load_model
-from utils.matching_utils import subnet, get_corr_matrix
+from utils.data_utils import get_loaders_CIFAR10, load_model, subnet, get_corr_matrix
 import scipy
 import plotext
 import numpy as np
