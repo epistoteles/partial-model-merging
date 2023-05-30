@@ -63,14 +63,18 @@ def _get_checkpoints_dir() -> str:
     return checkpoints_dir
 
 
-def get_plots_dir() -> str:
+def get_plots_dir(subdir: str = None) -> str:
     """
     Returns the plots directory of the git repository (and creates it if it doesn't exist)
+    :param subdir: if set, creates a subdir in the plots dir (if it doesn't exist already) and returns its path
     :return: the plots directory path
     """
     root_dir = _get_root_dir()
     plots_dir = os.path.join(root_dir, "plots/")
     os.makedirs(plots_dir, exist_ok=True)
+    if subdir is not None:
+        plots_dir = os.path.join(plots_dir, subdir)
+        os.makedirs(plots_dir, exist_ok=True)
     return plots_dir
 
 
