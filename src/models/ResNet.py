@@ -19,6 +19,10 @@ class LambdaLayer(nn.Module):
 
 
 class BasicBlock(nn.Module):
+    """
+    A basic ResNet block, adapted from https://github.com/KellerJordan/REPAIR
+    """
+
     expansion = 1
 
     def __init__(self, in_planes, planes, stride=1):
@@ -46,6 +50,10 @@ class BasicBlock(nn.Module):
 
 
 class ResNet(nn.Module):
+    """
+    A custom ResNet module, adapted from https://github.com/KellerJordan/REPAIR
+    """
+
     def __init__(self, block, num_blocks, width=1, num_classes=10):
         super(ResNet, self).__init__()
         self.in_planes = width * 16

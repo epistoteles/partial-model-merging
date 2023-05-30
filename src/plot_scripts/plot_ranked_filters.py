@@ -10,9 +10,8 @@ from src.utils.utils import load_model, normalize, get_plots_dir, parse_model_na
 
 
 def plot_model_filters(model_name):
-    model_type, size, width, variant = parse_model_name(model_name)
-    model = VGG(size, width=width)
-    model = load_model(model, model_name)
+    dataset, model_type, size, width, variant = parse_model_name(model_name)
+    model = load_model(model_name)
     # model = expand_model(model, 1.2)
     sd = model.state_dict()
 
@@ -31,7 +30,7 @@ def plot_model_filters(model_name):
 
     plt.xlabel("filter index / # filter (%)")
     plt.ylabel("normalized abs. sum of filter weights")
-    plt.title(f"CIFAR-10, {model_type}{size}, {width}×width, model {model_name[-1]}")
+    plt.title(f"{dataset}, {model_type}{size}, {width}×width, model {variant}")
 
     plots_dir = get_plots_dir(subdir=Path(__file__).stem)
     plt.savefig(os.path.join(plots_dir, f"plot_ranked_filters_{model_name}.png"), dpi=600)

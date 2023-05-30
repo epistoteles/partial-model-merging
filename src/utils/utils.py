@@ -2,6 +2,7 @@ import git
 import os
 from pathlib import Path
 import tqdm
+import re
 
 import numpy as np
 import scipy
@@ -136,13 +137,21 @@ def save_model(model, filename: str):
     save_file(model.state_dict(), filename)
 
 
-def load_model(model: torch.nn.Module, filename: str) -> torch.nn.Module:
+def load_model(filename: str, model: torch.nn.Module = None) -> torch.nn.Module:
     """
     Loads a PyTorch model state dict from a .safetensors file
-    :param model: the model to apply the state dict to
     :param filename: the name of the state dict .safetensors file (optionally including path)
+    :param model: the model to apply the state dict to; it will get created if not supplied
     :return: None
     """
+    if model is None:
+        _, model_type, size, width, _ = parse_model_name(filename)
+        if model_type == "VGG":
+            model = VGG(size, width)
+        elif model_type == "ResNet":
+            raise NotImplementedError("ResNet not implemented yet")
+        else:
+            raise ValueError(f"Unknown model type {model_type} in {filename}")
     if not filename.endswith(".safetensors"):
         filename += ".safetensors"
     checkpoints_dir = _get_checkpoints_dir()
@@ -156,19 +165,18 @@ def load_model(model: torch.nn.Module, filename: str) -> torch.nn.Module:
 def parse_model_name(model_name, as_dict=False):
     """
     Extracts hyperparameters from the model name (or full path)
-    :param model_name: the model name, e.g. "VGG11-2x-a.safetensors"
+    :param model_name: the model name, e.g. "CIFAR10-VGG11-2x-a.safetensors"
     :param as_dict: return the values as dict if true
     :return: a hyperparameter list
     """
     model_name = Path(model_name).stem
-    model, width, variant = model_name.split("-")
-    model_type = "".join([x for x in model if not x.isdigit()])
-    size = int("".join([x for x in model if x.isdigit()]))
-    width = int(width.rstrip("x"))
+    exp = "([A-Za-z0-9]+)-([A-Za-z]+)([0-9]+)-([0-9]+)x-([a-z])"
+    dataset, model_type, size, width, variant = re.match(exp, model_name).groups()
+    size, width = int(size), int(width)
     if as_dict:
-        return {"model_type": model_type, "size": size, "width": width, "variant": variant}
+        return {"dataset": dataset, "model_type": model_type, "size": size, "width": width, "variant": variant}
     else:
-        return model_type, size, width, variant
+        return dataset, model_type, size, width, variant
 
 
 #######################
@@ -198,6 +206,7 @@ def expand_model(model: torch.nn.Module, expansion_factor: float):
 def subnet(model: torch.nn.Module, n_layers: int):
     """
     Returns a subnet from layer 1 to layer n_layers (in the feature extractor)
+    adapted from https://github.com/KellerJordan/REPAIR
     :param model: the original model
     :param n_layers: the first n_layers will be sliced
     :return: torch.nn.Module
@@ -217,6 +226,7 @@ def get_corr_matrix(
     Given two networks subnet_a, subnet_b which each output a feature map of shape NxCxWxH this will reshape
     both outputs to (N*W*H)xC and then compute a CxC correlation matrix between the outputs of the two networks
     N = dataset size, C = # of individual feature maps, H, W = height and width of one feature map
+    adapted from https://github.com/KellerJordan/REPAIR
     :param subnet_a:
     :param subnet_b:
     :param loader: a data loader that resembles the input distribution (typically the train_aug_loader)
@@ -267,6 +277,11 @@ def get_corr_matrix(
 
 
 def get_layer_perm_from_corr(corr_mtx):
+    """
+    TODO: write docs
+    :param corr_mtx:
+    :return:
+    """
     corr_mtx = ensure_numpy(corr_mtx)
     row_ind, col_ind = scipy.optimize.linear_sum_assignment(corr_mtx, maximize=True)
     assert (row_ind == np.arange(len(corr_mtx))).all()
@@ -289,6 +304,14 @@ def get_layer_perm(subnet_a, subnet_b, loader):
 # modifies the weight matrices of a convolution and batchnorm
 # layer given a permutation of the output channels
 def permute_output(perm_map, conv, bn):
+    """
+    TODO: write docs
+    adapted from https://github.com/KellerJordan/REPAIR
+    :param perm_map:
+    :param conv:
+    :param bn:
+    :return:
+    """
     pre_weights = [conv.weight]
     if conv.bias is not None:
         pre_weights.append(conv.bias)
@@ -308,6 +331,12 @@ def permute_output(perm_map, conv, bn):
 # modifies the weight matrix of a layer for a given permutation of the input channels
 # works for both conv2d and linear
 def permute_input(perm_map, layer):
+    """
+    TODO: write docs
+    :param perm_map:
+    :param layer:
+    :return:
+    """
     w = layer.weight
     w.data = w[:, perm_map]
 
@@ -360,6 +389,7 @@ def _get_CIFAR10_beton() -> tuple[str, str]:
 def get_loaders_CIFAR10(loader: str = None) -> tuple[Loader, Loader, Loader]:
     """
     Creates and returns three FFCV CIFAR10 loaders. Downloads and converts CIFAR10 if necessary.
+    adapted from https://github.com/KellerJordan/REPAIR
     :param loader: only returns the specified loader if set (options: 'train_aug', 'train_noaug', 'test')  TODO
     :return: (train_aug_loader, train_noaug_loader, test_loader)
     """

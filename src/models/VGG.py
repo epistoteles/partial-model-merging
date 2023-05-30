@@ -4,7 +4,7 @@ from torch import nn
 class VGG(nn.Module):
     def __init__(self, size: int, width: float = 1.0, bn: bool = False):
         """
-        A custom VGG module
+        A custom VGG module, adapted from https://github.com/KellerJordan/REPAIR
         :param size: size of the VGG, one of {11, 13, 16, 19}
         :param width: multiplier for the width of the network
         :param bn: uses batch norm if True, uses nothing if False

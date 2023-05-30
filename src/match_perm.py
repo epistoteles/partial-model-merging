@@ -14,10 +14,8 @@ import plotext
 import numpy as np
 
 
-model_a = VGG(11).cuda()
-model_b = VGG(11).cuda()
-model_a = load_model(model_a, "VGG11-1x-a.pt")
-model_b = load_model(model_b, "VGG11-1x-b.pt")
+model_a = load_model("VGG11-1x-a.pt").cuda()
+model_b = load_model("VGG11-1x-b.pt").cuda()
 
 train_aug_loader, train_noaug_loader, _ = get_loaders_CIFAR10()
 
