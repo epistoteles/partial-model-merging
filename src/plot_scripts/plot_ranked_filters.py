@@ -33,7 +33,7 @@ def plot_model_filters(model_name):
     plt.ylabel("normalized abs. sum of filter weights")
     plt.title(f"CIFAR-10, {model_type}{size}, {width}×width, model {model_name[-1]}")
 
-    plots_dir = get_plots_dir(subdir=Path(os.path.basename(__file__)).stem)
+    plots_dir = get_plots_dir(subdir=Path(__file__).stem)
     plt.savefig(os.path.join(plots_dir, f"plot_ranked_filters_{model_name}.png"), dpi=600)
     print(f"📊 Plot saved for {model_name}")
 
