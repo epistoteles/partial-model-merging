@@ -30,7 +30,7 @@ def plot_model_filters(model_name):
 
     plt.xlabel("filter index / # filter (%)")
     plt.ylabel("normalized abs. sum of filter weights")
-    plt.title(f"CIFAR10, {model_type}{size}, {width}×width, model {model_name[-1]}")
+    plt.title(f"CIFAR-10, {model_type}{size}, {width}×width, model {model_name[-1]}")
 
     plt.savefig(os.path.join(get_plots_dir(), f"plot_ranked_filters_{model_name}.png"), dpi=600)
     print(f"📊 Plot saved for {model_name}")
