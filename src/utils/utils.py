@@ -81,8 +81,8 @@ def get_plots_dir(subdir: str = None) -> str:
 
 def get_all_model_names() -> list[str]:
     """
-    Returns a list of the names of all saved models
-    :return: the plots directory path
+    Returns the names of all saved models
+    :return: a sorted list of the checkpoint names of all saved models
     """
     checkpoints_dir = _get_checkpoints_dir()
     return sorted([Path(x).stem for x in os.listdir(checkpoints_dir) if x.endswith(".safetensors")])
