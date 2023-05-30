@@ -85,7 +85,7 @@ def get_all_model_names() -> list[str]:
     :return: the plots directory path
     """
     checkpoints_dir = _get_checkpoints_dir()
-    return [Path(x).stem for x in os.listdir(checkpoints_dir) if x.endswith(".safetensors")]
+    return sorted([Path(x).stem for x in os.listdir(checkpoints_dir) if x.endswith(".safetensors")])
 
 
 ###########################
