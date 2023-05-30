@@ -1,14 +1,15 @@
 import git
 import os
+from pathlib import Path
+import tqdm
+
+import numpy as np
+import scipy
 
 import torch
 import torchvision
 import torchvision.transforms as T
 from safetensors.torch import save_file, load_file
-
-import numpy as np
-import scipy
-import tqdm
 
 from ffcv.writer import DatasetWriter
 from ffcv.fields import IntField, RGBImageField
@@ -84,7 +85,7 @@ def get_all_model_names() -> list[str]:
     :return: the plots directory path
     """
     checkpoints_dir = _get_checkpoints_dir()
-    return [x.replace(".safetensors", "") for x in os.listdir(checkpoints_dir) if x.endswith(".safetensors")]
+    return [Path(x).stem for x in os.listdir(checkpoints_dir) if x.endswith(".safetensors")]
 
 
 ###########################
@@ -159,8 +160,7 @@ def parse_model_name(model_name, as_dict=False):
     :param as_dict: return the values as dict if true
     :return: a hyperparameter list
     """
-    model_name = model_name.replace(".safetensors", "")
-    model_name = model_name.split("/")[-1]
+    model_name = Path(model_name).stem
     model, width, variant = model_name.split("-")
     model_type = "".join([x for x in model if not x.isdigit()])
     size = int("".join([x for x in model if x.isdigit()]))
