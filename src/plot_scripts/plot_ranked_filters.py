@@ -35,5 +35,5 @@ def plot_model_filters(model_name):
     plt.savefig(os.path.join(get_plots_dir(), f"plot_ranked_filters_{model_name}.png"), dpi=600)
 
 
-for model_name in ["VGG11-1x-a", "VGG11-1x-b"]:
+for model_name in ["VGG11-1x-a", "VGG11-1x-b", "VGG11-2x-a", "VGG11-2x-b", "VGG16-1x-a", "VGG16-1x-b"]:
     plot_model_filters(model_name)
