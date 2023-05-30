@@ -74,6 +74,15 @@ def get_plots_dir() -> str:
     return plots_dir
 
 
+def get_all_model_names() -> list[str]:
+    """
+    Returns a list of the names of all saved models
+    :return: the plots directory path
+    """
+    checkpoints_dir = _get_checkpoints_dir()
+    return [x.replace(".safetensors", "") for x in os.listdir(checkpoints_dir) if x.endswith(".safetensors")]
+
+
 ###########################
 # basic tensor operations #
 ###########################

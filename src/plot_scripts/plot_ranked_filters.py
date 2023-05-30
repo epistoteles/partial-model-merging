@@ -5,7 +5,7 @@ import numpy as np
 import os
 
 from src.models.VGG import VGG
-from src.utils.utils import load_model, normalize, get_plots_dir, parse_model_name, expand_model
+from src.utils.utils import load_model, normalize, get_plots_dir, parse_model_name, expand_model, get_all_model_names
 
 
 def plot_model_filters(model_name):
@@ -36,5 +36,8 @@ def plot_model_filters(model_name):
     print(f"📊 Plot saved for {model_name}")
 
 
-for model_name in ["VGG11-1x-a", "VGG11-1x-b", "VGG11-2x-a", "VGG11-2x-b", "VGG16-1x-a", "VGG16-1x-b"]:
+# for model_name in ["VGG11-1x-a", "VGG11-1x-b", "VGG11-2x-a", "VGG11-2x-b", "VGG16-1x-a", "VGG16-1x-b"]:
+#     plot_model_filters(model_name)
+
+for model_name in get_all_model_names():
     plot_model_filters(model_name)
