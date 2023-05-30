@@ -171,7 +171,7 @@ def expand_model(model: torch.nn.Module, expansion_factor: float):
     :return: the expanded model
     """
     assert expansion_factor > 1, "Expansion factor must be greater than 1.0"
-    model_expanded = VGG(model.size, width_multiplier=model.width_multiplier * expansion_factor)
+    model_expanded = VGG(model.size, width=model.width_multiplier * expansion_factor)
     sd_expanded = model_expanded.state_dict()
     sd = model.state_dict()
     for key in sd.keys():

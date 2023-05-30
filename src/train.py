@@ -31,7 +31,7 @@ def evaluate(model, loader):
 def main():
     train_aug_loader, _, test_loader = get_loaders_CIFAR10()
 
-    model = VGG(size=args.size, width_multiplier=args.width).cuda()
+    model = VGG(size=args.size, width=args.width).cuda()
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
 
     # this lr schedule will start and end with a lr of 0, which should have no effect on the weights,

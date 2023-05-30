@@ -9,14 +9,11 @@ from src.utils.utils import load_model, normalize, get_plots_dir, parse_model_na
 
 
 def plot_model_filters(model_name):
-    print(model_name)
     model_type, size, width, variant = parse_model_name(model_name)
-    print(model_type, size, width, variant)
-    model = VGG(size)
+    model = VGG(size, width=width)
     model = load_model(model, model_name)
     # model = expand_model(model, 1.2)
     sd = model.state_dict()
-    print("state dict loaded")
 
     sums = []
     for i, key in enumerate(sd.keys()):
@@ -36,7 +33,7 @@ def plot_model_filters(model_name):
     plt.title(f"CIFAR10, {model_type}{size}, {width}×width, model {model_name[-1]}")
 
     plt.savefig(os.path.join(get_plots_dir(), f"plot_ranked_filters_{model_name}.png"), dpi=600)
-    print("image saved")
+    print(f"📊 Plot saved for {model_name}")
 
 
 for model_name in ["VGG11-1x-a", "VGG11-1x-b", "VGG11-2x-a", "VGG11-2x-b", "VGG16-1x-a", "VGG16-1x-b"]:
