@@ -397,9 +397,9 @@ def _get_beton_path(dataset) -> tuple[str, str]:
     return train_beton_path, test_beton_path
 
 
-def get_loaders_CIFAR10(dataset: str) -> tuple[Loader, Loader, Loader]:
+def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader]:
     """
-    Creates and returns three FFCV CIFAR10 loaders. Downloads and converts CIFAR10 if necessary.
+    Creates and returns three FFCV loaders. Downloads and converts the underlying dataset if necessary.
     adapted from https://github.com/KellerJordan/REPAIR
     :param dataset: one of 'CIFAR10', 'CIFAR100'  TODO: add more
     :return: (train_aug_loader, train_noaug_loader, test_loader)

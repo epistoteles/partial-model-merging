@@ -9,7 +9,7 @@ from torch.nn import CrossEntropyLoss
 from torch.optim import SGD, lr_scheduler
 
 from models.VGG import VGG
-from utils.utils import get_loaders_CIFAR10, save_model
+from utils.utils import get_loaders, save_model
 
 from rich import pretty
 
@@ -31,7 +31,7 @@ def evaluate(model, loader):
 @track_emissions()
 def main():
     if args.dataset == "CIFAR10":
-        train_aug_loader, _, test_loader = get_loaders_CIFAR10()
+        train_aug_loader, _, test_loader = get_loaders()
     elif args.dataset == "CIFAR100":
         raise NotImplementedError()
     elif args.dataset == "SVHN":

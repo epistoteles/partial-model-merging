@@ -32,7 +32,7 @@ def plot_model_filters(model_name):
     plt.title(f"{dataset}, {model_type}{size}, {width}×width, model {variant}")
 
     plots_dir = get_plots_dir(subdir=Path(__file__).stem)
-    plt.savefig(os.path.join(plots_dir, f"plot_ranked_filters_{model_name}.png"), dpi=600)
+    plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name}.png"), dpi=600)
     print(f"📊 Plot saved for {model_name}")
 
 

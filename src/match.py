@@ -1,6 +1,6 @@
 from torch import nn
 from models.VGG import VGG
-from utils.utils import get_loaders_CIFAR10, load_model, subnet, get_corr_matrix
+from utils.utils import get_loaders, load_model, subnet, get_corr_matrix
 import scipy
 import plotext
 import numpy as np
@@ -9,7 +9,7 @@ import numpy as np
 model_a = load_model("VGG11-1x-a.pt").cuda()
 model_b = load_model("VGG11-1x-b.pt").cuda()
 
-train_aug_loader, train_noaug_loader, _ = get_loaders_CIFAR10()
+train_aug_loader, train_noaug_loader, _ = get_loaders()
 
 corrs = []
 lap_solutions = []
