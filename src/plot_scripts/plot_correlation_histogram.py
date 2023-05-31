@@ -77,9 +77,9 @@ def plot_model_filters(model_name_a, model_name_b):
         sns.histplot(y=best_corrs[i], ax=axes[i])
 
     plots_dir = get_plots_dir(subdir=Path(__file__).stem)
-    plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name}.png"), dpi=600)
-    print(f"📊 Plot saved for {model_name}")
+    plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a}.png"), dpi=600)
+    print(f"📊 Plot saved for {model_name_a}")
 
 
-for model_name in ["CIFAR10-VGG11-1x-a", "CIFAR10-VGG11-1x-b"]:
-    plot_model_filters(model_name)
+for model_name_a, model_name_b in [("CIFAR10-VGG11-1x-a", "CIFAR10-VGG11-1x-b")]:
+    plot_model_filters(model_name_a, model_name_b)
