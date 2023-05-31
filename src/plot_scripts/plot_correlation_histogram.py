@@ -67,6 +67,8 @@ def plot_model_filters(model_name_a, model_name_b):
                 next_layer = model_b.classifier
             permute_input(perm_map, next_layer)
 
+    plt.figure(figsize=(len(best_corrs), 6))
+
     fig, axes = plt.subplots(1, len(best_corrs))
     fig.suptitle(
         f"Histogram of correlations selected by LAP solver, per conv. layer,\n"
@@ -74,7 +76,8 @@ def plot_model_filters(model_name_a, model_name_b):
     )
 
     for i in range(len(best_corrs)):
-        sns.histplot(y=best_corrs[i], ax=axes[i])
+        sns.histplot(y=best_corrs[i], ax=axes[i], bins=20)
+        axes[i].set_ylim(0, 1)
 
     plots_dir = get_plots_dir(subdir=Path(__file__).stem)
     plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a}.png"), dpi=600)
