@@ -363,7 +363,7 @@ def _convert_dataset_to_beton(dataset: torch.utils.data.Dataset, filename: str):
 def _download_dataset(dataset) -> tuple[torch.utils.data.Dataset, torch.utils.data.Dataset]:
     """
     Returns (and downloads, if necessary) the train and test dataset
-    :param dataset: one of 'CIFAR10', 'CIFAR100', 'SVHN'
+    :param dataset: one of 'CIFAR10', 'CIFAR100', 'SVHN'  TODO: add ImageNet
     :return: (train dataset, test dataset)
     """
     data_dir = _get_data_dir()
@@ -374,36 +374,46 @@ def _download_dataset(dataset) -> tuple[torch.utils.data.Dataset, torch.utils.da
         train_dset = torchvision.datasets.CIFAR100(data_dir, train=True, download=True)
         test_dset = torchvision.datasets.CIFAR100(data_dir, train=False, download=True)
     elif dataset == "SVHN":
-        raise NotImplementedError()
+        raise NotImplementedError()  # TODO()
     else:
         raise ValueError(f"Unknown dataset {dataset}")
     return train_dset, test_dset
 
 
-def _get_CIFAR10_beton() -> tuple[str, str]:
+def _get_beton_path(dataset) -> tuple[str, str]:
     """
     Returns the .beton filepaths, downloads and converts the dataset first if they don't already exist.
+    :param dataset: one of 'CIFAR10', 'CIFAR100'  TODO: add more
     :return: (train .beton filepath, test .beton filepath)
     """
     data_dir = _get_data_dir()
-    train_beton_path = os.path.join(data_dir, "cifar_train.beton")
-    test_beton_path = os.path.join(data_dir, "cifar_test.beton")
+    train_beton_path = os.path.join(data_dir, f"{dataset}_train.beton")
+    test_beton_path = os.path.join(data_dir, f"{dataset}_test.beton")
     if not (os.path.exists(train_beton_path) and os.path.exists(test_beton_path)):
-        print("CIFAR10 dataset not present - downloading and/or converting ...")
-        train_dset, test_dset = _download_dataset("CIFAR10")
+        print(f"{dataset} dataset not present - downloading and/or converting ...")
+        train_dset, test_dset = _download_dataset(dataset)
         _convert_dataset_to_beton(train_dset, train_beton_path)
         _convert_dataset_to_beton(test_dset, test_beton_path)
     return train_beton_path, test_beton_path
 
 
-def get_loaders_CIFAR10() -> tuple[Loader, Loader, Loader]:
+def get_loaders_CIFAR10(dataset: str) -> tuple[Loader, Loader, Loader]:
     """
     Creates and returns three FFCV CIFAR10 loaders. Downloads and converts CIFAR10 if necessary.
     adapted from https://github.com/KellerJordan/REPAIR
+    :param dataset: one of 'CIFAR10', 'CIFAR100'  TODO: add more
     :return: (train_aug_loader, train_noaug_loader, test_loader)
     """
-    CIFAR_MEAN = [125.307, 122.961, 113.8575]
-    CIFAR_STD = [51.5865, 50.847, 51.255]
+    if dataset == "CIFAR10":
+        MEAN = [125.307, 122.961, 113.8575]  # correct (these values are from the FFCV CIFAR example)
+        STD = [51.5865, 50.847, 51.255]  # too low, but kept as is for reproducibility
+        # MEAN = [125.30691805, 122.95039414, 113.86538318]  # correct values
+        # STD = [62.99321928, 62.08870764, 66.70489964]      # correct values
+    elif dataset == "CIFAR100":
+        MEAN = [129.30416561, 124.0699627, 112.43405006]
+        STD = [68.1702429, 65.39180804, 70.41837019]
+    else:
+        raise ValueError(f"Unknown dataset {dataset}")
 
     device = torch.device("cuda:0")
     label_pipeline = [IntDecoder(), ToTensor(), ToDevice(device), Squeeze()]
@@ -413,14 +423,14 @@ def get_loaders_CIFAR10() -> tuple[Loader, Loader, Loader]:
         ToDevice(device, non_blocking=True),
         ToTorchImage(),
         Convert(torch.float16),
-        T.Normalize(CIFAR_MEAN, CIFAR_STD),
+        T.Normalize(MEAN, STD),
     ]
     aug_p = [
         RandomHorizontalFlip(),
         RandomTranslate(padding=4),
     ]
 
-    train_beton_path, test_beton_path = _get_CIFAR10_beton()
+    train_beton_path, test_beton_path = _get_beton_path(dataset)
 
     train_aug_loader = Loader(
         train_beton_path,
