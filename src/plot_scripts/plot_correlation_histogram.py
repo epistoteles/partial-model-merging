@@ -20,12 +20,13 @@ from src.utils.utils import (
 
 
 def plot_model_filters(model_name_a, model_name_b):
+    dataset_a, model_type_a, size_a, width_b, variant_a = parse_model_name(model_name_a)
+    dataset_b, model_type_b, size_b, width_a, variant_b = parse_model_name(model_name_a)
+
     model_a = load_model(model_name_a).cuda()
     model_b = load_model(model_name_b).cuda()
 
-    dataset, model_type, size, width, variant = parse_model_name(model_name_a)
-
-    train_aug_loader, train_noaug_loader, _ = get_loaders(dataset)
+    train_aug_loader, train_noaug_loader, _ = get_loaders(dataset_a)
 
     corrs = []
     lap_solutions = []
@@ -67,12 +68,12 @@ def plot_model_filters(model_name_a, model_name_b):
                 next_layer = model_b.classifier
             permute_input(perm_map, next_layer)
 
-    plt.figure(figsize=(len(best_corrs), 6))
+    plt.figure(figsize=(1.5 * len(best_corrs), 6))
 
     fig, axes = plt.subplots(1, len(best_corrs))
     fig.suptitle(
         f"Histogram of correlations selected by LAP solver, per conv. layer,\n"
-        f"{dataset}, {model_type}{size}, {width}×width, model {variant}"
+        f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width, model {variant_a} + {variant_b}"
     )
 
     for i in range(len(best_corrs)):
@@ -80,8 +81,8 @@ def plot_model_filters(model_name_a, model_name_b):
         axes[i].set_ylim(0, 1)
 
     plots_dir = get_plots_dir(subdir=Path(__file__).stem)
-    plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a}.png"), dpi=600)
-    print(f"📊 Plot saved for {model_name_a}")
+    plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a[:-2]}.png"), dpi=600)
+    print(f"📊 Plot saved for {model_name_a}, {model_name_b}")
 
 
 for model_name_a, model_name_b in [("CIFAR10-VGG11-1x-a", "CIFAR10-VGG11-1x-b")]:
