@@ -5,7 +5,6 @@ import numpy as np
 import os
 from pathlib import Path
 
-from src.models.VGG import VGG
 from src.utils.utils import load_model, normalize, get_plots_dir, parse_model_name, expand_model, get_all_model_names
 
 

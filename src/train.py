@@ -1,6 +1,7 @@
 import argparse
 from tqdm import tqdm
 import numpy as np
+from codecarbon import track_emissions
 
 import torch
 from torch.cuda.amp import GradScaler, autocast
@@ -10,7 +11,6 @@ from torch.optim import SGD, lr_scheduler
 from models.VGG import VGG
 from utils.utils import get_loaders_CIFAR10, save_model
 
-from rich import print
 from rich import pretty
 
 pretty.install()
@@ -28,9 +28,12 @@ def evaluate(model, loader):
     return correct
 
 
+@track_emissions()
 def main():
     if args.dataset == "CIFAR10":
         train_aug_loader, _, test_loader = get_loaders_CIFAR10()
+    elif args.dataset == "CIFAR100":
+        raise NotImplementedError()
     elif args.dataset == "SVHN":
         raise NotImplementedError()
     elif args.dataset == "ImageNet":
