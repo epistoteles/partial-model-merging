@@ -1,7 +1,7 @@
 import git
 import os
 from pathlib import Path
-import tqdm
+from tqdm import tqdm
 import re
 
 import numpy as np
