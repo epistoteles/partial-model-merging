@@ -187,6 +187,7 @@ def parse_model_name(model_name, as_dict=False):
 def expand_model(model: torch.nn.Module, expansion_factor: float):
     """
     Returns a functionally equivalent but wider model. The (right-appended) weights and biases are all zero.
+    TODO: Also implement this for ResNet, not just VGG
     :param model: the original model
     :param expansion_factor: the factor by which to expand/widen the model (must be >1)
     :return: the expanded model
@@ -359,14 +360,23 @@ def _convert_dataset_to_beton(dataset: torch.utils.data.Dataset, filename: str):
     writer.from_indexed_dataset(dataset)
 
 
-def _download_CIFAR10() -> tuple[torch.utils.data.Dataset, torch.utils.data.Dataset]:
+def _download_dataset(dataset) -> tuple[torch.utils.data.Dataset, torch.utils.data.Dataset]:
     """
-    Returns (and downloads, if necessary) the CIFAR10 train and test dataset
-    :return:
+    Returns (and downloads, if necessary) the train and test dataset
+    :param dataset: one of 'CIFAR10', 'CIFAR100', 'SVHN'
+    :return: (train dataset, test dataset)
     """
     data_dir = _get_data_dir()
-    train_dset = torchvision.datasets.CIFAR10(data_dir, train=True, download=True)
-    test_dset = torchvision.datasets.CIFAR10(data_dir, train=False, download=True)
+    if dataset == "CIFAR10":
+        train_dset = torchvision.datasets.CIFAR10(data_dir, train=True, download=True)
+        test_dset = torchvision.datasets.CIFAR10(data_dir, train=False, download=True)
+    elif dataset == "CIFAR100":
+        train_dset = torchvision.datasets.CIFAR100(data_dir, train=True, download=True)
+        test_dset = torchvision.datasets.CIFAR100(data_dir, train=False, download=True)
+    elif dataset == "SVHN":
+        raise NotImplementedError()
+    else:
+        raise ValueError(f"Unknown dataset {dataset}")
     return train_dset, test_dset
 
 
@@ -380,17 +390,16 @@ def _get_CIFAR10_beton() -> tuple[str, str]:
     test_beton_path = os.path.join(data_dir, "cifar_test.beton")
     if not (os.path.exists(train_beton_path) and os.path.exists(test_beton_path)):
         print("CIFAR10 dataset not present - downloading and/or converting ...")
-        train_dset, test_dset = _download_CIFAR10()
+        train_dset, test_dset = _download_dataset("CIFAR10")
         _convert_dataset_to_beton(train_dset, train_beton_path)
         _convert_dataset_to_beton(test_dset, test_beton_path)
     return train_beton_path, test_beton_path
 
 
-def get_loaders_CIFAR10(loader: str = None) -> tuple[Loader, Loader, Loader]:
+def get_loaders_CIFAR10() -> tuple[Loader, Loader, Loader]:
     """
     Creates and returns three FFCV CIFAR10 loaders. Downloads and converts CIFAR10 if necessary.
     adapted from https://github.com/KellerJordan/REPAIR
-    :param loader: only returns the specified loader if set (options: 'train_aug', 'train_noaug', 'test')  TODO
     :return: (train_aug_loader, train_noaug_loader, test_loader)
     """
     CIFAR_MEAN = [125.307, 122.961, 113.8575]
