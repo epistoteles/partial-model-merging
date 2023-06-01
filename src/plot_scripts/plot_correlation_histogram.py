@@ -75,8 +75,12 @@ def plot_model_filters(model_name_a, model_name_b):
     )
 
     for i in range(len(best_corrs)):
-        sns.histplot(y=best_corrs[i], ax=axes[i], bins=20)
-        axes[i].set_ylim(0, 1)
+        sns.histplot(y=best_corrs[i], ax=axes[i], binrange=(-1, 1), bins=40)
+        axes[i].set_ylim(-1.02, 1.02)
+        if i == 0:
+            axes[i].set_yticklabels([-1, -0.5, 0, 0.5, 1])
+        else:
+            axes[i].set_yticklabels([])
 
     plots_dir = get_plots_dir(subdir=Path(__file__).stem)
     plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a[:-2]}.png"), dpi=600)
