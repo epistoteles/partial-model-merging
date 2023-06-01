@@ -65,6 +65,18 @@ def _get_checkpoints_dir() -> str:
     return checkpoints_dir
 
 
+def get_evaluations_dir(subdir: str = None) -> str:
+    """
+    Returns the evaluations directory of the git repository (and creates it if it doesn't exist)
+    :param subdir: if set, creates a subdir in the evaluations dir (if it doesn't exist already) and returns its path
+    :return: the evaluations directory path
+    """
+    root_dir = _get_root_dir()
+    checkpoints_dir = os.path.join(root_dir, "evaluations/")
+    os.makedirs(checkpoints_dir, exist_ok=True)
+    return checkpoints_dir
+
+
 def get_plots_dir(subdir: str = None) -> str:
     """
     Returns the plots directory of the git repository (and creates it if it doesn't exist)
