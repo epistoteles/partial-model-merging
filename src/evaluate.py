@@ -20,7 +20,7 @@ def _evaluate_single_model(model: torch.nn.Module, loader):
     total = 0
     with torch.no_grad(), autocast():
         for inputs, labels in loader:
-            outputs = model(inputs.cuda())
+            outputs = model(inputs)
             pred = outputs.argmax(dim=1)
             correct += (labels.cuda() == pred).sum().item()
             total += len(labels)
@@ -61,3 +61,6 @@ def evaluate_single_model(model_name: str):
         print(f"{c:<12} {v}")
 
     return train_acc, train_loss, test_acc, test_loss
+
+
+evaluate_single_model("CIFAR10-VGG11-1x-a")
