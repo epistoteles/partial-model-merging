@@ -77,8 +77,10 @@ def plot_model_filters(model_name_a, model_name_b):
     for i in range(len(best_corrs)):
         sns.histplot(y=best_corrs[i], ax=axes[i], binrange=(-1, 1), bins=40)
         axes[i].set_ylim(-1.02, 1.02)
+        axes[i].set_title(f"Conv. {i+1}")
         if i == 0:
             axes[i].set_yticks([-1, -0.5, 0, 0.5, 1])
+            axes[i].set_ylabel("Pearson's r")
         else:
             axes[i].set_yticks([])
 
