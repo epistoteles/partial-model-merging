@@ -15,7 +15,7 @@ from rich import pretty
 pretty.install()
 
 
-@track_emissions()
+@track_emissions(log_level="error")
 def main():
     train_aug_loader, _, test_loader = get_loaders(args.dataset)
     model = VGG(size=args.size, width=args.width).cuda()
