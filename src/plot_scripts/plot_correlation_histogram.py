@@ -68,10 +68,11 @@ def plot_model_filters(model_name_a, model_name_b):
                 next_layer = model_b.classifier
             permute_input(perm_map, next_layer)
 
-    fig, axes = plt.subplots(1, len(best_corrs), figsize=(1.2 * len(best_corrs), 6))
+    fig, axes = plt.subplots(1, len(best_corrs), sharex=True, sharey=True, figsize=(1.2 * len(best_corrs), 6))
     fig.suptitle(
         f"Histogram of correlations selected by LAP solver, per conv. layer,\n"
-        f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width, model {variant_a} + {variant_b}"
+        f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width, model {variant_a} + {variant_b}",
+        pad=20,
     )
 
     for i in range(len(best_corrs)):
