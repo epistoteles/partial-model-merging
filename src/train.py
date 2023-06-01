@@ -17,17 +17,7 @@ pretty.install()
 
 @track_emissions()
 def main():
-    if args.dataset == "CIFAR10":
-        train_aug_loader, _, test_loader = get_loaders()
-    elif args.dataset == "CIFAR100":
-        raise NotImplementedError()
-    elif args.dataset == "SVHN":
-        raise NotImplementedError()
-    elif args.dataset == "ImageNet":
-        raise NotImplementedError()
-    else:
-        raise ValueError(f"Unknown dataset {args.dataset}")
-
+    train_aug_loader, _, test_loader = get_loaders(args.dataset)
     model = VGG(size=args.size, width=args.width).cuda()
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
 
