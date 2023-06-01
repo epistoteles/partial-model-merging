@@ -55,7 +55,12 @@ def main():
             total += inputs.size(0)
         train_accuracy = train_correct / total
         train_loss /= total
-        metrics = {"epoch": epoch, "train_loss": train_loss, "train_accuracy": train_accuracy}
+        metrics = {
+            "epoch": epoch,
+            "train_loss": train_loss,
+            "train_accuracy": train_accuracy,
+            "learning_rate": scheduler.get_lr(),
+        }
         if args.wandb:
             if args.test:
                 test_acc, test_loss = get_acc_and_loss(model, test_loader)
