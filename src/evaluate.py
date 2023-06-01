@@ -3,6 +3,7 @@ import numpy as np
 from torch.cuda.amp import autocast
 import torch.nn.functional as F
 import os
+from codecarbon import track_emissions
 from src.utils import load_model, get_loaders, parse_model_name, get_evaluations_dir
 
 
@@ -28,6 +29,7 @@ def _evaluate_single_model(model: torch.nn.Module, loader):
     return correct / total, np.array(losses).mean()
 
 
+@track_emissions(log_level="error")
 def evaluate_single_model(model_name: str):
     """
     Evaluates a single model in terms of accuracy and loss (and saves the result)
