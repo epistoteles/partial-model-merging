@@ -16,18 +16,6 @@ from rich import pretty
 pretty.install()
 
 
-# evaluates accuracy
-def evaluate(model, loader):
-    model.eval()
-    correct = 0
-    with torch.no_grad(), autocast():
-        for inputs, labels in loader:
-            outputs = model(inputs.cuda())
-            pred = outputs.argmax(dim=1)
-            correct += (labels.cuda() == pred).sum().item()
-    return correct
-
-
 @track_emissions()
 def main():
     if args.dataset == "CIFAR10":

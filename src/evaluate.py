@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from torch.amp import autocast
+from torch.cuda.amp import autocast
 import torch.nn.functional as F
 import os
 from utils.utils import load_model, get_loaders, parse_model_name, get_evaluations_dir
@@ -17,7 +17,7 @@ def _evaluate_single_model(model: torch.nn.Module, loader):
     losses = []
     correct = 0
     total = 0
-    with torch.no_grad():
+    with torch.no_grad(), autocast():
         for inputs, labels in loader:
             outputs = model(inputs.cuda())
             pred = outputs.argmax(dim=1)
