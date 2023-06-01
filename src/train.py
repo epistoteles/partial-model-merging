@@ -22,7 +22,7 @@ def main():
         wandb.init(project="partial-model-merging", config=args)
 
     train_aug_loader, _, test_loader = get_loaders(args.dataset)
-    model = VGG(size=args.size, width=args.width).cuda()
+    model = VGG(size=args.size, width=args.width, bn=args.bn).cuda()
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
 
     # this lr schedule will start and end with a lr of 0, which should have no effect on the weights,
@@ -69,7 +69,10 @@ parser.add_argument("--lr", type=float, default=0.08)
 parser.add_argument("--letter", type=str, default="a")
 parser.add_argument("--dataset", type=str, choices=["CIFAR10", "CIFAR100", "SVHN", "ImageNet"], default="CIFAR10")
 parser.add_argument("--model_type", type=str, choices=["VGG", "ResNet"], default="VGG")
-parser.add_argument("--wandb", type=bool, default=True)
+parser.add_argument(
+    "-bn", "--batch_norm", action="store_true", help="use batch norm layers in the model (default: none)"
+)
+parser.add_argument("-wandb", action="store_true")
 if __name__ == "__main__":
     args = parser.parse_args()
     main()
