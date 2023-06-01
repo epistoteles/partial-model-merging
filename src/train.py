@@ -71,16 +71,17 @@ def main():
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--size", type=int, default=11)
-parser.add_argument("--width", type=int, default=1)
-parser.add_argument("--epochs", type=int, default=100)
-parser.add_argument("--lr", type=float, default=0.08)
-parser.add_argument("--variant", type=str, default="a")
-parser.add_argument("--dataset", type=str, choices=["CIFAR10", "CIFAR100", "SVHN", "ImageNet"], default="CIFAR10")
-parser.add_argument("--model_type", type=str, choices=["VGG", "ResNet"], default="VGG")
+parser.add_argument("-d", "--dataset", type=str, choices=["CIFAR10", "CIFAR100", "SVHN", "ImageNet"], default="CIFAR10")
+parser.add_argument("-m", "--model_type", type=str, choices=["VGG", "ResNet"], default="VGG")
+parser.add_argument("-s", "--size", type=int, default=11)
 parser.add_argument(
     "-bn", "--batch_norm", action="store_true", help="use batch norm layers in the model (default: none)"
 )
+parser.add_argument("-w", "--width", type=int, default=1)
+parser.add_argument("--epochs", type=int, default=100)
+parser.add_argument("--lr", type=float, default=0.08)
+parser.add_argument("-v", "--variant", type=str, default="a")
+
 parser.add_argument("-wandb", action="store_true")
 parser.add_argument(
     "-test", action="store_true", help="also evaluates test acc. and loss if set; only used when -wandb is set too"
@@ -94,4 +95,5 @@ parser.add_argument(
 
 if __name__ == "__main__":
     args = parser.parse_args()
+    print(args)
     main()
