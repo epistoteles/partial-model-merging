@@ -37,7 +37,7 @@ def evaluate_single_model(model_name: str):
     :param model_name: the name of the model checkpoint
     :return: (train accuracy, train loss, test accuracy, test loss)
     """
-    dataset, model_type, size, width, variant = parse_model_name(model_name)
+    dataset, model_type, size, batch_norm, width, variant = parse_model_name(model_name)
     evaluations_dir = get_evaluations_dir(subdir="single_model")
     filepath = os.path.join(evaluations_dir, f"{model_name}.csv")
     columns = ("train_acc", "train_loss", "test_acc", "test_loss")

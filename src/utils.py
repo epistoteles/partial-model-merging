@@ -101,6 +101,31 @@ def get_all_model_names() -> list[str]:
     return sorted([Path(x).stem for x in os.listdir(checkpoints_dir) if x.endswith(".safetensors")])
 
 
+def parse_model_name(model_name, as_dict=False):
+    """
+    Extracts hyperparameters from the model name (or full path)
+    :param model_name: the model name, e.g. "CIFAR10-VGG11-2x-a.safetensors"
+    :param as_dict: return the values as dict if true
+    :return: a hyperparameter list
+    """
+    model_name = Path(model_name).stem
+    exp = "([A-Za-z0-9]+)-([A-Za-z]+)([0-9]+)-([A-Za-z]*)-?([0-9]+)x-([a-z]+)(?:.[A-Za-z]+)"
+    dataset, model_type, size, batch_norm, width, variant = re.match(exp, model_name).groups()
+    size, width = int(size), int(width)
+    batch_norm = "bn" in batch_norm
+    if as_dict:
+        return {
+            "dataset": dataset,
+            "model_type": model_type,
+            "size": size,
+            "batch_norm": batch_norm,
+            "width": width,
+            "variant": variant,
+        }
+    else:
+        return dataset, model_type, size, batch_norm, width, variant
+
+
 ###########################
 # basic tensor operations #
 ###########################
@@ -157,9 +182,9 @@ def load_model(filename: str, model: torch.nn.Module = None) -> torch.nn.Module:
     :return: None
     """
     if model is None:
-        _, model_type, size, width, _ = parse_model_name(filename)
+        _, model_type, size, batch_norm, width, _ = parse_model_name(filename)
         if model_type == "VGG":
-            model = VGG(size, width)
+            model = VGG(size, width, bn=batch_norm)
         elif model_type == "ResNet":
             raise NotImplementedError("ResNet not implemented yet")
         else:
@@ -172,23 +197,6 @@ def load_model(filename: str, model: torch.nn.Module = None) -> torch.nn.Module:
     state_dict = load_file(filename)
     model.load_state_dict(state_dict)
     return model
-
-
-def parse_model_name(model_name, as_dict=False):
-    """
-    Extracts hyperparameters from the model name (or full path)
-    :param model_name: the model name, e.g. "CIFAR10-VGG11-2x-a.safetensors"
-    :param as_dict: return the values as dict if true
-    :return: a hyperparameter list
-    """
-    model_name = Path(model_name).stem
-    exp = "([A-Za-z0-9]+)-([A-Za-z]+)([0-9]+)-([0-9]+)x-([a-z])"
-    dataset, model_type, size, width, variant = re.match(exp, model_name).groups()
-    size, width = int(size), int(width)
-    if as_dict:
-        return {"dataset": dataset, "model_type": model_type, "size": size, "width": width, "variant": variant}
-    else:
-        return dataset, model_type, size, width, variant
 
 
 #######################

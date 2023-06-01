@@ -19,8 +19,8 @@ from src.utils import (
 
 
 def plot_model_filters(model_name_a, model_name_b):
-    dataset_a, model_type_a, size_a, width_b, variant_a = parse_model_name(model_name_a)
-    dataset_b, model_type_b, size_b, width_a, variant_b = parse_model_name(model_name_b)
+    dataset_a, model_type_a, size_a, bn_a, width_a, variant_a = parse_model_name(model_name_a)
+    dataset_b, model_type_b, size_b, bn_b, width_b, variant_b = parse_model_name(model_name_b)
 
     model_a = load_model(model_name_a).cuda()
     model_b = load_model(model_name_b).cuda()

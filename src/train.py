@@ -23,7 +23,6 @@ def main():
 
     train_aug_loader, _, test_loader = get_loaders(args.dataset)
     model = VGG(size=args.size, width=args.width, bn=args.batch_norm).cuda()
-    print(model)
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
 
     # this lr schedule will start and end with a lr of 0, which should have no effect on the weights,
@@ -59,7 +58,11 @@ def main():
         if args.wandb:
             wandb.log(metrics)
 
-    save_model(model, f"{args.dataset}-{args.model_type}{args.size}-{args.width}x-{args.letter}")
+    save_model(
+        model,
+        f"{args.dataset}-{args.model_type}{args.size}-{'bn-' if args.batch_norm else ''}"
+        f"{args.width}x-{args.variant}",
+    )
 
 
 parser = argparse.ArgumentParser()
@@ -67,13 +70,14 @@ parser.add_argument("--size", type=int, default=11)
 parser.add_argument("--width", type=int, default=1)
 parser.add_argument("--epochs", type=int, default=100)
 parser.add_argument("--lr", type=float, default=0.08)
-parser.add_argument("--letter", type=str, default="a")
+parser.add_argument("--variant", type=str, default="a")
 parser.add_argument("--dataset", type=str, choices=["CIFAR10", "CIFAR100", "SVHN", "ImageNet"], default="CIFAR10")
 parser.add_argument("--model_type", type=str, choices=["VGG", "ResNet"], default="VGG")
 parser.add_argument(
     "-bn", "--batch_norm", action="store_true", help="use batch norm layers in the model (default: none)"
 )
 parser.add_argument("-wandb", action="store_true")
+
 if __name__ == "__main__":
     args = parser.parse_args()
     main()
