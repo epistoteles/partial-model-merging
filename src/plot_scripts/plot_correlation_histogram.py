@@ -21,7 +21,7 @@ from src.utils.utils import (
 
 def plot_model_filters(model_name_a, model_name_b):
     dataset_a, model_type_a, size_a, width_b, variant_a = parse_model_name(model_name_a)
-    dataset_b, model_type_b, size_b, width_a, variant_b = parse_model_name(model_name_a)
+    dataset_b, model_type_b, size_b, width_a, variant_b = parse_model_name(model_name_b)
 
     model_a = load_model(model_name_a).cuda()
     model_b = load_model(model_name_b).cuda()
@@ -68,9 +68,7 @@ def plot_model_filters(model_name_a, model_name_b):
                 next_layer = model_b.classifier
             permute_input(perm_map, next_layer)
 
-    plt.figure(figsize=(1.5 * len(best_corrs), 6))
-
-    fig, axes = plt.subplots(1, len(best_corrs))
+    fig, axes = plt.subplots(1, len(best_corrs), figsize=(1.2 * len(best_corrs), 6))
     fig.suptitle(
         f"Histogram of correlations selected by LAP solver, per conv. layer,\n"
         f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width, model {variant_a} + {variant_b}"
