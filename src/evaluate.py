@@ -3,6 +3,7 @@ import numpy as np
 from torch.cuda.amp import autocast
 import torch.nn.functional as F
 import os
+from tqdm import tqdm
 from codecarbon import track_emissions
 from src.utils import load_model, get_loaders, parse_model_name, get_evaluations_dir
 
@@ -19,7 +20,7 @@ def _evaluate_single_model(model: torch.nn.Module, loader):
     correct = 0
     total = 0
     with torch.no_grad(), autocast():
-        for inputs, labels in loader:
+        for inputs, labels in tqdm(loader):
             outputs = model(inputs.cuda())
             pred = outputs.argmax(dim=1)
             correct += (labels.cuda() == pred).sum().item()
