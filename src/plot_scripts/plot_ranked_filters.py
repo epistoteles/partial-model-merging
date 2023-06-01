@@ -5,7 +5,7 @@ import numpy as np
 import os
 from pathlib import Path
 
-from src.utils.utils import load_model, normalize, get_plots_dir, parse_model_name, expand_model, get_all_model_names
+from src.utils import load_model, normalize, get_plots_dir, parse_model_name, get_all_model_names
 
 
 def plot_model_filters(model_name):

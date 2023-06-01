@@ -1,11 +1,8 @@
 import matplotlib.pyplot as plt
-import seaborn as sns
-import torch
-import numpy as np
 import os
 from pathlib import Path
 
-from src.utils.utils import load_model, normalize, get_plots_dir, parse_model_name, expand_model, get_all_model_names
+from src.utils import get_plots_dir, parse_model_name
 
 
 def plot_model_interpolation(model_name_a, model_name_b):

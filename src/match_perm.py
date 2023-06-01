@@ -1,6 +1,5 @@
 from torch import nn
-from models.VGG import VGG
-from utils.utils import (
+from src.utils import (
     get_loaders,
     load_model,
     subnet,

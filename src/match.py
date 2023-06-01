@@ -1,6 +1,5 @@
 from torch import nn
-from models.VGG import VGG
-from utils.utils import get_loaders, load_model, subnet, get_corr_matrix
+from src.utils import get_loaders, load_model, subnet, get_corr_matrix
 import scipy
 import plotext
 import numpy as np

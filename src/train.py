@@ -3,13 +3,12 @@ from tqdm import tqdm
 import numpy as np
 from codecarbon import track_emissions
 
-import torch
 from torch.cuda.amp import GradScaler, autocast
 from torch.nn import CrossEntropyLoss
 from torch.optim import SGD, lr_scheduler
 
 from models.VGG import VGG
-from utils.utils import get_loaders, save_model
+from src.utils import get_loaders, save_model
 
 from rich import pretty
 

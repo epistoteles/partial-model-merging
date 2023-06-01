@@ -5,7 +5,7 @@ import scipy
 import os
 from pathlib import Path
 
-from src.utils.utils import (
+from src.utils import (
     load_model,
     get_corr_matrix,
     subnet,
@@ -15,7 +15,6 @@ from src.utils.utils import (
     get_plots_dir,
     parse_model_name,
     get_loaders,
-    get_all_model_names,
 )
 
 

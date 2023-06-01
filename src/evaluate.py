@@ -3,7 +3,7 @@ import numpy as np
 from torch.cuda.amp import autocast
 import torch.nn.functional as F
 import os
-from utils.utils import load_model, get_loaders, parse_model_name, get_evaluations_dir
+from src.utils import load_model, get_loaders, parse_model_name, get_evaluations_dir
 
 
 def _evaluate_single_model(model: torch.nn.Module, loader):
@@ -42,6 +42,7 @@ def evaluate_single_model(model_name: str):
     if os.path.exists(filepath):
         train_acc, train_loss, test_acc, test_loss = np.genfromtxt("test.csv", delimiter=",", skip_header=1)
         values = (train_acc, train_loss, test_acc, test_loss)
+        print(f"📤 Loaded saved accuracies and losses for {model_name}")
     else:
         model = load_model(model_name)
         _, train_noaug_loader, test_loader = get_loaders(dataset)
@@ -52,7 +53,7 @@ def evaluate_single_model(model_name: str):
         values = (train_acc, train_loss, test_acc, test_loss)
         np.savetxt(filepath, [columns, values], delimiter=",", fmt="%s")
 
-        print(f"📉 Accuracies and losses saved for {model_name}")
+        print(f"📥 Accuracies and losses saved for {model_name}")
 
     for c, v in zip(columns, values):
         print(f"{c:<12} {v}")

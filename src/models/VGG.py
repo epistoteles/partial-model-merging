@@ -19,9 +19,9 @@ class VGG(nn.Module):
         super(VGG, self).__init__()
         self.size = size
         self.bn = bn
-        self.width_multiplier = width
+        self.width = width
         self.features = self._make_layers(cfg[size])
-        self.classifier = nn.Linear(round(self.width_multiplier * 512), 10)
+        self.classifier = nn.Linear(round(self.width * 512), 10)
 
     def forward(self, x):
         out = self.features(x)
@@ -38,14 +38,14 @@ class VGG(nn.Module):
             else:
                 layers.append(
                     nn.Conv2d(
-                        in_channels if in_channels == 3 else round(self.width_multiplier * in_channels),
-                        round(self.width_multiplier * x),
+                        in_channels if in_channels == 3 else round(self.width * in_channels),
+                        round(self.width * x),
                         kernel_size=3,
                         padding=1,
                     )
                 )
                 if self.bn:
-                    layers.append(nn.BatchNorm2d(round(self.width_multiplier * x)))
+                    layers.append(nn.BatchNorm2d(round(self.width * x)))
                 layers.append(nn.ReLU(inplace=True))
                 in_channels = x
         layers += [nn.AvgPool2d(kernel_size=1, stride=1)]

@@ -434,7 +434,7 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader]:
         ToTensor(),
         ToDevice(device, non_blocking=True),
         ToTorchImage(),
-        Convert(torch.float16),
+        Convert(torch.float32),
         T.Normalize(MEAN, STD),
     ]
     aug_p = [
