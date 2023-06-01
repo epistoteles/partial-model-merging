@@ -20,7 +20,7 @@ def _evaluate_single_model(model: torch.nn.Module, loader):
     total = 0
     with torch.no_grad(), autocast():
         for inputs, labels in loader:
-            outputs = model(inputs)
+            outputs = model(inputs.cuda())
             pred = outputs.argmax(dim=1)
             correct += (labels.cuda() == pred).sum().item()
             total += len(labels)
@@ -46,7 +46,7 @@ def evaluate_single_model(model_name: str):
         values = (train_acc, train_loss, test_acc, test_loss)
         print(f"📤 Loaded saved accuracies and losses for {model_name}")
     else:
-        model = load_model(model_name)
+        model = load_model(model_name).cuda()
         _, train_noaug_loader, test_loader = get_loaders(dataset)
 
         train_acc, train_loss = _evaluate_single_model(model, train_noaug_loader)
