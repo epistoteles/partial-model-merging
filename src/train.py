@@ -19,7 +19,7 @@ pretty.install()
 @track_emissions(log_level="critical")
 def main():
     if args.wandb:
-        wandb.init(project="partial-model-merging")
+        wandb.init(project="partial-model-merging", config=args)
 
     train_aug_loader, _, test_loader = get_loaders(args.dataset)
     model = VGG(size=args.size, width=args.width).cuda()
