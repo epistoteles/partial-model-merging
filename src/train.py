@@ -2,6 +2,7 @@ import argparse
 from tqdm import tqdm
 import numpy as np
 from codecarbon import track_emissions
+import wandb
 
 from torch.cuda.amp import GradScaler, autocast
 from torch.nn import CrossEntropyLoss
@@ -17,6 +18,9 @@ pretty.install()
 
 @track_emissions(log_level="critical")
 def main():
+    if args.wandb:
+        wandb.init(project="partial-model-merging")
+
     train_aug_loader, _, test_loader = get_loaders(args.dataset)
     model = VGG(size=args.size, width=args.width).cuda()
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
@@ -30,19 +34,26 @@ def main():
     scaler = GradScaler()
     loss_fn = CrossEntropyLoss()
 
-    losses = []
-    for _ in tqdm(range(args.epochs)):
+    for epoch in tqdm(range(args.epochs)):
         model.train()
+        train_loss = 0.0
+        train_correct = 0
         for i, (inputs, labels) in enumerate(train_aug_loader):
             optimizer.zero_grad(set_to_none=True)
             with autocast():
                 outputs = model(inputs.cuda())
                 loss = loss_fn(outputs, labels.cuda())
+                pred = outputs.argmax(dim=1, keepdim=True)
+                train_correct += pred.eq(labels.cuda().view_as(pred)).sum().item()
             scaler.scale(loss).backward()
             scaler.step(optimizer)
             scaler.update()
             scheduler.step()
-            losses.append(loss.item())
+            train_loss += loss.item() * inputs.size(0)
+        if args.wandb:
+            train_accuracy = train_correct / len(train_aug_loader.dataset)
+            train_loss /= len(train_aug_loader.dataset)
+            wandb.log({"epoch": epoch, "train_loss": train_loss, "train_accuracy": train_accuracy})
 
     save_model(model, f"{args.dataset}-{args.model_type}{args.size}-{args.width}x-{args.letter}")
 
@@ -55,6 +66,7 @@ parser.add_argument("--lr", type=float, default=0.08)
 parser.add_argument("--letter", type=str, default="a")
 parser.add_argument("--dataset", type=str, choices=["CIFAR10", "CIFAR100", "SVHN", "ImageNet"], default="CIFAR10")
 parser.add_argument("--model_type", type=str, choices=["VGG", "ResNet"], default="VGG")
+parser.add_argument("--wandb", type=bool, default=True)
 if __name__ == "__main__":
     args = parser.parse_args()
     main()
