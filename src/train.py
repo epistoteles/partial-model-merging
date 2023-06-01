@@ -59,7 +59,7 @@ def main():
             "epoch": epoch,
             "train_loss": train_loss,
             "train_accuracy": train_accuracy,
-            "learning_rate": scheduler.get_lr(),
+            "learning_rate": scheduler.get_last_lr(),
         }
         if args.wandb:
             if args.test:
