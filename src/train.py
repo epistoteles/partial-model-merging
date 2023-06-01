@@ -10,6 +10,7 @@ from torch.optim import SGD, lr_scheduler
 
 from models.VGG import VGG
 from src.utils import get_loaders, save_model
+from src.evaluate import get_acc_and_loss
 
 from rich import pretty, print
 
@@ -56,6 +57,10 @@ def main():
         train_loss /= total
         metrics = {"epoch": epoch, "train_loss": train_loss, "train_accuracy": train_accuracy}
         if args.wandb:
+            if args.test:
+                test_acc, test_loss = get_acc_and_loss(model, test_loader)
+                metrics["test_accuracy"] = test_acc
+                metrics["test_loss"] = test_loss
             wandb.log(metrics)
 
     save_model(
@@ -77,6 +82,15 @@ parser.add_argument(
     "-bn", "--batch_norm", action="store_true", help="use batch norm layers in the model (default: none)"
 )
 parser.add_argument("-wandb", action="store_true")
+parser.add_argument(
+    "-test", action="store_true", help="also evaluates test acc. and loss if set; only used when -wandb is set too"
+)
+parser.add_argument(
+    "-cm",
+    "--checkpoint-midway",
+    action="store_true",
+    help="Checkpoints the model every 10 epochs if set (default: only at the end)",
+)  # TODO: implement
 
 if __name__ == "__main__":
     args = parser.parse_args()

@@ -8,7 +8,7 @@ from codecarbon import track_emissions
 from src.utils import load_model, get_loaders, parse_model_name, get_evaluations_dir
 
 
-def _evaluate_single_model(model: torch.nn.Module, loader):
+def get_acc_and_loss(model: torch.nn.Module, loader):
     """
     Evaluates a single model in terms of accuracy and loss
     :param model: the model
@@ -50,8 +50,8 @@ def evaluate_single_model(model_name: str):
         model = load_model(model_name).cuda()
         _, train_noaug_loader, test_loader = get_loaders(dataset)
 
-        train_acc, train_loss = _evaluate_single_model(model, train_noaug_loader)
-        test_acc, test_loss = _evaluate_single_model(model, test_loader)
+        train_acc, train_loss = get_acc_and_loss(model, train_noaug_loader)
+        test_acc, test_loss = get_acc_and_loss(model, test_loader)
 
         values = (train_acc, train_loss, test_acc, test_loss)
         np.savetxt(filepath, [columns, values], delimiter=",", fmt="%s")
