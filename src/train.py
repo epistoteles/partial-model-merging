@@ -11,7 +11,7 @@ from torch.optim import SGD, lr_scheduler
 from models.VGG import VGG
 from src.utils import get_loaders, save_model
 
-from rich import pretty
+from rich import pretty, print
 
 pretty.install()
 
@@ -36,6 +36,7 @@ def main():
 
     for epoch in tqdm(range(args.epochs)):
         model.train()
+        total = 0
         train_loss = 0.0
         train_correct = 0
         for i, (inputs, labels) in enumerate(train_aug_loader):
@@ -50,10 +51,12 @@ def main():
             scaler.update()
             scheduler.step()
             train_loss += loss.item() * inputs.size(0)
+            total += inputs.size(0)
+        train_accuracy = train_correct / total
+        train_loss /= total
+        metrics = {"epoch": epoch, "train_loss": train_loss, "train_accuracy": train_accuracy}
         if args.wandb:
-            train_accuracy = train_correct / len(train_aug_loader.dataset)
-            train_loss /= len(train_aug_loader.dataset)
-            wandb.log({"epoch": epoch, "train_loss": train_loss, "train_accuracy": train_accuracy})
+            wandb.log(metrics)
 
     save_model(model, f"{args.dataset}-{args.model_type}{args.size}-{args.width}x-{args.letter}")
 
