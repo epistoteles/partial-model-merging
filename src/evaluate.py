@@ -29,7 +29,7 @@ def _evaluate_single_model(model: torch.nn.Module, loader):
     return correct / total, np.array(losses).mean()
 
 
-@track_emissions(log_level="error")
+@track_emissions(log_level="critical")
 def evaluate_single_model(model_name: str):
     """
     Evaluates a single model in terms of accuracy and loss (and saves the result)
@@ -42,7 +42,7 @@ def evaluate_single_model(model_name: str):
     columns = ("train_acc", "train_loss", "test_acc", "test_loss")
 
     if os.path.exists(filepath):
-        train_acc, train_loss, test_acc, test_loss = np.genfromtxt("test.csv", delimiter=",", skip_header=1)
+        train_acc, train_loss, test_acc, test_loss = np.genfromtxt(filepath, delimiter=",", skip_header=1)
         values = (train_acc, train_loss, test_acc, test_loss)
         print(f"📤 Loaded saved accuracies and losses for {model_name}")
     else:
@@ -61,6 +61,3 @@ def evaluate_single_model(model_name: str):
         print(f"{c:<12} {v}")
 
     return train_acc, train_loss, test_acc, test_loss
-
-
-evaluate_single_model("CIFAR10-VGG11-1x-a")
