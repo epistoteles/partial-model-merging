@@ -17,7 +17,7 @@ def _evaluate_single_model(model: torch.nn.Module, loader):
     losses = []
     correct = 0
     total = 0
-    with torch.no_grad(), autocast("cuda"):
+    with torch.no_grad():
         for inputs, labels in loader:
             outputs = model(inputs.cuda())
             pred = outputs.argmax(dim=1)
