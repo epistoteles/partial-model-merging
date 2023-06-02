@@ -1,0 +1,51 @@
+wandb_version: 1
+
+size:
+  desc: null
+  value: 13
+width:
+  desc: null
+  value: 1
+epochs:
+  desc: null
+  value: 100
+lr:
+  desc: null
+  value: 0.08
+letter:
+  desc: null
+  value: debug
+dataset:
+  desc: null
+  value: CIFAR10
+model_type:
+  desc: null
+  value: VGG
+wandb:
+  desc: null
+  value: true
+_wandb:
+  desc: null
+  value:
+    python_version: 3.10.6
+    cli_version: 0.15.3
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1685638805.466078
+    t:
+      1:
+      - 1
+      - 41
+      - 55
+      2:
+      - 1
+      - 41
+      - 55
+      3:
+      - 16
+      - 23
+      4: 3.10.6
+      5: 0.15.3
+      8:
+      - 5

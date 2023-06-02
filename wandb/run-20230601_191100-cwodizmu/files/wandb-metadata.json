@@ -1,0 +1,82 @@
+{
+    "os": "Linux-5.19.0-42-generic-x86_64-with-glibc2.35",
+    "python": "3.10.6",
+    "heartbeatAt": "2023-06-01T17:11:01.339013",
+    "startedAt": "2023-06-01T17:11:00.474706",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--size",
+        "16",
+        "--letter",
+        "debug",
+        "-wandb",
+        "-bn"
+    ],
+    "state": "running",
+    "program": "/home/korbinian/Documents/partial-model-merging/src/train.py",
+    "codePath": "src/train.py",
+    "git": {
+        "remote": "git@github.com:epistoteles/partial-model-merging.git",
+        "commit": "c05b46eb5afbd1ce81bc6942a4b5b8075af379af"
+    },
+    "email": "korbinian-koch@web.de",
+    "root": "/home/korbinian/Documents/partial-model-merging",
+    "host": "Turing",
+    "username": "korbinian",
+    "executable": "/home/korbinian/Documents/partial-model-merging/venv/bin/python3",
+    "cpu_count": 6,
+    "cpu_count_logical": 6,
+    "cpu_freq": {
+        "current": 3628.715833333333,
+        "min": 800.0,
+        "max": 4600.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 4454.995,
+            "min": 800.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4467.111,
+            "min": 800.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4348.986,
+            "min": 800.0,
+            "max": 4600.0
+        },
+        {
+            "current": 800.126,
+            "min": 800.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4354.547,
+            "min": 800.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4292.864,
+            "min": 800.0,
+            "max": 4600.0
+        }
+    ],
+    "disk": {
+        "total": 624.4859161376953,
+        "used": 61.45504379272461
+    },
+    "gpu": "NVIDIA GeForce GTX 1060 6GB",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce GTX 1060 6GB",
+            "memory_total": 6442450944
+        }
+    ],
+    "memory": {
+        "total": 62.74028778076172
+    }
+}

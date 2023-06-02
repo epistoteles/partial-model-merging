@@ -1,0 +1,75 @@
+{
+    "os": "Linux-5.19.0-42-generic-x86_64-with-glibc2.35",
+    "python": "3.10.6",
+    "heartbeatAt": "2023-06-01T16:30:57.290969",
+    "startedAt": "2023-06-01T16:30:56.088210",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/home/korbinian/Documents/partial-model-merging/src/train.py",
+    "codePath": "src/train.py",
+    "git": {
+        "remote": "git@github.com:epistoteles/partial-model-merging.git",
+        "commit": "0e02bf6ef53bc1c0b75e0440892786f654b303ec"
+    },
+    "email": "korbinian-koch@web.de",
+    "root": "/home/korbinian/Documents/partial-model-merging",
+    "host": "Turing",
+    "username": "korbinian",
+    "executable": "/home/korbinian/Documents/partial-model-merging/venv/bin/python3",
+    "cpu_count": 6,
+    "cpu_count_logical": 6,
+    "cpu_freq": {
+        "current": 4389.075,
+        "min": 800.0,
+        "max": 4600.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 4472.381,
+            "min": 800.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4303.145,
+            "min": 800.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4342.679,
+            "min": 800.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4300.517,
+            "min": 800.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4469.626,
+            "min": 800.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4446.102,
+            "min": 800.0,
+            "max": 4600.0
+        }
+    ],
+    "disk": {
+        "total": 624.4859161376953,
+        "used": 61.45452117919922
+    },
+    "gpu": "NVIDIA GeForce GTX 1060 6GB",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce GTX 1060 6GB",
+            "memory_total": 6442450944
+        }
+    ],
+    "memory": {
+        "total": 62.74028778076172
+    }
+}
