@@ -1,5 +1,4 @@
 import argparse
-from tqdm import tqdm
 import numpy as np
 from codecarbon import track_emissions
 import wandb
@@ -13,6 +12,7 @@ from src.utils import get_loaders, save_model
 from src.evaluate import get_acc_and_loss
 
 from rich import pretty, print
+from rich.progress import track
 
 pretty.install()
 
@@ -35,7 +35,7 @@ def main():
     scaler = GradScaler()
     loss_fn = CrossEntropyLoss()
 
-    for epoch in tqdm(range(args.epochs)):
+    for epoch in track(range(args.epochs)):
         model.train()
         total = 0
         train_loss = 0.0
@@ -55,7 +55,12 @@ def main():
             total += inputs.size(0)
         train_accuracy = train_correct / total
         train_loss /= total
-        metrics = {"epoch": epoch, "train_loss": train_loss, "train_accuracy": train_accuracy}
+        metrics = {
+            "epoch": epoch,
+            "train_loss": train_loss,
+            "train_accuracy": train_accuracy,
+            "learning_rate": scheduler.get_last_lr()[0],
+        }
         if args.wandb:
             if args.test:
                 test_acc, test_loss = get_acc_and_loss(model, test_loader)
