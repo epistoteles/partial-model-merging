@@ -30,7 +30,7 @@ def get_acc_and_loss(model: torch.nn.Module, loader):
     return correct / total, np.array(losses).mean()
 
 
-@track_emissions(log_level="critical")
+@track_emissions()
 def evaluate_single_model(model_name: str):
     """
     Evaluates a single model in terms of accuracy and loss (and saves the result)

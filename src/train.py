@@ -17,7 +17,7 @@ from rich.progress import track
 pretty.install()
 
 
-@track_emissions(log_level="critical")
+@track_emissions()
 def main():
     if args.wandb:
         wandb.init(project="partial-model-merging", config=args)
