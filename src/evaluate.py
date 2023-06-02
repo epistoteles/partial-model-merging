@@ -3,7 +3,6 @@ import numpy as np
 from torch.cuda.amp import autocast
 import torch.nn.functional as F
 import os
-from rich.progress import track
 from codecarbon import track_emissions
 from src.utils import load_model, get_loaders, parse_model_name, get_evaluations_dir
 
@@ -20,7 +19,7 @@ def get_acc_and_loss(model: torch.nn.Module, loader):
     correct = 0
     total = 0
     with torch.no_grad(), autocast():
-        for inputs, labels in track(loader):
+        for inputs, labels in loader:
             outputs = model(inputs.cuda())
             pred = outputs.argmax(dim=1)
             correct += (labels.cuda() == pred).sum().item()
