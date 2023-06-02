@@ -1,0 +1,29 @@
+python src/train.py --dataset CIFAR10 --model_type VGG --size 11 -bn --width 2 --variant b -wandb -test
+
+python src/train.py --dataset CIFAR10 --model_type VGG --size 11 -bn --width 4 --variant a -wandb -test
+python src/train.py --dataset CIFAR10 --model_type VGG --size 11 -bn --width 4 --variant b -wandb -test
+
+python src/train.py --dataset CIFAR10 --model_type VGG --size 11 -bn --width 8 --variant a -wandb -test
+python src/train.py --dataset CIFAR10 --model_type VGG --size 11 -bn --width 8 --variant b -wandb -test
+
+python src/train.py --dataset CIFAR10 --model_type VGG --size 13 -bn --width 1 --variant a -wandb -test
+python src/train.py --dataset CIFAR10 --model_type VGG --size 13 -bn --width 1 --variant b -wandb -test
+
+python src/train.py --dataset CIFAR10 --model_type VGG --size 16 -bn --width 1 --variant a -wandb -test
+python src/train.py --dataset CIFAR10 --model_type VGG --size 16 -bn --width 1 --variant b -wandb -test
+python src/train.py --dataset CIFAR10 --model_type VGG --size 16 -bn --width 1 --variant c -wandb -test
+
+python src/train.py --dataset CIFAR10 --model_type VGG --size 16 -bn --width 2 --variant a -wandb -test
+python src/train.py --dataset CIFAR10 --model_type VGG --size 16 -bn --width 2 --variant b -wandb -test
+
+python src/train.py --dataset CIFAR10 --model_type VGG --size 19 -bn --width 1 --variant a -wandb -test
+python src/train.py --dataset CIFAR10 --model_type VGG --size 19 -bn --width 1 --variant b -wandb -test
+
+python src/train.py --dataset CIFAR10 --model_type VGG --size 16 -bn --width 4 --variant a -wandb -test
+python src/train.py --dataset CIFAR10 --model_type VGG --size 16 -bn --width 4 --variant b -wandb -test
+
+python src/train.py --dataset CIFAR10 --model_type VGG --size 16 -bn --width 8 --variant a -wandb -test
+python src/train.py --dataset CIFAR10 --model_type VGG --size 16 -bn --width 8 --variant b -wandb -test
+
+python src/train.py --dataset CIFAR10 --model_type VGG --size 11 -bn --width 16 --variant a -wandb -test
+python src/train.py --dataset CIFAR10 --model_type VGG --size 11 -bn --width 16 --variant b -wandb -test
