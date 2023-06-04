@@ -40,7 +40,7 @@ def main():
         model = ResNet(width=args.width, num_classes=get_num_classes(args.dataset)).cuda()
     else:
         raise ValueError(f"Unknown model type {args.model_type}")
-    optimizer = SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
+    optimizer = SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=args.weight_decay)
 
     # this lr schedule will start and end with a lr of 0, which should have no effect on the weights,
     # but should recalibrate the batch norm layers (if they exist)
@@ -101,6 +101,7 @@ parser.add_argument(
 parser.add_argument("-w", "--width", type=int, default=1)
 parser.add_argument("--epochs", type=int, default=100)
 parser.add_argument("--lr", type=float, default=0.08)
+parser.add_argument("--weight_decay", type=float, default=0.0005)
 parser.add_argument("-v", "--variant", type=str, default="a")
 
 parser.add_argument("-wandb", action="store_true")
