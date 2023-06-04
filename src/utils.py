@@ -136,7 +136,7 @@ def parse_model_name(model_name, as_dict=False):
 
 def ensure_numpy(x):
     """
-    Ensures that x is a numpy array
+    Ensures that x is a numpy array (and converts it if necessary)
     :param x: numpy array or Torch tensor
     :return: numpy array
     """
@@ -368,6 +368,12 @@ def permute_input(perm_map, layer):
 ############################
 # datasets and dataloaders #
 ############################
+
+
+def get_num_classes(dataset: str):
+    """Returns the number of classes in a dataset"""
+    cfg = {"CIFAR10": 10, "CIFAR100": 100, "SVHN": 10}
+    return cfg[dataset]
 
 
 def _convert_dataset_to_beton(dataset: torch.utils.data.Dataset, filename: str):

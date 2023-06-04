@@ -19,9 +19,4 @@ seaborn==0.12.1
 torch==1.13.0
 torchvision==0.14.0
 tqdm==4.64.1
-utils==1.0.1
-
-WARNING(pigar): some manual fixes are required since pigar has found duplicate requirements for the same import name.
-# WARNING(pigar): the following duplicate requirements are for import name: pytorch_lightning
-lightning==2022.10.25
-pytorch-lightning==2.0.2
+wandb==0.13.4
