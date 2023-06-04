@@ -72,9 +72,12 @@ def get_evaluations_dir(subdir: str = None) -> str:
     :return: the evaluations directory path
     """
     root_dir = _get_root_dir()
-    checkpoints_dir = os.path.join(root_dir, "evaluations/")
-    os.makedirs(checkpoints_dir, exist_ok=True)
-    return checkpoints_dir
+    evaluations_dir = os.path.join(root_dir, "evaluations/")
+    os.makedirs(evaluations_dir, exist_ok=True)
+    if subdir is not None:
+        evaluations_dir = os.path.join(evaluations_dir, subdir)
+        os.makedirs(evaluations_dir, exist_ok=True)
+    return evaluations_dir
 
 
 def get_plots_dir(subdir: str = None) -> str:
