@@ -28,6 +28,7 @@ from ffcv.transforms import (
 from ffcv.transforms.common import Squeeze
 
 from src.models.VGG import VGG
+from src.models.ResNet import ResNet18, ResNet20
 
 
 ##############################
@@ -185,13 +186,7 @@ def load_model(filename: str, model: torch.nn.Module = None) -> torch.nn.Module:
     :return: None
     """
     if model is None:
-        _, model_type, size, batch_norm, width, _ = parse_model_name(filename)
-        if model_type == "VGG":
-            model = VGG(size, width, bn=batch_norm)
-        elif model_type == "ResNet":
-            raise NotImplementedError("ResNet not implemented yet")
-        else:
-            raise ValueError(f"Unknown model type {model_type} in {filename}")
+        model = model_like(filename)
     if not filename.endswith(".safetensors"):
         filename += ".safetensors"
     checkpoints_dir = _get_checkpoints_dir()
@@ -199,6 +194,28 @@ def load_model(filename: str, model: torch.nn.Module = None) -> torch.nn.Module:
         filename = os.path.join(checkpoints_dir, filename)
     state_dict = load_file(filename)
     model.load_state_dict(state_dict)
+    return model
+
+
+def model_like(filename: str) -> torch.nn.Module:
+    """
+    Creates a new model with the same hyperparameters as the reference model
+    :param filename: the filename of the reference model
+    :return: a freshly initialized model of the same type
+    """
+    dataset, model_type, size, batch_norm, width, _ = parse_model_name(filename)
+    if model_type == "VGG":
+        model = VGG(size, width=width, bn=batch_norm, num_classes=get_num_classes(dataset))
+    elif model_type == "ResNet":
+        if size == 18:
+            ResNet = ResNet18
+        elif size == 20:
+            ResNet = ResNet20
+        else:
+            raise ValueError(f"Unknown ResNet size {size}")
+        model = ResNet(width=width, num_classes=get_num_classes(dataset))
+    else:
+        raise ValueError(f"Unknown model type {model_type} in {filename}")
     return model
 
 
