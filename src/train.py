@@ -8,7 +8,8 @@ from torch.nn import CrossEntropyLoss
 from torch.optim import SGD, lr_scheduler
 
 from models.VGG import VGG
-from src.utils import get_loaders, save_model
+from models.ResNet import ResNet18, ResNet20
+from src.utils import get_loaders, save_model, get_num_classes
 from src.evaluate import get_acc_and_loss
 
 from rich import pretty, print
@@ -23,7 +24,22 @@ def main():
         wandb.init(project="partial-model-merging", config=args)
 
     train_aug_loader, _, test_loader = get_loaders(args.dataset)
-    model = VGG(size=args.size, width=args.width, bn=args.batch_norm).cuda()
+    if args.model_type == "VGG":
+        model = VGG(
+            size=args.size, width=args.width, bn=args.batch_norm, num_classes=get_num_classes(args.dataset)
+        ).cuda()
+    elif args.model_tupe == "ResNet":
+        if not args.batch_norm:
+            raise ValueError("ResNet must have batch norm layers (-bn/--batch_norm)")
+        if args.size == 18:
+            ResNet = ResNet18
+        elif args.size == 20:
+            ResNet = ResNet20
+        else:
+            raise ValueError(f"Unavailable ResNet size {args.size}")
+        model = ResNet(width=args.width, num_classes=get_num_classes(args.dataset)).cuda()
+    else:
+        raise ValueError(f"Unknown model type {args.model_type}")
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
 
     # this lr schedule will start and end with a lr of 0, which should have no effect on the weights,
