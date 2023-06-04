@@ -459,6 +459,9 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader]:
     elif dataset == "CIFAR100":
         MEAN = [129.30416561, 124.0699627, 112.43405006]
         STD = [68.1702429, 65.39180804, 70.41837019]
+    elif dataset == "SVHN":
+        MEAN = [111.60893668, 113.16127466, 120.56512767]
+        STD = [50.49768174, 51.2589843, 50.24421614]
     else:
         raise ValueError(f"Unknown dataset {dataset}")
 
@@ -472,10 +475,14 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader]:
         Convert(torch.float16),
         T.Normalize(MEAN, STD),
     ]
-    aug_p = [
-        RandomHorizontalFlip(),
-        RandomTranslate(padding=4),
-    ]
+    aug_p = (
+        [
+            RandomHorizontalFlip(),
+            RandomTranslate(padding=4),
+        ]
+        if dataset != "SVHN"
+        else [RandomTranslate(padding=4)]
+    )
 
     train_beton_path, test_beton_path = _get_beton_path(dataset)
 
