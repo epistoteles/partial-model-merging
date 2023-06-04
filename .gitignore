@@ -1,3 +1,6 @@
+# dont sync codecarbon config
+.codecarbon.config
+
 # dont sync data
 data/
 *.beton
