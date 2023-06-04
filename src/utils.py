@@ -420,7 +420,8 @@ def _download_dataset(dataset) -> tuple[torch.utils.data.Dataset, torch.utils.da
         train_dset = torchvision.datasets.CIFAR100(data_dir, train=True, download=True)
         test_dset = torchvision.datasets.CIFAR100(data_dir, train=False, download=True)
     elif dataset == "SVHN":
-        raise NotImplementedError()  # TODO()
+        train_dset = torchvision.datasets.SVHN(data_dir, split="train", download=True)
+        test_dset = torchvision.datasets.SVHN(data_dir, split="test", download=True)
     else:
         raise ValueError(f"Unknown dataset {dataset}")
     return train_dset, test_dset
