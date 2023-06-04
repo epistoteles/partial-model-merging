@@ -1,5 +1,8 @@
-# dont sync codecarbon config
+# don't sync codecarbon config
 .codecarbon.config
+
+# don't sync wandb
+wandb/
 
 # dont sync data
 data/
