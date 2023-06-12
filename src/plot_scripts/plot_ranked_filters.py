@@ -8,7 +8,7 @@ from pathlib import Path
 from src.utils import load_model, normalize, get_plots_dir, parse_model_name, get_all_model_names
 
 
-def plot_model_filters(model_name):
+def plot_model_filters(model_name: str):
     dataset, model_type, size, batch_norm, width, variant = parse_model_name(model_name)
     model = load_model(model_name)
     # model = expand_model(model, 1.2)
@@ -16,7 +16,8 @@ def plot_model_filters(model_name):
 
     sums = []
     for i, key in enumerate(sd.keys()):
-        if "features" in key and "weight" in key:
+        if ("features" in key or "conv" in key) and "weight" in key:
+            print(sd[key].shape)
             abs_sums = torch.abs(sd[key]).sum(dim=(1, 2, 3))
             normed_sums = normalize(abs_sums)
             normed_sums = torch.sort(normed_sums, descending=True)[0]
