@@ -16,8 +16,7 @@ def plot_model_filters(model_name: str):
 
     sums = []
     for i, key in enumerate(sd.keys()):
-        if ("features" in key or "conv" in key) and "weight" in key:
-            print(sd[key].shape)
+        if len(sd[key].shape) == 4:  # this means the parameters are convolutional kernels (and not biases, bn, ...)
             abs_sums = torch.abs(sd[key]).sum(dim=(1, 2, 3))
             normed_sums = normalize(abs_sums)
             normed_sums = torch.sort(normed_sums, descending=True)[0]
