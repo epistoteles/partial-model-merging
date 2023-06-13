@@ -111,13 +111,6 @@ def evaluate_two_models_ensembling(
 
             pred = outputs.reshape(outputs.shape[1] * interpolation_steps, -1).argmax(dim=1).reshape(outputs.shape[:-1])
             correct = (labels == pred).sum(dim=1)
-
-            print(pred.is_cuda)
-            print(labels.is_cuda)
-            print(outputs_a.is_cuda)
-            print(outputs.is_cuda)
-            print(alphas.is_cuda)
-
             losses += torch.Tensor([F.cross_entropy(x, labels) for x in outputs])  # this is faster than torch.vmap
             total += len(labels)
 
