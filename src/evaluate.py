@@ -104,12 +104,21 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
             model_a, model_b, test_loader, interpolation_steps
         )
 
-        # accumulate full merging metrics
-        metrics["merging_train_accs"], metrics["merging_train_losses"] = evaluate_two_models_merging(
+        # accumulate naive merging metrics
+        metrics["naive_train_accs"], metrics["naive_train_losses"] = evaluate_two_models_merging(
             model_a, model_b, train_noaug_loader, interpolation_steps
         )
-        metrics["merging_test_accs"], metrics["merging_test_losses"] = evaluate_two_models_merging(
+        metrics["naive_test_accs"], metrics["naive_test_losses"] = evaluate_two_models_merging(
             model_a, model_b, test_loader, interpolation_steps
+        )
+
+        # accumulate permuted merging metrics
+        model_b_perm = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader)
+        metrics["merging_train_accs"], metrics["merging_train_losses"] = evaluate_two_models_merging(
+            model_a, model_b_perm, train_noaug_loader, interpolation_steps
+        )
+        metrics["merging_test_accs"], metrics["merging_test_losses"] = evaluate_two_models_merging(
+            model_a, model_b_perm, test_loader, interpolation_steps
         )
 
         np.savetxt(filepath, [list(metrics.keys()), *list(zip(*metrics.values()))], delimiter=",", fmt="%s")
@@ -155,13 +164,11 @@ def evaluate_two_models_merging(
     model_a.eval()
     model_b.eval()
 
-    model_b_perm = permute_model(model_a, model_b, loader)
-
     accs = []
     losses = []
 
     for alpha in torch.linspace(0.0, 1.0, interpolation_steps):
-        model_merged = interpolate_models(model_a, model_b_perm, alpha)
+        model_merged = interpolate_models(model_a, model_b, alpha)
         acc, loss = get_acc_and_loss(model_merged, loader)
         accs.append(acc)
         losses.append(loss)

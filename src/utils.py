@@ -271,49 +271,51 @@ def subnet(model: torch.nn.Module, n_layers: int):
 #####################
 
 
-def permute_model(model_a: torch.nn.Module, model_b: torch.nn.Module, loader):
+def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, loader):
     """
     Merges the two models using traditional activation matching
     adapted from https://github.com/KellerJordan/REPAIR
-    :param model_a: the reference model
-    :param model_b: the model to be permuted
+    :param reference_model: the reference model (not affected)
+    :param model: the model to be permuted
     :param loader: the data loader to use for calculating the activations; usually train_aug_loader
-    :return: the permuted model_b
+    :return: the permuted model
     """
-    model_a = model_a.cuda()
-    model_b = model_b.cuda()
+    reference_model = reference_model.cuda()
+    model = model.cuda()
 
     # version 1: models are VGGs
-    if isinstance(model_a, VGG):
-        features_b = model_b.features
-        for i in range(len(features_b)):
-            layer = features_b[i]
+    if isinstance(model, VGG):
+        features = model.features
+        for i in range(len(features)):
+            layer = features[i]
             if isinstance(layer, torch.nn.Conv2d):
                 # get permutation and permute output of conv and maybe bn
-                if isinstance(features_b[i + 1], torch.nn.BatchNorm2d):
-                    assert isinstance(features_b[i + 2], torch.nn.ReLU)
-                    corr = get_corr_matrix(subnet(model_a, i + 3), subnet(model_b, i + 3), loader).cpu().numpy()
+                if isinstance(features[i + 1], torch.nn.BatchNorm2d):
+                    assert isinstance(features[i + 2], torch.nn.ReLU)
+                    corr = get_corr_matrix(subnet(reference_model, i + 3), subnet(model, i + 3), loader).cpu().numpy()
                     perm_map = get_layer_perm_from_corr(corr)
-                    permute_output(perm_map, features_b[i], features_b[i + 1])
+                    permute_output(perm_map, features[i], features[i + 1])
                 else:
-                    assert isinstance(features_b[i + 1], torch.nn.ReLU)
-                    corr = get_corr_matrix(subnet(model_a, i + 2), subnet(model_b, i + 2), loader).cpu().numpy()
+                    assert isinstance(features[i + 1], torch.nn.ReLU)
+                    corr = get_corr_matrix(subnet(reference_model, i + 2), subnet(model, i + 2), loader).cpu().numpy()
                     perm_map = get_layer_perm_from_corr(corr)
-                    permute_output(perm_map, features_b[i], None)
+                    permute_output(perm_map, features[i], None)
                 # look for succeeding layer to permute input
                 next_layer = None
-                for j in range(i + 1, len(features_b)):
-                    if isinstance(features_b[j], torch.nn.Conv2d):
-                        next_layer = features_b[j]
+                for j in range(i + 1, len(features)):
+                    if isinstance(features[j], torch.nn.Conv2d):
+                        next_layer = features[j]
                         break
                 if next_layer is None:
-                    next_layer = model_b.classifier
+                    next_layer = model.classifier
                 permute_input(perm_map, next_layer)
 
-    elif isinstance(model_a, ResNet20):
+    elif isinstance(model, ResNet20):
         raise NotImplementedError()
+    else:
+        raise ValueError(f"Unknown model type {type(model)}")
 
-    return model_b
+    return model
 
 
 def interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module, alpha: float):
