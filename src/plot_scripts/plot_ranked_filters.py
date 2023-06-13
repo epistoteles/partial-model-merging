@@ -33,6 +33,7 @@ def plot_model_filters(model_name: str):
 
     plots_dir = get_plots_dir(subdir=Path(__file__).stem)
     plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name}.png"), dpi=600)
+    plt.close()
     print(f"📊 Plot saved for {model_name}")
 
 

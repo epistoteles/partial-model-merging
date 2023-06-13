@@ -61,3 +61,58 @@ def evaluate_single_model(model_name: str):
         print(f"{c:<12} {v}")
 
     return train_acc, train_loss, test_acc, test_loss
+
+
+def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_steps: int = 21):
+    """
+    Evaluates two models in terms of accuracy and loss with different combination techniques (and saves the result)
+    :param model_name_a: the name of the first (reference) model checkpoint
+    :param model_name_b: the name of the second model checkpoint.
+    :param interpolation_steps: number of interpolation steps between the models, i.e. 21 = 1.0, 0.95, 0.9, 0.85, ...
+    :return: TODO
+    """
+    dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
+    dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
+
+    assert dataset_a == dataset_b
+    assert model_type_a == model_type_b
+    assert size_a == size_b
+    assert batch_norm_a == batch_norm_b
+    assert width_a == width_b  # not strictly necessary, but always the case in our experiments
+
+    # evaluations_dir = get_evaluations_dir(subdir="single_model")
+    # filepath = os.path.join(evaluations_dir, f"{model_name_a}{variant_b}.csv")
+    # columns = ("method", "ratio_a", "ratio_b", "train_acc", "train_loss", "test_acc", "test_loss")
+    #
+    # model_a = load_model(model_name_a)
+    # model_b = load_model(model_name_b)
+
+
+def evaluate_two_models_ensembling(
+    model_a: torch.nn.Module, model_b: torch.nn.Module, loader, interpolation_steps: int = 21
+):
+    model_a.eval()
+    model_b.eval()
+
+    losses = torch.zeros(interpolation_steps)
+    correct = torch.zeros(interpolation_steps)
+    total = 0
+
+    with torch.no_grad(), autocast():
+        for inputs, labels in loader:
+            outputs_a = model_a(inputs.cuda()).cpu()
+            outputs_b = model_b(inputs.cuda()).cpu()
+
+            alphas = torch.linspace(1.0, 0.0, interpolation_steps).reshape(interpolation_steps, 1, 1)
+            outputs_a = outputs_a.unsqueeze(0).repeat(interpolation_steps, 1, 1)
+            outputs_b = outputs_b.unsqueeze(0).repeat(interpolation_steps, 1, 1)
+            outputs = outputs_a * alphas + outputs_b * (1 - alphas)
+
+            pred = outputs.reshape(outputs.shape[1] * interpolation_steps, -1).argmax(dim=1).reshape(outputs.shape[:-1])
+            correct = (labels.cuda() == pred).sum(dim=1)
+            losses += torch.Tensor(
+                [F.cross_entropy(x, labels.cuda()) for x in outputs]
+            )  # this is faster than torch.vmap
+            total += len(labels)
+
+    return correct / total, losses / total
