@@ -102,6 +102,7 @@ def evaluate_two_models_ensembling(
         for inputs, labels in loader:
             outputs_a = model_a(inputs.cuda()).cpu()
             outputs_b = model_b(inputs.cuda()).cpu()
+            labels = labels.cpu()
 
             alphas = torch.linspace(1.0, 0.0, interpolation_steps).reshape(interpolation_steps, 1, 1)
             outputs_a = outputs_a.unsqueeze(0).repeat(interpolation_steps, 1, 1)
@@ -109,10 +110,15 @@ def evaluate_two_models_ensembling(
             outputs = outputs_a * alphas + outputs_b * (1 - alphas)
 
             pred = outputs.reshape(outputs.shape[1] * interpolation_steps, -1).argmax(dim=1).reshape(outputs.shape[:-1])
-            correct = (labels.cpu() == pred).sum(dim=1)
-            losses += torch.Tensor(
-                [F.cross_entropy(x, labels.cuda()) for x in outputs]
-            )  # this is faster than torch.vmap
+            correct = (labels == pred).sum(dim=1)
+
+            print(pred.is_cuda)
+            print(labels.is_cuda)
+            print(outputs_a.is_cuda)
+            print(outputs.is_cuda)
+            print(alphas.is_cuda)
+
+            losses += torch.Tensor([F.cross_entropy(x, labels) for x in outputs])  # this is faster than torch.vmap
             total += len(labels)
 
     return correct / total, losses / total
