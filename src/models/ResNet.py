@@ -43,6 +43,7 @@ class ResNet18(nn.Module):
         """
         super().__init__()
         self.size = 18
+        self.bn = True
         self.num_classes = num_classes
         self.in_planes = round(width * 16)
 
@@ -83,6 +84,7 @@ class ResNet20(nn.Module):
         """
         super().__init__()
         self.size = 20
+        self.bn = True
         self.num_classes = num_classes
         self.in_planes = round(width * 16)
 
