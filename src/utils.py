@@ -321,12 +321,12 @@ def interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module, alpha
     Interpolates the weights between two models a and b. Does *not* permute/align the models for you.
     :param model_a: the first model
     :param model_b: the second model
-    :param alpha: the interpolation factor for model_a; 1-alpha for model b
+    :param alpha: the interpolation percentage for model_b; 1-alpha for model a
     :return: the interpolated child model
     """
     sd_a = model_a.state_dict()
     sd_b = model_b.state_dict()
-    sd_interpolated = {key: alpha * sd_a[key].cuda() + (1 - alpha) * sd_b[key].cuda() for key in sd_a.keys()}
+    sd_interpolated = {key: (1 - alpha) * sd_a[key].cuda() + alpha * sd_b[key].cuda() for key in sd_a.keys()}
     model_merged = model_like(model_a)
     model_merged.load_state_dict(sd_interpolated)
     return model_merged
