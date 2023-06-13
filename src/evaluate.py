@@ -14,6 +14,8 @@ def get_acc_and_loss(model: torch.nn.Module, loader):
     :param loader: a matching FFCV data loader
     :return: (accuracy, loss)
     """
+    if not model.is_cuda:
+        model = model.cuda()
     model.eval()
     losses = []
     correct = 0
