@@ -14,8 +14,7 @@ def get_acc_and_loss(model: torch.nn.Module, loader):
     :param loader: a matching FFCV data loader
     :return: (accuracy, loss)
     """
-    if not model.is_cuda:
-        model = model.cuda()
+    model = model.cuda()
     model.eval()
     losses = []
     correct = 0
@@ -87,6 +86,7 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
 
     if os.path.exists(filepath):
         # TODO
+        metrics = None
         print(f"📤 Loaded saved metrics for {model_name_a}{variant_b}")
     else:
         model_a = load_model(model_name_a).cuda()
@@ -114,6 +114,8 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
 
         np.savetxt(filepath, [list(metrics.keys()), *list(zip(*metrics.values()))], delimiter=",", fmt="%s")
         print(f"📥 Metrics saved for {model_name_a}{variant_b}")
+
+    return metrics
 
 
 def evaluate_two_models_ensembling(
