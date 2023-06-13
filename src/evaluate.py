@@ -97,6 +97,7 @@ def evaluate_two_models_ensembling(
     losses = torch.zeros(interpolation_steps)
     correct = torch.zeros(interpolation_steps)
     total = 0
+    batches = 0
 
     with torch.no_grad(), autocast():
         for inputs, labels in loader:
@@ -113,5 +114,6 @@ def evaluate_two_models_ensembling(
             correct += (labels == pred).sum(dim=1)
             losses += torch.Tensor([F.cross_entropy(x, labels) for x in outputs])  # this is faster than torch.vmap
             total += len(labels)
+            batches += 1
 
-    return correct / total, losses / total
+    return correct / total, losses / batches
