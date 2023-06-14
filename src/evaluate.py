@@ -85,8 +85,7 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
     filepath = os.path.join(evaluations_dir, f"{model_name_a}{variant_b}.csv")
 
     if os.path.exists(filepath):
-        # TODO
-        metrics = None
+        metrics = np.genfromtxt(filepath, delimiter=",")
         print(f"📤 Loaded saved metrics for {model_name_a}{variant_b}")
     else:
         model_a = load_model(model_name_a).cuda()
