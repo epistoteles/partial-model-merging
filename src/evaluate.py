@@ -2,9 +2,18 @@ import torch
 import numpy as np
 from torch.cuda.amp import autocast
 import torch.nn.functional as F
+from safetensors.torch import save_file, load_file
 import os
 from codecarbon import track_emissions
-from src.utils import load_model, get_loaders, parse_model_name, get_evaluations_dir, permute_model, interpolate_models
+from src.utils import (
+    load_model,
+    get_loaders,
+    parse_model_name,
+    get_evaluations_dir,
+    permute_model,
+    interpolate_models,
+    ensure_numpy,
+)
 
 
 def get_acc_and_loss(model: torch.nn.Module, loader):
@@ -84,9 +93,9 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
     evaluations_dir = get_evaluations_dir(subdir="two_models")
     filepath = os.path.join(evaluations_dir, f"{model_name_a}{variant_b}.csv")
 
-    if os.path.exists(filepath):
-        metrics = np.genfromtxt(filepath, delimiter=",")
-        print(f"📤 Loaded saved metrics for {model_name_a}{variant_b}")
+    if os.path.exists(filepath.replace(".csv", ".safetensors")):
+        metrics = load_file(filepath.replace(".csv", ".safetensors"))
+        print(f"📤 Loaded saved metrics for {model_name_a}{variant_b} from .safetensors")
     else:
         model_a = load_model(model_name_a).cuda()
         model_b = load_model(model_name_b).cuda()
@@ -95,7 +104,7 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
 
         metrics = {"alphas": torch.linspace(0.0, 1.0, interpolation_steps)}
 
-        # accumulate ensembling metrics
+        print("Collecting ensembling metrics ...")
         metrics["ensembling_train_accs"], metrics["ensembling_train_losses"] = evaluate_two_models_ensembling(
             model_a, model_b, train_noaug_loader, interpolation_steps
         )
@@ -103,7 +112,7 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
             model_a, model_b, test_loader, interpolation_steps
         )
 
-        # accumulate naive merging metrics
+        print("Collecting naive merging metrics ...")
         metrics["naive_train_accs"], metrics["naive_train_losses"] = evaluate_two_models_merging(
             model_a, model_b, train_noaug_loader, interpolation_steps
         )
@@ -111,7 +120,7 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
             model_a, model_b, test_loader, interpolation_steps
         )
 
-        # accumulate permuted merging metrics
+        print("Collecting permuted merging metrics ...")
         model_b_perm = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader)
         metrics["merging_train_accs"], metrics["merging_train_losses"] = evaluate_two_models_merging(
             model_a, model_b_perm, train_noaug_loader, interpolation_steps
@@ -120,8 +129,20 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
             model_a, model_b_perm, test_loader, interpolation_steps
         )
 
-        np.savetxt(filepath, [list(metrics.keys()), *list(zip(*metrics.values()))], delimiter=",", fmt="%s")
-        print(f"📥 Metrics saved for {model_name_a}{variant_b}")
+        # print("Collecting permuted merging + REPAIR metrics ...")  # TODO
+
+        # print("Collecting partial merging metrics ...")  # TODO
+
+        save_file(metrics, filename=filepath.replace(".csv", ".safetensors"))
+
+        np.savetxt(
+            filepath,
+            np.asarray([list(metrics.keys()), *list(zip(*[ensure_numpy(x) for x in metrics.values()]))]),
+            delimiter=",",
+            fmt="%s",
+        )
+
+        print(f"📥 Metrics saved for {model_name_a}{variant_b} as .csv and .safetensors")
 
     return metrics
 
