@@ -130,11 +130,16 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
         )
 
         # print("Collecting permuted merging + REPAIR metrics ...")  # TODO
+        # metrics["merging_REPAIR_train_accs"], metrics["merging_train_losses"] = evaluate_two_models_merging(
+        #     model_a, model_b_perm, train_noaug_loader, interpolation_steps
+        # )
+        # metrics["merging_REPAIR_test_accs"], metrics["merging_test_losses"] = evaluate_two_models_merging(
+        #     model_a, model_b_perm, test_loader, interpolation_steps
+        # )
 
         # print("Collecting partial merging metrics ...")  # TODO
 
         save_file(metrics, filename=filepath.replace(".csv", ".safetensors"))
-
         np.savetxt(
             filepath,
             np.asarray([list(metrics.keys()), *list(zip(*[ensure_numpy(x) for x in metrics.values()]))]),
@@ -189,6 +194,25 @@ def evaluate_two_models_merging(
 
     for alpha in torch.linspace(0.0, 1.0, interpolation_steps):
         model_merged = interpolate_models(model_a, model_b, alpha)
+        acc, loss = get_acc_and_loss(model_merged, loader)
+        accs.append(acc)
+        losses.append(loss)
+
+    return torch.FloatTensor(accs), torch.FloatTensor(losses)
+
+
+def evaluate_two_models_merging_REPAIR(
+    model_a: torch.nn.Module, model_b: torch.nn.Module, loader, interpolation_steps: int = 21
+):
+    model_a.eval()
+    model_b.eval()
+
+    accs = []
+    losses = []
+
+    for alpha in torch.linspace(0.0, 1.0, interpolation_steps):
+        model_merged = interpolate_models(model_a, model_b, alpha)
+        # TODO: REPAIR model
         acc, loss = get_acc_and_loss(model_merged, loader)
         accs.append(acc)
         losses.append(loss)
