@@ -348,29 +348,12 @@ def interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module, alpha
     return model_merged
 
 
-def add_models(model_a: torch.nn.Module, model_b: torch.nn.Module):
-    """
-    Adds up the weights and biases of two models a and b. Does *not* permute/align the models for you.
-    :param model_a: the first model
-    :param model_b: the second model
-    :return: the child model
-    """
-    sd_a = model_a.state_dict()
-    sd_b = model_b.state_dict()
-    sd_interpolated = {key: sd_a[key].cuda() + sd_b[key].cuda() for key in sd_a.keys()}
-    model_merged = model_like(model_a)
-    model_merged.load_state_dict(sd_interpolated)
-    return model_merged
-
-
 ################################
 # correlation matrix functions #
 ################################
 
 
-def get_corr_matrix(
-    subnet_a: torch.nn.Module, subnet_b: torch.nn.Module, loader: Loader, epochs: int = 1, normalize: bool = True
-):
+def get_corr_matrix(subnet_a: torch.nn.Module, subnet_b: torch.nn.Module, loader: Loader, epochs: int = 1):
     """
     Given two networks subnet_a, subnet_b which each output a feature map of shape NxCxWxH this will reshape
     both outputs to (N*W*H)xC and then compute a CxC correlation matrix between the outputs of the two networks
@@ -381,7 +364,6 @@ def get_corr_matrix(
     :param loader: a data loader that resembles the input distribution (typically the train_aug_loader)
     :param epochs: for how many epochs to collect feature maps - values >1 only make a difference if the loader
                    uses augmentations
-    :param normalize: only returns covariance matrix if false, Pearson's correlation if true
     """
     n = epochs * len(loader)
     mean_a = mean_b = std_a = std_b = None
@@ -418,11 +400,40 @@ def get_corr_matrix(
                 outer += outer_batch / n
 
     cov = outer - torch.outer(mean_a, mean_b)
-    if normalize:
-        corr = cov / (torch.outer(std_a, std_b) + 1e-4)
-        return corr
+    corr = cov / (torch.outer(std_a, std_b) + 1e-4)
+    corr = manipulate_corr_matrix(corr)
+    return corr
+
+
+def manipulate_corr_matrix(corr_mtx):
+    """
+    Auto-detects the buffer areas in the correlation matrix (all zeros) and manipulates them like this:
+
+    [[x, x, x, 0, 0]          [[x, x, x, 1, 1]
+     [x, x, x, 0, 0]           [x, x, x, 1, 1]
+     [x, x, x, 0, 0]    ->     [x, x, x, 1, 1]
+     [0, 0, 0, 0, 0]           [1, 1, 1, -1, -1]
+     [0, 0, 0, 0, 0]]          [1, 1, 1, -1, -1]]
+
+    If no buffer are is detected, the correlation matrix is returned unmodified.
+
+    :param corr_mtx: the correlation matrix
+    :return: the manipulated correlation matrix
+    """
+    assert corr_mtx.dim() == 2
+    assert corr_mtx.shape[0] == corr_mtx.shape[1]
+
+    for i in range(corr_mtx.shape[0]):
+        if torch.all(corr_mtx[i] == 0):
+            break
     else:
-        return cov
+        i = corr_mtx.shape[0] + 1
+
+    corr_mtx[i:] = 1
+    corr_mtx[:, i:] = 1
+    corr_mtx[i:, i:] = -1
+
+    return corr_mtx
 
 
 def get_layer_perm_from_corr(corr_mtx):

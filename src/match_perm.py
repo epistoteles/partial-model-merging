@@ -16,7 +16,7 @@ import numpy as np
 model_a = load_model("VGG11-1x-a.pt").cuda()
 model_b = load_model("VGG11-1x-b.pt").cuda()
 
-train_aug_loader, train_noaug_loader, _ = get_loaders()
+train_aug_loader, train_noaug_loader, _ = get_loaders("CIFAR10")
 
 corrs = []
 lap_solutions = []
@@ -29,7 +29,7 @@ for i in range(n):
         # get permutation and permute output of conv and maybe bn
         if isinstance(feats_b[i + 1], nn.BatchNorm2d):
             assert isinstance(feats_b[i + 2], nn.ReLU)
-            corr = get_corr_matrix(subnet(model_a, i + 3), subnet(model_b, i + 3), train_noaug_loader).cpu().numpy()
+            corr = get_corr_matrix(subnet(model_a, i + 3), subnet(model_b, i + 3), train_aug_loader).cpu().numpy()
             lap_solution = scipy.optimize.linear_sum_assignment(corr, maximize=True)
             perm_map = get_layer_perm_from_corr(corr)
             permute_output(perm_map, feats_b[i], feats_b[i + 1])
@@ -39,7 +39,7 @@ for i in range(n):
             best_corrs += [best_corr]
         else:
             assert isinstance(feats_b[i + 1], nn.ReLU)
-            corr = get_corr_matrix(subnet(model_a, i + 2), subnet(model_b, i + 2), train_noaug_loader).cpu().numpy()
+            corr = get_corr_matrix(subnet(model_a, i + 2), subnet(model_b, i + 2), train_aug_loader).cpu().numpy()
             lap_solution = scipy.optimize.linear_sum_assignment(corr, maximize=True)
             perm_map = get_layer_perm_from_corr(corr)
             permute_output(perm_map, feats_b[i], None)

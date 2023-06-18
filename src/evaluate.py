@@ -13,6 +13,7 @@ from src.utils import (
     permute_model,
     interpolate_models,
     ensure_numpy,
+    expand_model,
 )
 
 
@@ -73,6 +74,7 @@ def evaluate_single_model(model_name: str):
     return train_acc, train_loss, test_acc, test_loss
 
 
+@track_emissions()
 def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_steps: int = 21):
     """
     Evaluates two models in terms of accuracy and loss with different combination techniques (and saves the result)
@@ -137,7 +139,16 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
         #     model_a, model_b_perm, test_loader, interpolation_steps
         # )
 
-        # print("Collecting partial merging metrics ...")  # TODO
+        print("Collecting partial merging metrics ...")
+        model_a = expand_model(model_a, 1.5).cuda()
+        model_b = expand_model(model_b, 1.5).cuda()
+        model_b_perm = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader)
+        metrics["partial_merging_train_accs"], metrics["partial_merging_train_losses"] = evaluate_two_models_merging(
+            model_a, model_b_perm, train_noaug_loader, interpolation_steps
+        )
+        metrics["partial_merging_test_accs"], metrics["partial_merging_test_losses"] = evaluate_two_models_merging(
+            model_a, model_b_perm, test_loader, interpolation_steps
+        )
 
         save_file(metrics, filename=filepath.replace(".csv", ".safetensors"))
         np.savetxt(
