@@ -253,7 +253,7 @@ def expand_model(model: torch.nn.Module, expansion_factor: float, append: str = 
             sd_expanded[key] = torch.zeros_like(sd_expanded[key])
             if append == "right":
                 slice_indices = tuple(slice(0, sd[key].size(i)) for i in range(sd[key].dim()))
-            else:
+            else:  # append = "left"
                 slice_indices = tuple(
                     slice(sd_expanded[key].size(i) - sd[key].size(i), sd_expanded[key].size(i))
                     for i in range(sd[key].dim())
