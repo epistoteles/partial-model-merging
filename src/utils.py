@@ -246,7 +246,7 @@ def expand_model(model: torch.nn.Module, expansion_factor: float, append: str = 
     assert expansion_factor > 1, "Expansion factor must be greater than 1.0"
     assert append in ["right", "left"], "Append parameter must be 'right' or 'left'"
     if isinstance(model, VGG):
-        model_expanded = VGG(model.size, width=model.width_multiplier * expansion_factor, num_classes=model.num_classes)
+        model_expanded = VGG(model.size, width=model.width * expansion_factor, num_classes=model.num_classes)
         sd_expanded = model_expanded.state_dict()
         sd = model.state_dict()
         for key in sd.keys():
@@ -261,9 +261,9 @@ def expand_model(model: torch.nn.Module, expansion_factor: float, append: str = 
             sd_expanded[key][slice_indices] = sd[key]
         model_expanded.load_state_dict(sd_expanded)
     elif isinstance(model, ResNet18):
-        model_expanded = ResNet18(width=model.width_multiplier * expansion_factor, num_classes=model.num_classes)
+        model_expanded = ResNet18(width=model.width * expansion_factor, num_classes=model.num_classes)
     elif isinstance(model, ResNet20):
-        model_expanded = ResNet20(width=model.width_multiplier * expansion_factor, num_classes=model.num_classes)
+        model_expanded = ResNet20(width=model.width * expansion_factor, num_classes=model.num_classes)
     else:
         raise ValueError("Unknown model type")
     return model_expanded
