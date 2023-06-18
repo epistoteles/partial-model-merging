@@ -139,16 +139,63 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
         #     model_a, model_b_perm, test_loader, interpolation_steps
         # )
 
-        print("Collecting partial merging metrics ...")
+        print("Collecting partial merging metrics (1.1) ...")
+        model_a = expand_model(model_a, 1.1).cuda()
+        model_b = expand_model(model_b, 1.1).cuda()
+        model_b_perm = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader)
+        (
+            metrics["partial_merging_1.1_train_accs"],
+            metrics["partial_merging_1.1_train_losses"],
+        ) = evaluate_two_models_merging(model_a, model_b_perm, train_noaug_loader, interpolation_steps)
+        (
+            metrics["partial_merging_1.1_test_accs"],
+            metrics["partial_merging_1.1_test_losses"],
+        ) = evaluate_two_models_merging(model_a, model_b_perm, test_loader, interpolation_steps)
+
+        print("Collecting partial merging metrics (1.5) ...")
+        model_a = load_model(model_name_a)
+        model_b = load_model(model_name_b)
         model_a = expand_model(model_a, 1.5).cuda()
         model_b = expand_model(model_b, 1.5).cuda()
         model_b_perm = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader)
-        metrics["partial_merging_train_accs"], metrics["partial_merging_train_losses"] = evaluate_two_models_merging(
-            model_a, model_b_perm, train_noaug_loader, interpolation_steps
-        )
-        metrics["partial_merging_test_accs"], metrics["partial_merging_test_losses"] = evaluate_two_models_merging(
-            model_a, model_b_perm, test_loader, interpolation_steps
-        )
+        (
+            metrics["partial_merging_1.5_train_accs"],
+            metrics["partial_merging_1.5_train_losses"],
+        ) = evaluate_two_models_merging(model_a, model_b_perm, train_noaug_loader, interpolation_steps)
+        (
+            metrics["partial_merging_1.5_test_accs"],
+            metrics["partial_merging_1.5_test_losses"],
+        ) = evaluate_two_models_merging(model_a, model_b_perm, test_loader, interpolation_steps)
+
+        print("Collecting partial merging metrics (1.8) ...")
+        model_a = load_model(model_name_a)
+        model_b = load_model(model_name_b)
+        model_a = expand_model(model_a, 1.8).cuda()
+        model_b = expand_model(model_b, 1.8).cuda()
+        model_b_perm = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader)
+        (
+            metrics["partial_merging_1.8_train_accs"],
+            metrics["partial_merging_1.8_train_losses"],
+        ) = evaluate_two_models_merging(model_a, model_b_perm, train_noaug_loader, interpolation_steps)
+        (
+            metrics["partial_merging_1.8_test_accs"],
+            metrics["partial_merging_1.8_test_losses"],
+        ) = evaluate_two_models_merging(model_a, model_b_perm, test_loader, interpolation_steps)
+
+        print("Collecting partial merging metrics (2.0) ...")
+        model_a = load_model(model_name_a)
+        model_b = load_model(model_name_b)
+        model_a = expand_model(model_a, 2.0).cuda()
+        model_b = expand_model(model_b, 2.0).cuda()
+        model_b_perm = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader)
+        (
+            metrics["partial_merging_2.0_train_accs"],
+            metrics["partial_merging_2.0_train_losses"],
+        ) = evaluate_two_models_merging(model_a, model_b_perm, train_noaug_loader, interpolation_steps)
+        (
+            metrics["partial_merging_2.0_test_accs"],
+            metrics["partial_merging_2.0_test_losses"],
+        ) = evaluate_two_models_merging(model_a, model_b_perm, test_loader, interpolation_steps)
 
         save_file(metrics, filename=filepath.replace(".csv", ".safetensors"))
         np.savetxt(
