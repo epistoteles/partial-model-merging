@@ -197,6 +197,11 @@ def load_model(filename: str, model: torch.nn.Module = None) -> torch.nn.Module:
     return model
 
 
+#######################
+# model manipulations #
+#######################
+
+
 def model_like(model: str | torch.nn.Module) -> torch.nn.Module:
     """
     Creates a new model with the same hyperparameters as the reference model (but newly initialized parameters)
@@ -214,7 +219,6 @@ def model_like(model: str | torch.nn.Module) -> torch.nn.Module:
         num_classes = model.num_classes
     else:
         raise ValueError("Model has to be string (filename) or model instance")
-
     if model_type == "VGG":
         new_model = VGG(size, width=width, bn=batch_norm, num_classes=num_classes)
     elif model_type == "ResNet":
@@ -230,28 +234,38 @@ def model_like(model: str | torch.nn.Module) -> torch.nn.Module:
     return new_model
 
 
-#######################
-# model manipulations #
-#######################
-
-
-def expand_model(model: torch.nn.Module, expansion_factor: float):
+def expand_model(model: torch.nn.Module, expansion_factor: float, append: str = "right"):
     """
-    Returns a functionally equivalent but wider model. The (right-appended) weights and biases are all zero.
+    Returns a functionally equivalent but wider model. The appended weights and biases are all zero.
     TODO: Also implement this for ResNet, not just VGG
     :param model: the original model
     :param expansion_factor: the factor by which to expand/widen the model (must be >1)
+    :param append: whether to append the new zero-weights/-biases to the right or the left of the tensor
     :return: the expanded model
     """
     assert expansion_factor > 1, "Expansion factor must be greater than 1.0"
-    model_expanded = VGG(model.size, width=model.width_multiplier * expansion_factor)
-    sd_expanded = model_expanded.state_dict()
-    sd = model.state_dict()
-    for key in sd.keys():
-        sd_expanded[key] = torch.zeros_like(sd_expanded[key])
-        slice_indices = tuple(slice(0, sd[key].size(i)) for i in range(sd[key].dim()))
-        sd_expanded[key][slice_indices] = sd[key]
-    model_expanded.load_state_dict(sd_expanded)
+    assert append in ["right", "left"], "Append parameter must be 'right' or 'left'"
+    if isinstance(model, VGG):
+        model_expanded = VGG(model.size, width=model.width_multiplier * expansion_factor, num_classes=model.num_classes)
+        sd_expanded = model_expanded.state_dict()
+        sd = model.state_dict()
+        for key in sd.keys():
+            sd_expanded[key] = torch.zeros_like(sd_expanded[key])
+            if append == "right":
+                slice_indices = tuple(slice(0, sd[key].size(i)) for i in range(sd[key].dim()))
+            else:
+                slice_indices = tuple(
+                    slice(sd_expanded[key].size(i) - sd[key].size(i), sd_expanded[key].size(i))
+                    for i in range(sd[key].dim())
+                )
+            sd_expanded[key][slice_indices] = sd[key]
+        model_expanded.load_state_dict(sd_expanded)
+    elif isinstance(model, ResNet18):
+        model_expanded = ResNet18(width=model.width_multiplier * expansion_factor, num_classes=model.num_classes)
+    elif isinstance(model, ResNet20):
+        model_expanded = ResNet20(width=model.width_multiplier * expansion_factor, num_classes=model.num_classes)
+    else:
+        raise ValueError("Unknown model type")
     return model_expanded
 
 
@@ -527,7 +541,7 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader]:
     """
     Creates and returns three FFCV loaders. Downloads and converts the underlying dataset if necessary.
     adapted from https://github.com/KellerJordan/REPAIR
-    :param dataset: one of 'CIFAR10', 'CIFAR100'  TODO: add more
+    :param dataset: one of 'CIFAR10', 'CIFAR100', 'SVHN'  TODO: add more
     :return: (train_aug_loader, train_noaug_loader, test_loader)
     """
     if dataset == "CIFAR10":
