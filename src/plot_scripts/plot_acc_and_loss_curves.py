@@ -18,12 +18,29 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str):
     sns.lineplot(x=metrics["alphas"], y=metrics["ensembling_test_accs"], label="ensembling")
     sns.lineplot(x=metrics["alphas"], y=metrics["naive_test_accs"], label="naive merging")
     sns.lineplot(x=metrics["alphas"], y=metrics["merging_test_accs"], label="merging")
+    sns.lineplot(x=metrics["alphas"], y=metrics["partial_merging_test_accs"], label="partial merging")
 
     plt.xlabel("alpha")
     plt.ylabel("test accuracy")
     plt.title(f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width, model {variant_a} vs. {variant_b}")
 
     plots_dir = get_plots_dir(subdir=Path(__file__).stem)
-    plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a}{variant_b}.png"), dpi=600)
+    plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a}{variant_b}_acc.png"), dpi=600)
     plt.close()
-    print(f"📊 Plot saved for {model_name_a}, {model_name_b}")
+    print(f"📊 Accuracy plot saved for {model_name_a}, {model_name_b}")
+
+    plt.figure(figsize=(6, 4))
+
+    sns.lineplot(x=metrics["alphas"], y=metrics["ensembling_test_losses"], label="ensembling")
+    sns.lineplot(x=metrics["alphas"], y=metrics["naive_test_losses"], label="naive merging")
+    sns.lineplot(x=metrics["alphas"], y=metrics["merging_test_losses"], label="merging")
+    sns.lineplot(x=metrics["alphas"], y=metrics["partial_merging_test_losses"], label="partial merging")
+
+    plt.xlabel("alpha")
+    plt.ylabel("test loss")
+    plt.title(f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width, model {variant_a} vs. {variant_b}")
+
+    plots_dir = get_plots_dir(subdir=Path(__file__).stem)
+    plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a}{variant_b}_loss.png"), dpi=600)
+    plt.close()
+    print(f"📊 Loss plot saved for {model_name_a}, {model_name_b}")
