@@ -348,6 +348,21 @@ def interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module, alpha
     return model_merged
 
 
+def add_models(model_a: torch.nn.Module, model_b: torch.nn.Module):
+    """
+    Adds up the weights and biases of two models a and b. Does *not* permute/align the models for you.
+    :param model_a: the first model
+    :param model_b: the second model
+    :return: the child model
+    """
+    sd_a = model_a.state_dict()
+    sd_b = model_b.state_dict()
+    sd_interpolated = {key: sd_a[key].cuda() + sd_b[key].cuda() for key in sd_a.keys()}
+    model_merged = model_like(model_a)
+    model_merged.load_state_dict(sd_interpolated)
+    return model_merged
+
+
 ################################
 # correlation matrix functions #
 ################################
