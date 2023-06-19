@@ -440,14 +440,16 @@ def manipulate_corr_matrix(corr_mtx):
 
     If no buffer zone is detected, the correlation matrix is returned unmodified.
 
+    # TODO: sometimes non-buffer rows/cols have a corr of only zeros, fix that!
+
     :param corr_mtx: the correlation matrix
     :return: the manipulated correlation matrix
     """
     assert corr_mtx.dim() == 2
     assert corr_mtx.shape[0] == corr_mtx.shape[1]  # not strictly necessary
 
-    all_zero_rows = torch.nonzero(torch.all(corr_mtx == 0, dim=1)).squeeze()
-    all_zero_cols = torch.nonzero(torch.all(corr_mtx == 0, dim=0)).squeeze()
+    all_zero_rows = torch.atleast_1d(torch.nonzero(torch.all(corr_mtx == 0, dim=1)).squeeze())
+    all_zero_cols = torch.atleast_1d(torch.nonzero(torch.all(corr_mtx == 0, dim=0)).squeeze())
 
     print(all_zero_rows)
     print(all_zero_cols)
