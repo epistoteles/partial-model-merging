@@ -409,13 +409,13 @@ def manipulate_corr_matrix(corr_mtx):
     """
     Auto-detects the buffer areas in the correlation matrix (all zeros) and manipulates them like this:
 
-    [[x, x, x, 0, 0]          [[x, x, x, 1, 1]
-     [x, x, x, 0, 0]           [x, x, x, 1, 1]
-     [x, x, x, 0, 0]    ->     [x, x, x, 1, 1]
-     [0, 0, 0, 0, 0]           [1, 1, 1, -1, -1]
-     [0, 0, 0, 0, 0]]          [1, 1, 1, -1, -1]]
+    [[0, 0, 0, 0, 0]          [[-1, 1, 1, -1, 1]
+     [0, x, x, 0, x]           [1, x, x, 1, x]
+     [0, x, x, 0, x]    ->     [1, x, x, 1, x]
+     [0, 0, 0, 0, 0]           [-1, 1, 1, -1, 1]
+     [0, x, x, 0, x]]          [1, x, x, 1, x]]
 
-    If no buffer are is detected, the correlation matrix is returned unmodified.
+    If no buffer zone is detected, the correlation matrix is returned unmodified.
 
     :param corr_mtx: the correlation matrix
     :return: the manipulated correlation matrix
@@ -423,15 +423,13 @@ def manipulate_corr_matrix(corr_mtx):
     assert corr_mtx.dim() == 2
     assert corr_mtx.shape[0] == corr_mtx.shape[1]
 
-    for i in range(corr_mtx.shape[0]):
-        if torch.all(corr_mtx[i] == 0):
-            break
-    else:
-        i = corr_mtx.shape[0] + 1
+    all_zero_rows = torch.nonzero(torch.all(corr_mtx == 0, dim=1)).squeeze()
+    all_zero_cols = torch.nonzero(torch.all(corr_mtx == 0, dim=0)).squeeze()
 
-    corr_mtx[i:] = 1
-    corr_mtx[:, i:] = 1
-    corr_mtx[i:, i:] = -1
+    corr_mtx[all_zero_rows] = 1
+    corr_mtx[:, all_zero_cols] = 1
+    overlapping = torch.cartesian_prod(all_zero_rows, all_zero_cols)
+    corr_mtx[overlapping[:, 0], overlapping[:, 1]] = -1
 
     return corr_mtx
 
