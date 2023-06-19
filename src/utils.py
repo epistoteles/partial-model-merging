@@ -105,6 +105,27 @@ def get_all_model_names() -> list[str]:
     return sorted([Path(x).stem for x in os.listdir(checkpoints_dir) if x.endswith(".safetensors")])
 
 
+def get_paired_model_names() -> list[tuple[str]]:
+    """
+    Returns a list of model tuples (variant a, variant b) of matching models.
+    :return: a sorted list of tuples of the checkpoint names
+    """
+    all_models = get_all_model_names()
+    prefix_dict = {}
+    matching_pairs = []
+
+    for model in all_models:
+        prefix, suffix = model.rsplit("-", 1)
+        if prefix in prefix_dict:
+            prefix_dict[prefix].append(suffix)
+        else:
+            prefix_dict[prefix] = [suffix]
+
+    for prefix in prefix_dict:
+        # TODO
+        matching_pairs.append
+
+
 def parse_model_name(model_name, as_dict=False):
     """
     Extracts hyperparameters from the model name (or full path)
@@ -409,11 +430,11 @@ def manipulate_corr_matrix(corr_mtx):
     """
     Auto-detects the buffer areas in the correlation matrix (all zeros) and manipulates them like this:
 
-    [[0, 0, 0, 0, 0]          [[-1, 1, 1, -1, 1]
-     [0, x, x, 0, x]           [1, x, x, 1, x]
-     [0, x, x, 0, x]    ->     [1, x, x, 1, x]
-     [0, 0, 0, 0, 0]           [-1, 1, 1, -1, 1]
-     [0, x, x, 0, x]]          [1, x, x, 1, x]]
+    [[0, 0, 0, 0, 0]          [[-1, 1, 1,-1, 1]
+     [0, x, x, 0, x]           [ 1, x, x, 1, x]
+     [0, x, x, 0, x]    ->     [ 1, x, x, 1, x]
+     [0, 0, 0, 0, 0]           [-1, 1, 1,-1, 1]
+     [0, x, x, 0, x]]          [ 1, x, x, 1, x]]
 
     If no buffer zone is detected, the correlation matrix is returned unmodified.
 
@@ -421,7 +442,7 @@ def manipulate_corr_matrix(corr_mtx):
     :return: the manipulated correlation matrix
     """
     assert corr_mtx.dim() == 2
-    assert corr_mtx.shape[0] == corr_mtx.shape[1]
+    assert corr_mtx.shape[0] == corr_mtx.shape[1]  # not strictly necessary
 
     all_zero_rows = torch.nonzero(torch.all(corr_mtx == 0, dim=1)).squeeze()
     all_zero_cols = torch.nonzero(torch.all(corr_mtx == 0, dim=0)).squeeze()
