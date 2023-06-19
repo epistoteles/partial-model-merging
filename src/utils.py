@@ -3,6 +3,8 @@ import os
 from pathlib import Path
 from tqdm import tqdm
 import re
+from collections import defaultdict
+import itertools
 
 import numpy as np
 import scipy
@@ -107,23 +109,23 @@ def get_all_model_names() -> list[str]:
 
 def get_paired_model_names() -> list[tuple[str]]:
     """
-    Returns a list of model tuples (variant a, variant b) of matching models.
+    Returns a list of model tuples (variant 1, variant 2) of matching models [e.g. (a,b), (a, c), (b,c)].
     :return: a sorted list of tuples of the checkpoint names
     """
     all_models = get_all_model_names()
-    prefix_dict = {}
+    prefix_dict = defaultdict(list)
     matching_pairs = []
 
     for model in all_models:
         prefix, suffix = model.rsplit("-", 1)
-        if prefix in prefix_dict:
-            prefix_dict[prefix].append(suffix)
-        else:
-            prefix_dict[prefix] = [suffix]
+        prefix_dict[prefix].append(suffix)
 
-    for prefix in prefix_dict:
-        # TODO
-        matching_pairs.append
+    for prefix, suffix_list in prefix_dict.items():
+        combinations = itertools.combinations(suffix_list, 2)
+        pairs = [(f"{prefix}-{first}", f"{prefix}-{second}") for first, second in combinations]
+        matching_pairs += pairs
+
+    return matching_pairs
 
 
 def parse_model_name(model_name, as_dict=False):
@@ -447,9 +449,13 @@ def manipulate_corr_matrix(corr_mtx):
     all_zero_rows = torch.nonzero(torch.all(corr_mtx == 0, dim=1)).squeeze()
     all_zero_cols = torch.nonzero(torch.all(corr_mtx == 0, dim=0)).squeeze()
 
+    print(all_zero_rows)
+    print(all_zero_cols)
+
     corr_mtx[all_zero_rows] = 1
     corr_mtx[:, all_zero_cols] = 1
     overlapping = torch.cartesian_prod(all_zero_rows, all_zero_cols)
+    print(overlapping)
     corr_mtx[overlapping[:, 0], overlapping[:, 1]] = -1
 
     return corr_mtx
