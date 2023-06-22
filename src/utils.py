@@ -608,11 +608,13 @@ def fuse_conv_bn(conv: torch.nn.Conv2d, bn: torch.nn.BatchNorm2d):
         padding=conv.padding,
         bias=True,
     )
+
     # setting weights
     w_conv = conv.weight.clone()
     bn_std = (bn.eps + bn.running_var).sqrt()
     gamma = bn.weight / bn_std
     fused.weight.data = w_conv * gamma.reshape(-1, 1, 1, 1)
+
     # setting bias
     b_conv = conv.bias if conv.bias is not None else torch.zeros_like(bn.bias)
     beta = bn.bias + gamma * (-bn.running_mean + b_conv)
@@ -650,7 +652,8 @@ def reset_bn_stats(model: torch.nn.Module, loader, epochs: int = 1) -> None:
         if type(m) == torch.nn.BatchNorm2d:
             m.momentum = None  # use simple average
             m.reset_running_stats()
-    # run a single train epoch with to recalc stats
+
+    # run a single train epoch to recalc stats (this happens automatically)
     model.train()
     for _ in range(epochs):
         with torch.no_grad(), autocast():
