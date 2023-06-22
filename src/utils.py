@@ -227,8 +227,8 @@ def load_models_ab(filename_stump: str) -> tuple[torch.nn.Module, torch.nn.Modul
     :param filename_stump: the name of the state dict .safetensors file (excluding the variant, e.g. '-a')
     :return: a tuple of the models (model_a, model_b)
     """
-    model_a = load_model(f"{filename_stump}-a")
-    model_b = load_model(f"{filename_stump}-b")
+    model_a = load_model(f"{filename_stump}-a").cuda()
+    model_b = load_model(f"{filename_stump}-b").cuda()
     return model_a, model_b
 
 
@@ -672,7 +672,7 @@ def reset_bn_stats(model: torch.nn.Module, loader, epochs: int = 1) -> None:
                 _ = model(images.cuda())
 
 
-def repair(model, parent_model_a, parent_model_b):
+def repair(model, parent_model_a, parent_model_b, loader):
     """
     REPAIRs a (merged) model
     TODO: implement for ResNet
@@ -680,6 +680,7 @@ def repair(model, parent_model_a, parent_model_b):
     :param model: the merged model before REPAIR
     :param parent_model_a: one of the parent models
     :param parent_model_b: the other parent model (order doesn't matter)
+    :param loader: a data loader for recalculating the barch norm statistics; typically train_aug_loader
     :return: the merged model after REPAIR
     """
     # calculate the statistics of every hidden unit in the endpoint networks
@@ -705,7 +706,7 @@ def repair(model, parent_model_a, parent_model_b):
         m.rescale = True
 
     # reset the tracked mean/var and fuse rescalings back into conv layers
-    reset_bn_stats(tracked_model)
+    reset_bn_stats(tracked_model, loader)
 
     # fuse the rescaling+shift coefficients back into conv layers
     tracked_model = fuse_tracked_model(tracked_model)
