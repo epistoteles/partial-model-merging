@@ -367,7 +367,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
     return model
 
 
-def interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module, alpha: float):
+def interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module, alpha: float = 0.5):
     """
     Interpolates the parameters between two models a and b. Does *not* permute/align the models for you.
     :param model_a: the first model
@@ -451,7 +451,7 @@ def get_corr_matrix(subnet_a: torch.nn.Module, subnet_b: torch.nn.Module, loader
 
     cov = outer - torch.outer(mean_a, mean_b)
     corr = cov / (torch.outer(std_a, std_b) + 1e-4)
-    corr = manipulate_corr_matrix(corr)
+    # corr = manipulate_corr_matrix(corr)
     return corr
 
 
@@ -689,6 +689,9 @@ def repair(model, parent_model_a, parent_model_b, loader):
     tracked_model_b = make_tracked_model(parent_model_b)
     tracked_model = make_tracked_model(model)
 
+    reset_bn_stats(tracked_model_a, loader)
+    reset_bn_stats(tracked_model_b, loader)
+
     # set the goal mean/std in added bn layers of interpolated network, and turn batch renormalization on
     for m_a, m, m_b in zip(tracked_model_a.modules(), tracked_model.modules(), tracked_model_b.modules()):
         if not isinstance(m_a, REPAIRTracker):
@@ -783,6 +786,7 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader]:
     :param dataset: one of 'CIFAR10', 'CIFAR100', 'SVHN'  TODO: add more
     :return: (train_aug_loader, train_noaug_loader, test_loader)
     """
+    dataset = dataset.upper()
     if dataset == "CIFAR10":
         MEAN = [125.307, 122.961, 113.8575]  # correct (these values are from the FFCV CIFAR example)
         STD = [51.5865, 50.847, 51.255]  # too low, but kept as is for reproducibility
