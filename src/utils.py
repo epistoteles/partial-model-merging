@@ -207,7 +207,7 @@ def load_model(filename: str, model: torch.nn.Module = None) -> torch.nn.Module:
     Loads a PyTorch model state dict from a .safetensors file
     :param filename: the name of the state dict .safetensors file (optionally including path)
     :param model: the model to apply the state dict to; it will get created if not supplied
-    :return: None
+    :return: torch.nn.Module
     """
     if model is None:
         model = model_like(filename)
@@ -219,6 +219,17 @@ def load_model(filename: str, model: torch.nn.Module = None) -> torch.nn.Module:
     state_dict = load_file(filename)
     model.load_state_dict(state_dict)
     return model
+
+
+def load_models_ab(filename_stump: str) -> tuple[torch.nn.Module, torch.nn.Module]:
+    """
+    Loads the 'a' and 'b' variant of a PyTorch model from the .safetensors files
+    :param filename_stump: the name of the state dict .safetensors file (excluding the variant, e.g. '-a')
+    :return: a tuple of the models (model_a, model_b)
+    """
+    model_a = load_model(f"{filename_stump}-a")
+    model_b = load_model(f"{filename_stump}-b")
+    return model_a, model_b
 
 
 #######################
@@ -664,6 +675,7 @@ def reset_bn_stats(model: torch.nn.Module, loader, epochs: int = 1) -> None:
 def repair(model, parent_model_a, parent_model_b):
     """
     REPAIRs a (merged) model
+    TODO: implement for ResNet
     adapted from https://github.com/KellerJordan/REPAIR
     :param model: the merged model before REPAIR
     :param parent_model_a: one of the parent models
