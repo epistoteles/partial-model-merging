@@ -12,6 +12,7 @@ import scipy
 import torch
 import torchvision
 import torchvision.transforms as T
+from torch.cuda.amp import autocast
 from safetensors.torch import save_file, load_file
 
 from ffcv.writer import DatasetWriter
@@ -357,7 +358,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
 
 def interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module, alpha: float):
     """
-    Interpolates the weights between two models a and b. Does *not* permute/align the models for you.
+    Interpolates the parameters between two models a and b. Does *not* permute/align the models for you.
     :param model_a: the first model
     :param model_b: the second model
     :param alpha: the interpolation percentage for model_b; 1-alpha for model a
@@ -366,6 +367,21 @@ def interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module, alpha
     sd_a = model_a.state_dict()
     sd_b = model_b.state_dict()
     sd_interpolated = {key: (1 - alpha) * sd_a[key].cuda() + alpha * sd_b[key].cuda() for key in sd_a.keys()}
+    model_merged = model_like(model_a)
+    model_merged.load_state_dict(sd_interpolated)
+    return model_merged
+
+
+def add_models(model_a: torch.nn.Module, model_b: torch.nn.Module):
+    """
+    Adds up the parameters of two models a and b. Does *not* permute/align the models for you.
+    :param model_a: the first model
+    :param model_b: the second model
+    :return: the added up child model
+    """
+    sd_a = model_a.state_dict()
+    sd_b = model_b.state_dict()
+    sd_interpolated = {key: sd_a[key].cuda() + sd_b[key].cuda() for key in sd_a.keys()}
     model_merged = model_like(model_a)
     model_merged.load_state_dict(sd_interpolated)
     return model_merged
@@ -440,7 +456,7 @@ def manipulate_corr_matrix(corr_mtx):
 
     If no buffer zone is detected, the correlation matrix is returned unmodified.
 
-    # TODO: sometimes non-buffer rows/cols have a corr of only zeros, fix that!
+    # TODO: sometimes non-buffer rows/cols have a corr of only zeros, fix that! They should not be set to 1/-1!
 
     :param corr_mtx: the correlation matrix
     :return: the manipulated correlation matrix
@@ -526,6 +542,160 @@ def permute_input(perm_map, layer):
     """
     w = layer.weight
     w.data = w[:, perm_map]
+
+
+####################
+# REPAIR functions #
+####################
+
+
+class REPAIRTracker(torch.nn.Module):
+    """
+    A wrapper class for tracking (and later resetting) conv activations with REPAIR
+    TODO: Implement for ResNet
+    """
+
+    def __init__(self, conv):
+        super().__init__()
+        self.h = h = conv.out_channels
+        self.conv = conv
+        self.bn = torch.nn.BatchNorm2d(h)
+        self.rescale = False
+
+    def set_stats(self, goal_mean, goal_var):
+        self.bn.bias.data = goal_mean
+        goal_std = (goal_var + 1e-5).sqrt()
+        self.bn.weight.data = goal_std
+
+    def forward(self, x):
+        x = self.conv(x)
+        if self.rescale:
+            x = self.bn(x)
+        else:
+            self.bn(x)
+        return x
+
+
+def make_tracked_model(model):
+    """
+    Converts a regular model (e.g. VGG) into a tracked model (for rescaling the activations).
+    # TODO: Implement for ResNet
+    :param model: the input model
+    :return: the (functionally equivalent) tracked model
+    """
+    tracked_model = model_like(model).cuda()
+    tracked_model.load_state_dict(model.state_dict())
+    feats = tracked_model.features
+    for i, layer in enumerate(feats):
+        if isinstance(layer, torch.nn.Conv2d):
+            feats[i] = REPAIRTracker(layer)
+    return tracked_model.cuda().eval()
+
+
+def fuse_conv_bn(conv: torch.nn.Conv2d, bn: torch.nn.BatchNorm2d):
+    """
+    Fuses the convolutional and tracking batch norm layer into a single convolutional layers with appropriate
+    parameters that exhibits the same activation pattern.
+    :param conv: the Conv2d layer
+    :param bn: the batch norm layer
+    :return: the new Conv2d layer
+    """
+    fused = torch.nn.Conv2d(
+        conv.in_channels,
+        conv.out_channels,
+        kernel_size=conv.kernel_size,
+        stride=conv.stride,
+        padding=conv.padding,
+        bias=True,
+    )
+    # setting weights
+    w_conv = conv.weight.clone()
+    bn_std = (bn.eps + bn.running_var).sqrt()
+    gamma = bn.weight / bn_std
+    fused.weight.data = w_conv * gamma.reshape(-1, 1, 1, 1)
+    # setting bias
+    b_conv = conv.bias if conv.bias is not None else torch.zeros_like(bn.bias)
+    beta = bn.bias + gamma * (-bn.running_mean + b_conv)
+    fused.bias.data = beta
+    return fused
+
+
+def fuse_tracked_model(model):
+    """
+    Fuses all REPAIRTracker layers in a tracked model.
+    # TODO: implement for ResNet
+    :param model: the tracked model
+    :return: the fused (regular) model
+    """
+    model_fused = model_like(model).cuda()
+    feats = model_fused.features
+    for i, layer in enumerate(model.features):
+        if isinstance(layer, REPAIRTracker):
+            conv = fuse_conv_bn(layer.conv, layer.bn)
+            feats[i].load_state_dict(conv.state_dict())
+    model_fused.classifier.load_state_dict(model.classifier.state_dict())
+    return model_fused
+
+
+def reset_bn_stats(model: torch.nn.Module, loader, epochs: int = 1) -> None:
+    """
+    Recalculates and overwrites the batch norm statistics in all BatchNorm2d layers of the model.
+    :param model: the model which to modify
+    :param loader: the loader for calculating the batch norm stats; typically train_aug_loader
+    :param epochs: for how many epochs to collect the batch norm stats; more is better (if augmentations are used)
+    :return: None
+    """
+    # resetting stats to baseline first as below is necessary for stability
+    for m in model.modules():
+        if type(m) == torch.nn.BatchNorm2d:
+            m.momentum = None  # use simple average
+            m.reset_running_stats()
+    # run a single train epoch with to recalc stats
+    model.train()
+    for _ in range(epochs):
+        with torch.no_grad(), autocast():
+            for images, _ in loader:
+                _ = model(images.cuda())
+
+
+def repair(model, parent_model_a, parent_model_b):
+    """
+    REPAIRs a (merged) model
+    adapted from https://github.com/KellerJordan/REPAIR
+    :param model: the merged model before REPAIR
+    :param parent_model_a: one of the parent models
+    :param parent_model_b: the other parent model (order doesn't matter)
+    :return: the merged model after REPAIR
+    """
+    # calculate the statistics of every hidden unit in the endpoint networks
+    # this is done practically using PyTorch BatchNorm2d layers
+    tracked_model_a = make_tracked_model(parent_model_a)
+    tracked_model_b = make_tracked_model(parent_model_b)
+    tracked_model = make_tracked_model(model)
+
+    # set the goal mean/std in added bn layers of interpolated network, and turn batch renormalization on
+    for m_a, m, m_b in zip(tracked_model_a.modules(), tracked_model.modules(), tracked_model_b.modules()):
+        if not isinstance(m_a, REPAIRTracker):
+            continue
+        # get goal statistics -- interpolate the mean and std of parent networks
+        mu_a = m_a.bn.running_mean
+        mu_b = m_b.bn.running_mean
+        goal_mean = (mu_a + mu_b) / 2
+        var_a = m_a.bn.running_var
+        var_b = m_b.bn.running_var
+        goal_var = ((var_a.sqrt() + var_b.sqrt()) / 2).square()
+        # set these in the interpolated bn controller
+        m.set_stats(goal_mean, goal_var)
+        # turn rescaling on
+        m.rescale = True
+
+    # reset the tracked mean/var and fuse rescalings back into conv layers
+    reset_bn_stats(tracked_model)
+
+    # fuse the rescaling+shift coefficients back into conv layers
+    tracked_model = fuse_tracked_model(tracked_model)
+
+    return tracked_model
 
 
 ############################
