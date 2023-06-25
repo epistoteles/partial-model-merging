@@ -349,7 +349,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                 if isinstance(features[i + 1], torch.nn.BatchNorm2d):
                     assert isinstance(features[i + 2], torch.nn.ReLU)
                     corr = (
-                        get_corr_matrix(subnet(reference_model, i + 3), subnet(model, i + 3), loader, strategy)
+                        get_corr_matrix(subnet(reference_model, i + 3), subnet(model, i + 3), loader, strategy=strategy)
                         .cpu()
                         .numpy()
                     )
@@ -358,7 +358,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                 else:
                     assert isinstance(features[i + 1], torch.nn.ReLU)
                     corr = (
-                        get_corr_matrix(subnet(reference_model, i + 2), subnet(model, i + 2), loader, strategy)
+                        get_corr_matrix(subnet(reference_model, i + 2), subnet(model, i + 2), loader, strategy=strategy)
                         .cpu()
                         .numpy()
                     )
