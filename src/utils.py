@@ -297,8 +297,10 @@ def expand_model(model: torch.nn.Module, expansion_factor: float, append: str = 
         model_expanded.load_state_dict(sd_expanded)
     elif isinstance(model, ResNet18):
         model_expanded = ResNet18(width=model.width * expansion_factor, num_classes=model.num_classes)
+        raise NotImplementedError
     elif isinstance(model, ResNet20):
         model_expanded = ResNet20(width=model.width * expansion_factor, num_classes=model.num_classes)
+        raise NotImplementedError
     else:
         raise ValueError("Unknown model type")
     return model_expanded
@@ -320,13 +322,18 @@ def subnet(model: torch.nn.Module, n_layers: int):
 #####################
 
 
-def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, loader):
+def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, loader, strategy: int = 1):
     """
     Merges the two models using traditional activation matching
     adapted from https://github.com/KellerJordan/REPAIR
     :param reference_model: the reference model (not affected)
     :param model: the model to be permuted
     :param loader: the data loader to use for calculating the activations; usually train_aug_loader
+    :param strategy: which strategy to use:
+                      1. use correlation matrix for matching
+                      2. use covariance matrix for matching
+                      3. use correlation matrix + normalized mean activation of reference model for matching
+                      4. use correlation matrix + normalized mean activation of model for matching
     :return: the permuted model
     """
     reference_model = reference_model.cuda()
@@ -341,12 +348,20 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                 # get permutation and permute output of conv and maybe bn
                 if isinstance(features[i + 1], torch.nn.BatchNorm2d):
                     assert isinstance(features[i + 2], torch.nn.ReLU)
-                    corr = get_corr_matrix(subnet(reference_model, i + 3), subnet(model, i + 3), loader).cpu().numpy()
+                    corr = (
+                        get_corr_matrix(subnet(reference_model, i + 3), subnet(model, i + 3), loader, strategy)
+                        .cpu()
+                        .numpy()
+                    )
                     perm_map = get_layer_perm_from_corr(corr)
                     permute_output(perm_map, features[i], features[i + 1])
                 else:
                     assert isinstance(features[i + 1], torch.nn.ReLU)
-                    corr = get_corr_matrix(subnet(reference_model, i + 2), subnet(model, i + 2), loader).cpu().numpy()
+                    corr = (
+                        get_corr_matrix(subnet(reference_model, i + 2), subnet(model, i + 2), loader, strategy)
+                        .cpu()
+                        .numpy()
+                    )
                     perm_map = get_layer_perm_from_corr(corr)
                     permute_output(perm_map, features[i], None)
                 # look for succeeding layer to permute input
@@ -403,7 +418,9 @@ def add_models(model_a: torch.nn.Module, model_b: torch.nn.Module):
 ################################
 
 
-def get_corr_matrix(subnet_a: torch.nn.Module, subnet_b: torch.nn.Module, loader: Loader, epochs: int = 1):
+def get_corr_matrix(
+    subnet_a: torch.nn.Module, subnet_b: torch.nn.Module, loader: Loader, epochs: int = 1, strategy: int = 1
+):
     """
     Given two networks subnet_a, subnet_b which each output a feature map of shape NxCxWxH this will reshape
     both outputs to (N*W*H)xC and then compute a CxC correlation matrix between the outputs of the two networks
@@ -412,8 +429,13 @@ def get_corr_matrix(subnet_a: torch.nn.Module, subnet_b: torch.nn.Module, loader
     :param subnet_a:
     :param subnet_b:
     :param loader: a data loader that resembles the input distribution (typically the train_aug_loader)
-    :param epochs: for how many epochs to collect feature maps - values >1 only make a difference if the loader
-                   uses augmentations
+    :param epochs: for how many epochs to collect feature maps (values >1 only make a difference if the loader
+                   uses augmentations)
+    :param strategy: which strategy to use:
+                      1. use correlation matrix for matching
+                      2. use covariance matrix for matching
+                      3. use correlation matrix + normalized mean activation of reference model for matching
+                      4. use correlation matrix + normalized mean activation of model for matching
     """
     n = epochs * len(loader)
     mean_a = mean_b = std_a = std_b = None
@@ -450,9 +472,17 @@ def get_corr_matrix(subnet_a: torch.nn.Module, subnet_b: torch.nn.Module, loader
                 outer += outer_batch / n
 
     cov = outer - torch.outer(mean_a, mean_b)
+    if strategy == 2:
+        return cov
+
     corr = cov / (torch.outer(std_a, std_b) + 1e-4)
-    # corr = manipulate_corr_matrix(corr)
-    return corr
+    # corr = manipulate_corr_matrix(corr)  # TODO: fix first before re-using! detects buffer neurons incorrectly
+    if strategy == 1:
+        return corr
+    elif strategy == 3:
+        return corr + normalize(mean_a).unsqueeze(1)
+    elif strategy == 4:
+        return corr + normalize(mean_b)
 
 
 def manipulate_corr_matrix(corr_mtx):
