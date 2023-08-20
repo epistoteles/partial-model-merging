@@ -285,10 +285,13 @@ def expand_model(model: torch.nn.Module, expansion_factor: float, append: str = 
         sd_expanded = model_expanded.state_dict()
         sd = model.state_dict()
         for key in sd.keys():
-            sd_expanded[key] = torch.zeros_like(sd_expanded[key])
+            if "is_buffer" in key:  # features.0.is_buffer
+                sd_expanded[key] = torch.ones_like(sd_expanded[key]).bool()  # init is_buffer flags as True
+            else:  # features.0.weight; features.0.bias; classifier.weight; classifier.bias
+                sd_expanded[key] = torch.zeros_like(sd_expanded[key])  # init weights/biases as 0.0
             if append == "right":
                 slice_indices = tuple(slice(0, sd[key].size(i)) for i in range(sd[key].dim()))
-            else:  # append = "left"
+            else:  # append == "left"
                 slice_indices = tuple(
                     slice(sd_expanded[key].size(i) - sd[key].size(i), sd_expanded[key].size(i))
                     for i in range(sd[key].dim())
@@ -354,7 +357,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                         .numpy()
                     )
                     perm_map = get_layer_perm_from_corr(corr)
-                    permute_output(perm_map, features[i], features[i + 1])
+                    permute_output(perm_map, conv=features[i], bn=features[i + 1])  # in-place modification
                 else:
                     assert isinstance(features[i + 1], torch.nn.ReLU)
                     corr = (
@@ -363,7 +366,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                         .numpy()
                     )
                     perm_map = get_layer_perm_from_corr(corr)
-                    permute_output(perm_map, features[i], None)
+                    permute_output(perm_map, conv=features[i], bn=None)  # in-place modification
                 # look for succeeding layer to permute input
                 next_layer = None
                 for j in range(i + 1, len(features)):
@@ -372,7 +375,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                         break
                 if next_layer is None:
                     next_layer = model.classifier
-                permute_input(perm_map, next_layer)
+                permute_input(perm_map, next_layer)  # in-place modification
 
     elif isinstance(model, ResNet20):
         raise NotImplementedError()
@@ -474,7 +477,6 @@ def get_corr_matrix(
     cov = outer - torch.outer(mean_a, mean_b)
     if strategy == 2:
         return cov
-
     corr = cov / (torch.outer(std_a, std_b) + 1e-4)
     # corr = manipulate_corr_matrix(corr)  # TODO: fix first before re-using! detects buffer neurons incorrectly
     if strategy == 1:
@@ -690,7 +692,7 @@ def reset_bn_stats(model: torch.nn.Module, loader, epochs: int = 1) -> None:
     """
     # resetting stats to baseline first as below is necessary for stability
     for m in model.modules():
-        if type(m) == torch.nn.BatchNorm2d:
+        if isinstance(m, torch.nn.BatchNorm2d):
             m.momentum = None  # use simple average
             m.reset_running_stats()
 

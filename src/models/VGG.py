@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 
 
@@ -38,14 +39,14 @@ class VGG(nn.Module):
             if x == "M":
                 layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
             else:
-                layers.append(
-                    nn.Conv2d(
-                        in_channels if in_channels == 3 else round(self.width * in_channels),
-                        round(self.width * x),
-                        kernel_size=3,
-                        padding=1,
-                    )
+                conv = nn.Conv2d(
+                    in_channels if in_channels == 3 else round(self.width * in_channels),
+                    round(self.width * x),
+                    kernel_size=3,
+                    padding=1,
                 )
+                conv.is_buffer = nn.Parameter(torch.zeros_like(conv.bias).bool(), requires_grad=False)
+                layers.append(conv)
                 if self.bn:
                     layers.append(nn.BatchNorm2d(round(self.width * x)))
                 layers.append(nn.ReLU(inplace=True))
