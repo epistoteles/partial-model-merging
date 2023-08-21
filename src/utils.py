@@ -651,6 +651,7 @@ def fuse_conv_bn(conv: torch.nn.Conv2d, bn: torch.nn.BatchNorm2d):
         padding=conv.padding,
         bias=True,
     )
+    fused.is_buffer = conv.is_buffer
 
     # setting weights
     w_conv = conv.weight.clone()

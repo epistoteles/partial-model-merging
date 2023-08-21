@@ -14,6 +14,7 @@ from src.utils import (
     interpolate_models,
     ensure_numpy,
     expand_model,
+    repair,
 )
 
 
@@ -260,7 +261,7 @@ def evaluate_two_models_merging(
 
 
 def evaluate_two_models_merging_REPAIR(
-    model_a: torch.nn.Module, model_b: torch.nn.Module, loader, interpolation_steps: int = 21
+    model_a: torch.nn.Module, model_b: torch.nn.Module, loader, repair_loader, interpolation_steps: int = 21
 ):
     model_a.eval()
     model_b.eval()
@@ -270,8 +271,8 @@ def evaluate_two_models_merging_REPAIR(
 
     for alpha in torch.linspace(0.0, 1.0, interpolation_steps):
         model_merged = interpolate_models(model_a, model_b, alpha)
-        # TODO: REPAIR model
-        acc, loss = get_acc_and_loss(model_merged, loader)
+        model_repaired = repair(model_merged, model_a, model_b, repair_loader)
+        acc, loss = get_acc_and_loss(model_repaired, loader)
         accs.append(acc)
         losses.append(loss)
 
