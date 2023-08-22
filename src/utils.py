@@ -367,7 +367,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                     corr[reference_is_buffer, :] = 1.0
                     corr[:, model_is_buffer] = 1.0
                     corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.0
-                    print_corr_matrix(corr)
+                    # print_corr_matrix(corr)
                     perm_map = get_layer_perm_from_corr(corr)
                     permute_output(perm_map, conv=features[i], bn=features[i + 1])  # in-place modification
                 else:
@@ -380,7 +380,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                     corr[reference_is_buffer, :] = 1.0
                     corr[:, model_is_buffer] = 1.0
                     corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.0
-                    print_corr_matrix(corr)
+                    # print_corr_matrix(corr)
                     perm_map = get_layer_perm_from_corr(corr)
                     permute_output(perm_map, conv=features[i], bn=None)  # in-place modification
                 # look for succeeding layer to permute input
@@ -399,6 +399,48 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
         raise ValueError(f"Unknown model type {type(model)}")
 
     return model
+
+
+# modifies the weight matrices of a convolution and batchnorm
+# layer given a permutation of the output channels
+def permute_output(perm_map, conv, bn):
+    """
+    TODO: write docs
+    adapted from https://github.com/KellerJordan/REPAIR
+    :param perm_map:
+    :param conv:
+    :param bn:
+    :return:
+    """
+    pre_weights = [conv.weight]
+    if conv.bias is not None:
+        pre_weights.append(conv.bias)
+    if conv.is_buffer is not None:
+        pre_weights.append(conv.is_buffer)
+    if bn is not None:
+        pre_weights.extend(
+            [
+                bn.weight,
+                bn.bias,
+                bn.running_mean,
+                bn.running_var,
+            ]
+        )
+    for w in pre_weights:
+        w.data = w[perm_map]
+
+
+# modifies the weight matrix of a layer for a given permutation of the input channels
+# works for both conv2d and linear
+def permute_input(perm_map, layer):
+    """
+    TODO: write docs
+    :param perm_map:
+    :param layer:
+    :return:
+    """
+    w = layer.weight
+    w.data = w[:, perm_map]
 
 
 def interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module, alpha: float = 0.5):
@@ -593,48 +635,6 @@ def get_layer_perm(subnet_a, subnet_b, loader):
     """
     corr_mtx = get_corr_matrix(subnet_a, subnet_b, loader)
     return get_layer_perm_from_corr(corr_mtx)
-
-
-# modifies the weight matrices of a convolution and batchnorm
-# layer given a permutation of the output channels
-def permute_output(perm_map, conv, bn):
-    """
-    TODO: write docs
-    adapted from https://github.com/KellerJordan/REPAIR
-    :param perm_map:
-    :param conv:
-    :param bn:
-    :return:
-    """
-    pre_weights = [conv.weight]
-    if conv.bias is not None:
-        pre_weights.append(conv.bias)
-    if conv.is_buffer is not None:
-        pre_weights.append(conv.is_buffer)
-    if bn is not None:
-        pre_weights.extend(
-            [
-                bn.weight,
-                bn.bias,
-                bn.running_mean,
-                bn.running_var,
-            ]
-        )
-    for w in pre_weights:
-        w.data = w[perm_map]
-
-
-# modifies the weight matrix of a layer for a given permutation of the input channels
-# works for both conv2d and linear
-def permute_input(perm_map, layer):
-    """
-    TODO: write docs
-    :param perm_map:
-    :param layer:
-    :return:
-    """
-    w = layer.weight
-    w.data = w[:, perm_map]
 
 
 ####################
