@@ -355,8 +355,8 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             layer = features[i]
             if isinstance(layer, torch.nn.Conv2d):
                 # get permutation and permute output of conv and maybe bn
-                reference_is_buffer = layer.is_buffer.cpu()
-                model_is_buffer = reference_model.features[i].is_buffer.cpu()
+                model_is_buffer = layer.is_buffer.cpu()
+                reference_is_buffer = reference_model.features[i].is_buffer.cpu()
                 if isinstance(features[i + 1], torch.nn.BatchNorm2d):
                     assert isinstance(features[i + 2], torch.nn.ReLU)
                     corr = (
@@ -367,6 +367,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                     corr[reference_is_buffer, :] = 1.0
                     corr[:, model_is_buffer] = 1.0
                     corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.0
+                    print_corr_matrix(corr)
                     perm_map = get_layer_perm_from_corr(corr)
                     permute_output(perm_map, conv=features[i], bn=features[i + 1])  # in-place modification
                 else:
@@ -379,6 +380,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                     corr[reference_is_buffer, :] = 1.0
                     corr[:, model_is_buffer] = 1.0
                     corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.0
+                    print_corr_matrix(corr)
                     perm_map = get_layer_perm_from_corr(corr)
                     permute_output(perm_map, conv=features[i], bn=None)  # in-place modification
                 # look for succeeding layer to permute input
