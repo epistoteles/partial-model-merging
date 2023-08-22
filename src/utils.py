@@ -355,8 +355,8 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             layer = features[i]
             if isinstance(layer, torch.nn.Conv2d):
                 # get permutation and permute output of conv and maybe bn
-                reference_is_buffer = layer.is_buffer
-                model_is_buffer = reference_model.features[i].is_buffer
+                reference_is_buffer = layer.is_buffer.cpu()
+                model_is_buffer = reference_model.features[i].is_buffer.cpu()
                 if isinstance(features[i + 1], torch.nn.BatchNorm2d):
                     assert isinstance(features[i + 2], torch.nn.ReLU)
                     corr = (
