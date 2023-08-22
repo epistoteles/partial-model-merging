@@ -5,6 +5,9 @@ from tqdm import tqdm
 import re
 from collections import defaultdict
 import itertools
+import matplotlib.pyplot as plt
+from PIL import Image
+from image import DrawImage
 
 import numpy as np
 import scipy
@@ -359,6 +362,11 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                         .cpu()
                         .numpy()
                     )
+                    reference_is_buffer = features[i].is_buffer
+                    model_is_buffer = reference_model.features[i].is_buffer
+                    corr[reference_is_buffer, :] = 1.0
+                    corr[:, model_is_buffer] = 1.0
+                    corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.0
                     perm_map = get_layer_perm_from_corr(corr)
                     permute_output(perm_map, conv=features[i], bn=features[i + 1])  # in-place modification
                 else:
@@ -507,6 +515,19 @@ def get_corr_matrix(
         return corr + normalize(mean_a).unsqueeze(1)
     elif strategy == 4:
         return corr + normalize(mean_b)
+
+
+def print_corr_matrix(corr_mtx):
+    """
+    Prints the correlation matrix as color image in the terminal where red = -1, white = 0, blue = 1.
+    :param corr_mtx: the correlation matrix
+    :return: None
+    """
+    corr_mtx = np.repeat(corr_mtx, 2).reshape(corr_mtx.shape[0], corr_mtx.shape[1] * 2)
+    corr_mtx = (corr_mtx + 1) * 0.5
+    cmap = plt.colormaps["RdBu"]
+    img = Image.fromarray(np.uint8(cmap(corr_mtx) * 255))
+    DrawImage(img, size=(corr_mtx.shape[1], corr_mtx.shape[0])).draw_image()
 
 
 def manipulate_corr_matrix(corr_mtx):
