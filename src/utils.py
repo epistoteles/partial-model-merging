@@ -340,6 +340,9 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
     :return: the permuted model
     """
     reference_model = reference_model.cuda()
+    sd = model.state_dict()
+    model = model_like(model)
+    model.load_state_dict(sd)
     model = model.cuda()
 
     # version 1: models are VGGs
