@@ -416,6 +416,25 @@ def add_models(model_a: torch.nn.Module, model_b: torch.nn.Module):
     return model_merged
 
 
+def smart_interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module, alpha: float = 0.5):
+    """
+    Interpolates the parameters between two models a and b. Does *not* permute/align the models for you.
+    When at least one of the two parameters originates from a buffer neuron, the parameters get added instead
+    of interpolated.
+    :param model_a: the first model
+    :param model_b: the second model
+    :param alpha: the interpolation percentage for model_b; 1-alpha for model a
+    :return: the interpolated child model
+    """
+    sd_a = model_a.state_dict()
+    sd_b = model_b.state_dict()
+    # TODO()
+    sd_interpolated = {key: (1 - alpha) * sd_a[key].cuda() + alpha * sd_b[key].cuda() for key in sd_a.keys()}
+    model_merged = model_like(model_a)
+    model_merged.load_state_dict(sd_interpolated)
+    return model_merged
+
+
 ################################
 # correlation matrix functions #
 ################################
@@ -561,6 +580,8 @@ def permute_output(perm_map, conv, bn):
     pre_weights = [conv.weight]
     if conv.bias is not None:
         pre_weights.append(conv.bias)
+    if conv.is_buffer is not None:
+        pre_weights.append(conv.is_buffer)
     if bn is not None:
         pre_weights.extend(
             [
