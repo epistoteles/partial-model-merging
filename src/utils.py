@@ -496,7 +496,8 @@ def smart_interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module,
             mask = sd_a[matching_buffer] | sd_b[matching_buffer]
             sd_interpolated[key] = torch.where(
                 mask.view(-1, *((1,) * (sd_a[key].dim() - 1))).expand_as(sd_a[key]),
-                sd_a[key].cuda() + sd_b[key].cuda(),
+                # sd_a[key].cuda() + sd_b[key].cuda(),
+                torch.zeros_like(sd_a[key]).cuda(),  # = only keeping the overlapping part
                 (1 - alpha) * sd_a[key].cuda() + alpha * sd_b[key].cuda(),
             )
         else:
