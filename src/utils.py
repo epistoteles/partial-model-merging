@@ -338,15 +338,15 @@ def group_state_dict_keys(keys):
         parts = key.split(".")
 
         if len(parts) == 3 and parts[0] == "features" and parts[2] in ["weight", "bias", "is_buffer"]:
-            key = int(parts[1])
+            key_index = int(parts[1])
             keyword = parts[2]
 
-            groups.setdefault(key, {}).setdefault(keyword, []).append(key)
+            groups.setdefault(key_index, {}).setdefault(keyword, []).append(key)
         else:
             invalid_strings.append(key)
 
     result = []
-    for key, keyword_dict in groups.items():
+    for key_index, keyword_dict in groups.items():
         if all(keyword in keyword_dict for keyword in ["weight", "bias", "is_buffer"]):
             group = tuple(keyword_dict[keyword][0] for keyword in ["weight", "bias", "is_buffer"])
             result.append(group)
