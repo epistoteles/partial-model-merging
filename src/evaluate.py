@@ -12,6 +12,7 @@ from src.utils import (
     get_evaluations_dir,
     permute_model,
     interpolate_models,
+    smart_interpolate_models,
     ensure_numpy,
     expand_model,
     repair,
@@ -252,7 +253,7 @@ def evaluate_two_models_merging(
     losses = []
 
     for alpha in torch.linspace(0.0, 1.0, interpolation_steps):
-        model_merged = interpolate_models(model_a, model_b, alpha)
+        model_merged = smart_interpolate_models(model_a, model_b, alpha)
         acc, loss = get_acc_and_loss(model_merged, loader)
         accs.append(acc)
         losses.append(loss)
@@ -270,7 +271,7 @@ def evaluate_two_models_merging_REPAIR(
     losses = []
 
     for alpha in torch.linspace(0.0, 1.0, interpolation_steps):
-        model_merged = interpolate_models(model_a, model_b, alpha)
+        model_merged = smart_interpolate_models(model_a, model_b, alpha)
         model_repaired = repair(model_merged, model_a, model_b, repair_loader)
         acc, loss = get_acc_and_loss(model_repaired, loader)
         accs.append(acc)
