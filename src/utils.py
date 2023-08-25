@@ -277,7 +277,9 @@ def expand_model(model: torch.nn.Module, expansion_factor: float, append: str = 
     Returns a functionally equivalent but wider model. The appended weights and biases are all zero.
     TODO: Also implement this for ResNet, not just VGG
     :param model: the original model
-    :param expansion_factor: the factor by which to expand/widen the model (must be >1)
+    :param expansion_factor: the factor by which to expand/widen the model (must be >1);
+                             alternatively you can provide a list of length len(features) + 1 (classifier), which
+                             expands each layer of the model by a different factor
     :param append: whether to append the new zero-weights/-biases to the right or the left of the tensor
     :return: the expanded model
     """
@@ -321,6 +323,22 @@ def subnet(model: torch.nn.Module, n_layers: int):
     :return: torch.nn.Module
     """
     return model.features[:n_layers]
+
+
+def get_num_layers(model):
+    """
+    Returns the number of layers ({conv + bn + relu} and classifier) of a model
+    :param model: the model
+    :return: the number of layers
+    """
+    if isinstance(model, VGG):
+        conv_num = len([layer for layer in model.features if isinstance(layer, torch.nn.Conv2d)])
+        classifier = 1
+        return conv_num + classifier
+    elif isinstance(model, ResNet18):
+        raise NotImplementedError()  # TODO
+    elif isinstance(model, ResNet20):
+        raise NotImplementedError()  # TODO
 
 
 #####################
