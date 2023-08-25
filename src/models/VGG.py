@@ -25,6 +25,8 @@ class VGG(nn.Module):
         num_layers = {key: len([x for x in cfg[key] if type(x) is int]) + 1 for key in cfg.keys()}
 
         assert size in cfg.keys()
+        if type(width) is int:
+            width = float(width)
         if type(width) is float:
             width = [width] * num_layers[size]
         assert (type(width) is list or type(width) is torch.FloatTensor) and len(width) == num_layers[size]
