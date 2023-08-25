@@ -3,11 +3,15 @@ from torch import nn
 
 
 class VGG(nn.Module):
-    def __init__(self, size: int, width: float = 1.0, bn: bool = False, num_classes: int = 10):
+    def __init__(
+        self, size: int, width: float | list[float] | torch.FloatTensor = 1.0, bn: bool = False, num_classes: int = 10
+    ):
         """
         A custom VGG module, adapted from https://github.com/KellerJordan/REPAIR
         :param size: size of the VGG, one of {11, 13, 16, 19}
-        :param width: multiplier for the width of the network
+        :param width: multiplier for the width of the network;
+                      alternatively you can provide a list or FloatTensor of length # of layers, which widens each
+                      layer of the model by a different factor
         :param bn: uses batch norm if True, uses nothing if False
         :param num_classes: the number of output classes
         """
@@ -18,13 +22,21 @@ class VGG(nn.Module):
             19: [64, 64, "M", 128, 128, "M", 256, 256, 256, 256, "M", 512, 512, 512, 512, "M", 512, 512, 512, 512, "M"],
         }
 
+        num_layers = {key: len([x for x in cfg[key] if type(x) is int]) + 1 for key in cfg.keys()}
+
+        assert size in cfg.keys()
+        if type(width) is float:
+            width = [width] * num_layers[size]
+        assert (type(width) is list or type(width) is torch.FloatTensor) and len(width) == num_layers[size]
+
         super(VGG, self).__init__()
         self.size = size
         self.bn = bn
         self.num_classes = num_classes
-        self.width = width
+        self.num_layers = num_layers[size]
+        self.width = torch.FloatTensor(width)
         self.features = self._make_layers(cfg[size])
-        self.classifier = nn.Linear(round(self.width * 512), num_classes)
+        self.classifier = nn.Linear(round(self.width[-1].item() * 512), num_classes)
 
     def forward(self, x):
         out = self.features(x)
@@ -35,13 +47,17 @@ class VGG(nn.Module):
     def _make_layers(self, cfg):
         layers = []
         in_channels = 3
+        widths = self.width.tolist()
+        width = None
         for x in cfg:
             if x == "M":
                 layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
             else:
+                prev_width = width
+                width = widths.pop(0)
                 conv = nn.Conv2d(
-                    in_channels if in_channels == 3 else round(self.width * in_channels),
-                    round(self.width * x),
+                    in_channels=in_channels if in_channels == 3 else round(prev_width * in_channels),
+                    out_channels=round(width * x),
                     kernel_size=3,
                     padding=1,
                 )

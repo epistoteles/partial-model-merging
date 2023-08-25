@@ -272,21 +272,31 @@ def model_like(model: str | torch.nn.Module) -> torch.nn.Module:
     return new_model
 
 
-def expand_model(model: torch.nn.Module, expansion_factor: float, append: str = "right"):
+def expand_model(
+    model: torch.nn.Module, expansion_factor: float | list[float] | torch.FloatTensor, append: str = "right"
+):
     """
     Returns a functionally equivalent but wider model. The appended weights and biases are all zero.
     TODO: Also implement this for ResNet, not just VGG
     :param model: the original model
     :param expansion_factor: the factor by which to expand/widen the model (must be >1);
-                             alternatively you can provide a list of length len(features) + 1 (classifier), which
-                             expands each layer of the model by a different factor
+                             alternatively you can provide a list or FloatTensor of length model.num_layers, which
+                             expands each layer of the model by a different factor (at least one must be >1)
     :param append: whether to append the new zero-weights/-biases to the right or the left of the tensor
     :return: the expanded model
     """
-    assert expansion_factor > 1, "Expansion factor must be greater than 1.0"
+    if type(expansion_factor) is float:
+        assert expansion_factor > 1, "Expansion factor must be greater than 1.0"
+        expansion_factor = [expansion_factor] * model.num_layers
+    assert (
+        len(expansion_factor) == model.num_layers
+    ), f"Expansion factor list has wrong length; is: {len(expansion_factor)}, needed: {model.num_layers}"
+    expansion_factor = torch.FloatTensor(expansion_factor)
+    assert expansion_factor.min() >= 1.0, "Expansion factors <1 are not allowed"
+    assert expansion_factor.max() > 1.0, "At least one expansion factor must be >1"
     assert append in ["right", "left"], "Append parameter must be 'right' or 'left'"
     if isinstance(model, VGG):
-        model_expanded = VGG(model.size, width=model.width * expansion_factor, num_classes=model.num_classes)
+        model_expanded = VGG(size=model.size, width=model.width * expansion_factor, num_classes=model.num_classes)
         sd_expanded = model_expanded.state_dict()
         sd = model.state_dict()
         for key in sd.keys():
