@@ -29,7 +29,7 @@ class VGG(nn.Module):
             width = float(width)
         if type(width) is float:
             width = [width] * num_layers[size]
-        assert (type(width) is list or type(width) is torch.FloatTensor) and len(width) == num_layers[size]
+        assert (type(width) is list or type(width) is torch.Tensor) and len(width) == num_layers[size]
 
         super(VGG, self).__init__()
         self.size = size
