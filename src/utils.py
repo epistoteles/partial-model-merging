@@ -298,7 +298,9 @@ def expand_model(
     assert expansion_factor.max() > 1.0, "At least one expansion factor must be >1"
     assert append in ["right", "left"], "Append parameter must be 'right' or 'left'"
     if isinstance(model, VGG):
-        model_expanded = VGG(size=model.size, width=model.width * expansion_factor, num_classes=model.num_classes)
+        model_expanded = VGG(
+            size=model.size, width=model.width * expansion_factor, bn=model.bn, num_classes=model.num_classes
+        )
         sd_expanded = model_expanded.state_dict()
         sd = model.state_dict()
         for key in sd.keys():
