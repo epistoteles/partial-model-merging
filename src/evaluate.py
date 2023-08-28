@@ -252,7 +252,7 @@ def evaluate_two_models_merging(
     accs = []
     losses = []
 
-    for alpha in torch.linspace(0.0, 1.0, interpolation_steps):
+    for alpha in torch.linspace(0.0, 1.0, interpolation_steps) if interpolation_steps > 1 else [0.5]:
         model_merged = smart_interpolate_models(model_a, model_b, alpha)
         acc, loss = get_acc_and_loss(model_merged, loader)
         accs.append(acc)
@@ -270,7 +270,7 @@ def evaluate_two_models_merging_REPAIR(
     accs = []
     losses = []
 
-    for alpha in torch.linspace(0.0, 1.0, interpolation_steps):
+    for alpha in torch.linspace(0.0, 1.0, interpolation_steps) if interpolation_steps > 1 else [0.5]:
         model_merged = smart_interpolate_models(model_a, model_b, alpha)
         model_repaired = repair(model_merged, model_a, model_b, repair_loader)
         acc, loss = get_acc_and_loss(model_repaired, loader)

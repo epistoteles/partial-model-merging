@@ -273,7 +273,7 @@ def model_like(model: str | torch.nn.Module) -> torch.nn.Module:
 
 
 def expand_model(
-    model: torch.nn.Module, expansion_factor: float | list[float] | torch.FloatTensor, append: str = "right"
+    model: torch.nn.Module, expansion_factor: int | float | list[float] | torch.FloatTensor, append: str = "right"
 ):
     """
     Returns a functionally equivalent but wider model. The appended weights and biases are all zero.
@@ -285,6 +285,8 @@ def expand_model(
     :param append: whether to append the new zero-weights/-biases to the right or the left of the tensor
     :return: the expanded model
     """
+    if type(expansion_factor) is int:
+        expansion_factor = float(expansion_factor)
     if type(expansion_factor) is float:
         assert expansion_factor > 1, "Expansion factor must be greater than 1.0"
         expansion_factor = [expansion_factor] * model.num_layers
@@ -525,7 +527,37 @@ def smart_interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module,
             sd_interpolated[key] = torch.where(
                 mask.view(-1, *((1,) * (sd_a[key].dim() - 1))).expand_as(sd_a[key]),
                 sd_a[key].cuda() + sd_b[key].cuda(),
-                # torch.zeros_like(sd_a[key]).cuda(),  # = only keeping the overlapping part
+                (1 - alpha) * sd_a[key].cuda() + alpha * sd_b[key].cuda(),
+            )
+        else:
+            sd_interpolated[key] = (1 - alpha) * sd_a[key].cuda() + alpha * sd_b[key].cuda()
+    model_merged = model_like(model_a)
+    model_merged.load_state_dict(sd_interpolated)
+    return model_merged
+
+
+def interpolate_models_keep_overlap(model_a: torch.nn.Module, model_b: torch.nn.Module, alpha: float = 0.5):
+    """
+    Interpolates the parameters between two models a and b. Does *not* permute/align the models for you.
+    When interpolating expanded models, only the overlapping non-buffer zones are being kept.
+    TODO implement for ResNet
+    :param model_a: the first model
+    :param model_b: the second model
+    :param alpha: the interpolation percentage for model_b; 1-alpha for model a
+    :return: the interpolated child model
+    """
+    sd_a = model_a.state_dict()
+    sd_b = model_b.state_dict()
+    sd_interpolated = {}
+    for key in sd_a.keys():
+        matching_buffer = key.replace("weight", "is_buffer").replace("bias", "is_buffer")
+        if key.endswith("is_buffer"):
+            sd_interpolated[key] = torch.zeros_like(sd_a[key]).bool().cuda()
+        elif matching_buffer in sd_a.keys():
+            mask = sd_a[matching_buffer] | sd_b[matching_buffer]
+            sd_interpolated[key] = torch.where(
+                mask.view(-1, *((1,) * (sd_a[key].dim() - 1))).expand_as(sd_a[key]),
+                torch.zeros_like(sd_a[key]).cuda(),  # = setting the non-overlapping parts to 0
                 (1 - alpha) * sd_a[key].cuda() + alpha * sd_b[key].cuda(),
             )
         else:

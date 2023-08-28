@@ -22,7 +22,7 @@ class VGG(nn.Module):
             19: [64, 64, "M", 128, 128, "M", 256, 256, 256, 256, "M", 512, 512, 512, 512, "M", 512, 512, 512, 512, "M"],
         }
 
-        num_layers = {key: len([x for x in cfg[key] if type(x) is int]) + 1 for key in cfg.keys()}
+        num_layers = {key: len([x for x in cfg[key] if type(x) is int]) for key in cfg.keys()}
 
         assert size in cfg.keys()
         if type(width) is int:
