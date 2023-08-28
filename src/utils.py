@@ -825,7 +825,7 @@ def reset_bn_stats(model: torch.nn.Module, loader, epochs: int = 1) -> None:
             m.momentum = None  # use simple average
             m.reset_running_stats()
 
-    # run a single train epoch to recalc stats (this happens automatically)
+    # run a single no_grad train epoch to recalc bn stats (this happens automatically)
     model.train()
     for _ in range(epochs):
         with torch.no_grad(), autocast():
