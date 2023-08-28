@@ -43,7 +43,7 @@ for filename in model_names:
     sd = load_file(filename)
     sd_dummy = dummy_model.state_dict()
 
-    for key in sd.keys().copy():
+    for key in list(sd.keys()).copy():
         if key not in sd_dummy.keys():
             del sd[key]
 
