@@ -519,7 +519,9 @@ def smart_interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module,
     sd_b = model_b.state_dict()
     sd_interpolated = {}
     for key in sd_a.keys():
-        matching_buffer = key.replace("weight", "is_buffer").replace("bias", "is_buffer")
+        matching_buffer = key.split(".")
+        matching_buffer[-1] = "is_buffer"
+        matching_buffer = ".".join(matching_buffer)
         if key.endswith("is_buffer"):
             sd_interpolated[key] = torch.zeros_like(sd_a[key]).bool().cuda()
         elif matching_buffer in sd_a.keys():
