@@ -170,8 +170,7 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
             )
 
             save_evaluation_checkpoint(metrics, filepath)
-
-    print(f"📥 Metrics saved for {model_name_a}{variant_b} as .csv and .safetensors")
+            print(f"📥 Metrics saved for {model_name_a}{variant_b} as .csv and .safetensors")
 
     return metrics
 

@@ -23,24 +23,24 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str):
     sns.lineplot(x=metrics["alphas"], y=metrics["partial_merging_1.8_test_accs"], label="partial merging (180% width)")
     # sns.lineplot(x=metrics["alphas"], y=metrics["partial_merging_2.0_test_accs"], label="partial merging (200% width)")
 
-    sns.lineplot(x=metrics["alphas"], y=metrics["merging_REPAIR_test_accs"], label="merging + REPAIR ", dashes=[(2, 2)])
+    sns.lineplot(x=metrics["alphas"], y=metrics["merging_REPAIR_test_accs"], label="merging + REPAIR ", dashes=True)
     sns.lineplot(
         x=metrics["alphas"],
         y=metrics["partial_merging_REPAIR_1.1_test_accs"],
         label="partial merging + REPAIR (110% width)",
-        dashes=[(2, 2)],
+        dashes=True,
     )
     sns.lineplot(
         x=metrics["alphas"],
         y=metrics["partial_merging_REPAIR_1.5_test_accs"],
         label="partial merging + REPAIR (150% width)",
-        dashes=[(2, 2)],
+        dashes=True,
     )
     sns.lineplot(
         x=metrics["alphas"],
         y=metrics["partial_merging_REPAIR_1.8_test_accs"],
         label="partial merging + REPAIR (180% width)",
-        dashes=[(2, 2)],
+        dashes=True,
     )
     # sns.lineplot(x=metrics["alphas"], y=metrics["partial_merging_REPAIR_2.0_test_accs"], label="partial merging + REPAIR (200% width)", dashes=[(2, 2)])
 
