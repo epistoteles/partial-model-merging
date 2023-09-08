@@ -117,6 +117,8 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
             model_a, model_b, test_loader, interpolation_steps
         )
 
+        save_evaluation_checkpoint(metrics, filepath)
+
         print("Collecting naive merging metrics ...")
         metrics["naive_train_accs"], metrics["naive_train_losses"] = evaluate_two_models_merging(
             model_a, model_b, train_noaug_loader, interpolation_steps
@@ -134,13 +136,17 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
             model_a, model_b_perm, test_loader, interpolation_steps
         )
 
-        # print("Collecting permuted merging + REPAIR metrics ...")  # TODO
-        # metrics["merging_REPAIR_train_accs"], metrics["merging_train_losses"] = evaluate_two_models_merging(
-        #     model_a, model_b_perm, train_noaug_loader, interpolation_steps
-        # )
-        # metrics["merging_REPAIR_test_accs"], metrics["merging_test_losses"] = evaluate_two_models_merging(
-        #     model_a, model_b_perm, test_loader, interpolation_steps
-        # )
+        save_evaluation_checkpoint(metrics, filepath)
+
+        print("Collecting permuted merging + REPAIR metrics ...")
+        metrics["merging_REPAIR_train_accs"], metrics["merging_train_losses"] = evaluate_two_models_merging_REPAIR(
+            model_a, model_b_perm, train_noaug_loader, train_aug_loader, interpolation_steps
+        )
+        metrics["merging_REPAIR_test_accs"], metrics["merging_test_losses"] = evaluate_two_models_merging_REPAIR(
+            model_a, model_b_perm, test_loader, train_aug_loader, interpolation_steps
+        )
+
+        save_evaluation_checkpoint(metrics, filepath)
 
         print("Collecting partial merging metrics (1.1) ...")
         model_a = expand_model(model_a, 1.1).cuda()
@@ -154,6 +160,14 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
             metrics["partial_merging_1.1_test_accs"],
             metrics["partial_merging_1.1_test_losses"],
         ) = evaluate_two_models_merging(model_a, model_b_perm, test_loader, interpolation_steps)
+
+        print("Collecting partial merging + REPAIR metrics (1.1) ...")
+        (
+            metrics["partial_merging_REPAIR_1.1_test_accs"],
+            metrics["partial_merging_REPAIR_1.1_test_losses"],
+        ) = evaluate_two_models_merging_REPAIR(
+            model_a, model_b_perm, test_loader, train_noaug_loader, interpolation_steps
+        )
 
         print("Collecting partial merging metrics (1.5) ...")
         model_a = load_model(model_name_a)
@@ -170,6 +184,16 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
             metrics["partial_merging_1.5_test_losses"],
         ) = evaluate_two_models_merging(model_a, model_b_perm, test_loader, interpolation_steps)
 
+        print("Collecting partial merging + REPAIR metrics (1.5) ...")
+        (
+            metrics["partial_merging_REPAIR_1.5_test_accs"],
+            metrics["partial_merging_REPAIR_1.5_test_losses"],
+        ) = evaluate_two_models_merging_REPAIR(
+            model_a, model_b_perm, test_loader, train_noaug_loader, interpolation_steps
+        )
+
+        save_evaluation_checkpoint(metrics, filepath)
+
         print("Collecting partial merging metrics (1.8) ...")
         model_a = load_model(model_name_a)
         model_b = load_model(model_name_b)
@@ -184,6 +208,16 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
             metrics["partial_merging_1.8_test_accs"],
             metrics["partial_merging_1.8_test_losses"],
         ) = evaluate_two_models_merging(model_a, model_b_perm, test_loader, interpolation_steps)
+
+        print("Collecting partial merging + REPAIR metrics (1.8) ...")
+        (
+            metrics["partial_merging_REPAIR_1.8_test_accs"],
+            metrics["partial_merging_REPAIR_1.8_test_losses"],
+        ) = evaluate_two_models_merging_REPAIR(
+            model_a, model_b_perm, test_loader, train_noaug_loader, interpolation_steps
+        )
+
+        save_evaluation_checkpoint(metrics, filepath)
 
         print("Collecting partial merging metrics (2.0) ...")
         model_a = load_model(model_name_a)
@@ -200,17 +234,29 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
             metrics["partial_merging_2.0_test_losses"],
         ) = evaluate_two_models_merging(model_a, model_b_perm, test_loader, interpolation_steps)
 
-        save_file(metrics, filename=filepath.replace(".csv", ".safetensors"))
-        np.savetxt(
-            filepath,
-            np.asarray([list(metrics.keys()), *list(zip(*[ensure_numpy(x) for x in metrics.values()]))]),
-            delimiter=",",
-            fmt="%s",
+        print("Collecting partial merging + REPAIR metrics (2.0) ...")
+        (
+            metrics["partial_merging_REPAIR_2.0_test_accs"],
+            metrics["partial_merging_REPAIR_2.0_test_losses"],
+        ) = evaluate_two_models_merging_REPAIR(
+            model_a, model_b_perm, test_loader, train_noaug_loader, interpolation_steps
         )
+
+        save_evaluation_checkpoint(metrics, filepath)
 
         print(f"📥 Metrics saved for {model_name_a}{variant_b} as .csv and .safetensors")
 
     return metrics
+
+
+def save_evaluation_checkpoint(metrics, filepath):
+    save_file(metrics, filename=filepath.replace(".csv", ".safetensors"))
+    np.savetxt(
+        filepath,
+        np.asarray([list(metrics.keys()), *list(zip(*[ensure_numpy(x) for x in metrics.values()]))]),
+        delimiter=",",
+        fmt="%s",
+    )
 
 
 def evaluate_two_models_ensembling(

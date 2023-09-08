@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        justify-content: center;
+        font-family: "Open Sans", sans-serif;
+      }
+
+      .heading {
+        font-size: 30px;
+        text-align: center;
+        margin: 80px 0 50px 0;
+      }
+
+      .network-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .layer-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 10px 0 10px;
+      }
+
+      .rectangle-container {
+        display: flex;
+      }
+
+      :root {
+        --rectangle-width: 60px;
+      }
+
+      .rectangle {
+        width: calc(var(--rectangle-width) / 2);
+        border: 2px solid;
+        background-color: #f7f7f7;
+        border-color: grey;
+      }
+
+      .top-left {
+        border-radius: 10px 0 0 0;
+        border-bottom: none;
+        border-right: none;
+      }
+
+      .top-right {
+        border-radius: 0 10px 0 0;
+        border-bottom: none;
+        border-left: none;
+      }
+
+      .middle-left {
+        border-radius: 0 0 0 0;
+        border-top: none;
+        border-bottom: none;
+        border-right: none;
+      }
+
+      .middle-right {
+        border-radius: 0 0 0 0;
+        border-top: none;
+        border-bottom: none;
+        border-left: none;
+      }
+
+      .bottom-left {
+        border-radius: 0 0 0 10px;
+        border-top: none;
+        border-right: none;
+      }
+
+      .bottom-right {
+        border-radius: 0 0 10px 0;
+        border-top: none;
+        border-left: none;
+      }
+
+      .left {
+        border-radius: 10px 0 0 10px;
+        border-right: none;
+      }
+
+      .right {
+        border-radius: 0 10px 10px 0;
+        border-left: none;
+      }
+
+      .red {
+        background-color: rgba(255, 172, 172, 1);
+        border-color: red;
+      }
+
+      .blue {
+        background-color: rgba(177, 220, 246, 1);
+        border-color: #144da8;
+      }
+
+      .red-to-blue-1 {
+        background: linear-gradient(90deg, rgba(255, 172, 172, 1) 60%, rgba(214,197,210,1) 100%);
+        border-color: red;
+      }
+
+      .red-to-blue-2 {
+        background: linear-gradient(90deg, rgba(214,197,210,1) 0%, rgba(177, 220, 246, 1) 40%);
+        border-color: #144da8;
+      }
+
+      .layer-text {
+        width: var(--rectangle-width);
+        text-align: center;
+        margin-top: 10px;
+        font-size: 15px;
+        line-height: 22px;
+      }
+
+      .circle {
+        width: 12px;
+        height: 12px;
+        background-color: white;
+        border-color: grey;
+        border: 1px solid;
+        border-radius: 50%;
+        margin: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="heading">VGG11</div>
+    <div class="network-container">
+      <div class="layer-container">
+        <img src="https://img.freepik.com/premium-photo/aerial-view-cargo-ship-with-colorful-containers-square-composition_249973-102.jpg" style="width: var(--rectangle-width); margin-top: 150px">
+      </div>
+      <div class="layer-container">
+        <div class='rectangle-container' style="margin-top: 125px;">
+          <div>
+            <div class="rectangle top-left red" style="height: 50px;"></div>
+            <div class="rectangle bottom-left grey" style="height: 50px;"></div>
+          </div>
+          <div>
+            <div class="rectangle top-right grey" style="height: 50px;"></div>
+            <div class="rectangle bottom-right blue" style="height: 50px;"></div>
+          </div>
+        </div>
+        <div class="layer-text">Layer 1 <br>
+          <em>0%</em>
+        </div>
+      </div>
+      <div class="layer-container">
+        <div class='rectangle-container' style="margin-top: 100px;">
+          <div>
+            <div class="rectangle top-left red" style="height: 50px;"></div>
+            <div class="rectangle middle-left red-to-blue-1" style="height: 50px;"></div>
+            <div class="rectangle bottom-left" style="height: 50px;"></div>
+          </div>
+          <div>
+            <div class="rectangle top-right" style="height: 50px;"></div>
+            <div class="rectangle middle-right red-to-blue-2" style="height: 50px;"></div>
+            <div class="rectangle bottom-right blue" style="height: 50px;"></div>
+          </div>
+        </div>
+        <div class="layer-text">Layer 2 <br>
+          <em>50%</em>
+        </div>
+      </div>
+      <div class="layer-container">
+        <div class='rectangle-container' style="margin-top: 0px;">
+          <div>
+            <div class="rectangle top-left red" style="height: 100px;"></div>
+            <div class="rectangle middle-left red-to-blue-1" style="height: 150px;"></div>
+            <div class="rectangle bottom-left" style="height: 100px;"></div>
+          </div>
+          <div>
+            <div class="rectangle top-right" style="height: 100px;"></div>
+            <div class="rectangle middle-right red-to-blue-2" style="height: 150px;"></div>
+            <div class="rectangle bottom-right blue" style="height: 100px;"></div>
+          </div>
+        </div>
+        <div class="layer-text">Layer 3 <br>
+          <em>50%</em>
+        </div>
+      </div>
+      <div class="layer-container">
+        <div class='rectangle-container' style="margin-top: 0px;">
+          <div>
+            <div class="rectangle top-left red" style="height: 100px;"></div>
+            <div class="rectangle middle-left red-to-blue-1" style="height: 150px;"></div>
+            <div class="rectangle bottom-left" style="height: 100px;"></div>
+          </div>
+          <div>
+            <div class="rectangle top-right" style="height: 100px;"></div>
+            <div class="rectangle middle-right red-to-blue-2" style="height: 150px;"></div>
+            <div class="rectangle bottom-right blue" style="height: 100px;"></div>
+          </div>
+        </div>
+        <div class="layer-text">Layer 4 <br>
+          <em>50%</em>
+        </div>
+      </div>
+      <div class="layer-container">
+        <div class='rectangle-container' style="margin-top: 0px;">
+          <div>
+            <div class="rectangle top-left red" style="height: 100px;"></div>
+            <div class="rectangle middle-left red-to-blue-1" style="height: 150px;"></div>
+            <div class="rectangle bottom-left" style="height: 100px;"></div>
+          </div>
+          <div>
+            <div class="rectangle top-right" style="height: 100px;"></div>
+            <div class="rectangle middle-right red-to-blue-2" style="height: 150px;"></div>
+            <div class="rectangle bottom-right blue" style="height: 100px;"></div>
+          </div>
+        </div>
+        <div class="layer-text">Layer 5 <br>
+          <em>50%</em>
+        </div>
+      </div>
+      <div class="layer-container">
+        <div class='rectangle-container' style="margin-top: 0px;">
+          <div>
+            <div class="rectangle top-left red" style="height: 100px;"></div>
+            <div class="rectangle middle-left red-to-blue-1" style="height: 150px;"></div>
+            <div class="rectangle bottom-left" style="height: 100px;"></div>
+          </div>
+          <div>
+            <div class="rectangle top-right" style="height: 100px;"></div>
+            <div class="rectangle middle-right red-to-blue-2" style="height: 150px;"></div>
+            <div class="rectangle bottom-right blue" style="height: 100px;"></div>
+          </div>
+        </div>
+        <div class="layer-text">Layer 6 <br>
+          <em>50%</em>
+        </div>
+      </div>
+      <div class="layer-container">
+        <div class='rectangle-container' style="margin-top: 50px;">
+          <div>
+            <div class="rectangle left red-to-blue-1" style="height: 250px;"></div>
+          </div>
+          <div>
+            <div class="rectangle right red-to-blue-2" style="height: 250px;"></div>
+          </div>
+        </div>
+        <div class="layer-text">Layer 7 <br>
+          <em>100%</em>
+        </div>
+      </div>
+      <div class="layer-container">
+        <div class='rectangle-container'>
+          <div style="margin-top: 50px;">
+            <div class="rectangle left red-to-blue-1" style="height: 250px;"></div>
+          </div>
+          <div style="margin-top: 50px;">
+            <div class="rectangle right red-to-blue-2" style="height: 250px;"></div>
+          </div>
+        </div>
+        <div class="layer-text">Layer 8 <br>
+          <em>100%</em>
+        </div>
+      </div>
+      <div class="layer-container" style="margin-top: 85px">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+      </div>
+    </div>
+  </body>
+</html>
