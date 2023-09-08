@@ -20,8 +20,8 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str):
     sns.lineplot(x=metrics["alphas"], y=metrics["merging_test_accs"], label="merging")
     sns.lineplot(x=metrics["alphas"], y=metrics["partial_merging_1.1_test_accs"], label="partial merging (110% width)")
     sns.lineplot(x=metrics["alphas"], y=metrics["partial_merging_1.5_test_accs"], label="partial merging (150% width)")
-    sns.lineplot(x=metrics["alphas"], y=metrics["partial_merging_1.8_test_accs"], label="partial merging (180% width)")
-    sns.lineplot(x=metrics["alphas"], y=metrics["partial_merging_2.0_test_accs"], label="partial merging (200% width)")
+    # sns.lineplot(x=metrics["alphas"], y=metrics["partial_merging_1.8_test_accs"], label="partial merging (180% width)")
+    # sns.lineplot(x=metrics["alphas"], y=metrics["partial_merging_2.0_test_accs"], label="partial merging (200% width)")
 
     plt.xlabel("alpha")
     plt.ylabel("test accuracy")
@@ -43,12 +43,12 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str):
     sns.lineplot(
         x=metrics["alphas"], y=metrics["partial_merging_1.5_test_losses"], label="partial merging (150% width)"
     )
-    sns.lineplot(
-        x=metrics["alphas"], y=metrics["partial_merging_1.8_test_losses"], label="partial merging (180% width)"
-    )
-    sns.lineplot(
-        x=metrics["alphas"], y=metrics["partial_merging_2.0_test_losses"], label="partial merging (200% width)"
-    )
+    # sns.lineplot(
+    #     x=metrics["alphas"], y=metrics["partial_merging_1.8_test_losses"], label="partial merging (180% width)"
+    # )
+    # sns.lineplot(
+    #     x=metrics["alphas"], y=metrics["partial_merging_2.0_test_losses"], label="partial merging (200% width)"
+    # )
 
     plt.xlabel("alpha")
     plt.ylabel("test loss")
