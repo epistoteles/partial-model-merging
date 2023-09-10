@@ -13,7 +13,7 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str):
 
     metrics = evaluate_two_models("CIFAR10-VGG11-1x-a", "CIFAR10-VGG11-1x-b")
 
-    plt.figure(figsize=(6, 4))
+    plt.figure(figsize=(12, 8))
 
     sns.lineplot(x=metrics["alphas"], y=metrics["ensembling_test_accs"], label="ensembling", color="black")
     # sns.lineplot(x=metrics["alphas"], y=metrics["naive_test_accs"], label="naive merging", color='')
