@@ -98,7 +98,7 @@ parser.add_argument("-s", "--size", type=int, default=11)
 parser.add_argument(
     "-bn", "--batch_norm", action="store_true", help="use batch norm layers in the model (default: none)"
 )
-parser.add_argument("-w", "--width", type=int, default=1)
+parser.add_argument("-w", "--width", type=float, default=1)
 parser.add_argument("--epochs", type=int, default=100)
 parser.add_argument("--lr", type=float, default=0.08)
 parser.add_argument("--weight_decay", type=float, default=0.0005)
