@@ -118,13 +118,13 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str):
         color="purple",
     )
 
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["merging_REPAIR_test_losses"],
-        label="merging + REPAIR ",
-        color="orange",
-        dashes=(2, 2),
-    )
+    # sns.lineplot(
+    #     x=metrics["alphas"],
+    #     y=metrics["merging_REPAIR_test_losses"],
+    #     label="merging + REPAIR ",
+    #     color="orange",
+    #     dashes=(2, 2),
+    # )
     sns.lineplot(
         x=metrics["alphas"],
         y=metrics["partial_merging_REPAIR_1.1_test_losses"],

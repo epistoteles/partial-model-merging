@@ -135,10 +135,13 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
         )
 
         print("Collecting permuted merging + REPAIR metrics ...")
-        metrics["merging_REPAIR_train_accs"], metrics["merging_train_losses"] = evaluate_two_models_merging_REPAIR(
+        (
+            metrics["merging_REPAIR_train_accs"],
+            metrics["merging_REPAIR_train_losses"],
+        ) = evaluate_two_models_merging_REPAIR(
             model_a, model_b_perm, train_noaug_loader, train_aug_loader, interpolation_steps
         )
-        metrics["merging_REPAIR_test_accs"], metrics["merging_test_losses"] = evaluate_two_models_merging_REPAIR(
+        metrics["merging_REPAIR_test_accs"], metrics["merging_REPAIR_test_losses"] = evaluate_two_models_merging_REPAIR(
             model_a, model_b_perm, test_loader, train_aug_loader, interpolation_steps
         )
 
