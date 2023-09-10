@@ -88,23 +88,71 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str):
     plt.close()
     print(f"📊 Accuracy plot saved for {model_name_a}, {model_name_b}")
 
-    plt.figure(figsize=(6, 4))
+    plt.figure(figsize=(12, 8))
 
-    sns.lineplot(x=metrics["alphas"], y=metrics["ensembling_test_losses"], label="ensembling")
-    sns.lineplot(x=metrics["alphas"], y=metrics["naive_test_losses"], label="naive merging")
-    sns.lineplot(x=metrics["alphas"], y=metrics["merging_test_losses"], label="merging")
+    sns.lineplot(x=metrics["alphas"], y=metrics["ensembling_test_losses"], label="ensembling", color="black")
+    # sns.lineplot(x=metrics["alphas"], y=metrics["naive_test_losses"], label="naive merging", color='')
+    sns.lineplot(x=metrics["alphas"], y=metrics["merging_test_losses"], label="merging", color="orange")
     sns.lineplot(
-        x=metrics["alphas"], y=metrics["partial_merging_1.1_test_losses"], label="partial merging (110% width)"
+        x=metrics["alphas"],
+        y=metrics["partial_merging_1.1_test_losses"],
+        label="partial merging (110% width)",
+        color="red",
     )
     sns.lineplot(
-        x=metrics["alphas"], y=metrics["partial_merging_1.5_test_losses"], label="partial merging (150% width)"
+        x=metrics["alphas"],
+        y=metrics["partial_merging_1.5_test_losses"],
+        label="partial merging (150% width)",
+        color="blue",
     )
-    # sns.lineplot(
-    #     x=metrics["alphas"], y=metrics["partial_merging_1.8_test_losses"], label="partial merging (180% width)"
-    # )
-    # sns.lineplot(
-    #     x=metrics["alphas"], y=metrics["partial_merging_2.0_test_losses"], label="partial merging (200% width)"
-    # )
+    sns.lineplot(
+        x=metrics["alphas"],
+        y=metrics["partial_merging_1.8_test_losses"],
+        label="partial merging (180% width)",
+        color="green",
+    )
+    sns.lineplot(
+        x=metrics["alphas"],
+        y=metrics["partial_merging_2.0_test_losses"],
+        label="partial merging (200% width)",
+        color="purple",
+    )
+
+    sns.lineplot(
+        x=metrics["alphas"],
+        y=metrics["merging_REPAIR_test_losses"],
+        label="merging + REPAIR ",
+        color="orange",
+        dashes=(2, 2),
+    )
+    sns.lineplot(
+        x=metrics["alphas"],
+        y=metrics["partial_merging_REPAIR_1.1_test_losses"],
+        label="partial merging + REPAIR (110% width)",
+        color="red",
+        dashes=(2, 2),
+    )
+    sns.lineplot(
+        x=metrics["alphas"],
+        y=metrics["partial_merging_REPAIR_1.5_test_losses"],
+        label="partial merging + REPAIR (150% width)",
+        color="blue",
+        dashes=(2, 2),
+    )
+    sns.lineplot(
+        x=metrics["alphas"],
+        y=metrics["partial_merging_REPAIR_1.8_test_losses"],
+        label="partial merging + REPAIR (180% width)",
+        color="green",
+        dashes=(2, 2),
+    )
+    sns.lineplot(
+        x=metrics["alphas"],
+        y=metrics["partial_merging_REPAIR_2.0_test_losses"],
+        label="partial merging + REPAIR (200% width)",
+        color="purple",
+        dashes=(2, 2),
+    )
 
     plt.xlabel("alpha")
     plt.ylabel("test loss")
