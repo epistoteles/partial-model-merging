@@ -36,7 +36,12 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str):
         label="partial merging (180% width)",
         color="green",
     )
-    # sns.lineplot(x=metrics["alphas"], y=metrics["partial_merging_2.0_test_accs"], label="partial merging (200% width)")
+    sns.lineplot(
+        x=metrics["alphas"],
+        y=metrics["partial_merging_2.0_test_accs"],
+        label="partial merging (200% width)",
+        color="purple",
+    )
 
     sns.lineplot(
         x=metrics["alphas"],
@@ -66,7 +71,13 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str):
         color="green",
         dashes=(2, 2),
     )
-    # sns.lineplot(x=metrics["alphas"], y=metrics["partial_merging_REPAIR_2.0_test_accs"], label="partial merging + REPAIR (200% width)", dashes=(2, 2))
+    sns.lineplot(
+        x=metrics["alphas"],
+        y=metrics["partial_merging_REPAIR_2.0_test_accs"],
+        label="partial merging + REPAIR (200% width)",
+        color="purple",
+        dashes=(2, 2),
+    )
 
     plt.xlabel("alpha")
     plt.ylabel("test accuracy")
