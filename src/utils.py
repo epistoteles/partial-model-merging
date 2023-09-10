@@ -835,7 +835,7 @@ def reset_bn_stats(model: torch.nn.Module, loader, epochs: int = 1) -> None:
                 _ = model(images.cuda())
 
 
-def repair(model, parent_model_a, parent_model_b, loader):
+def repair(model, parent_model_a, parent_model_b, loader, alpha: float = 0.5):
     """
     REPAIRs a (merged) model
     TODO: implement for ResNet
@@ -844,6 +844,7 @@ def repair(model, parent_model_a, parent_model_b, loader):
     :param parent_model_a: one of the parent models
     :param parent_model_b: the other parent model (order doesn't matter)
     :param loader: a data loader for recalculating the barch norm statistics; typically train_aug_loader
+    :param alpha: the alpha value used to create the model from the parent models
     :return: the merged model after REPAIR
     """
     # calculate the statistics of every hidden unit in the endpoint networks
@@ -862,10 +863,10 @@ def repair(model, parent_model_a, parent_model_b, loader):
         # get goal statistics -- interpolate the mean and std of parent networks
         mu_a = m_a.bn.running_mean
         mu_b = m_b.bn.running_mean
-        goal_mean = (mu_a + mu_b) / 2
+        goal_mean = (1 - alpha) * mu_a + alpha * mu_b
         var_a = m_a.bn.running_var
         var_b = m_b.bn.running_var
-        goal_var = ((var_a.sqrt() + var_b.sqrt()) / 2).square()
+        goal_var = ((1 - alpha) * var_a.sqrt() + alpha * var_b.sqrt()).square()
         # set these in the interpolated bn controller
         m.set_stats(goal_mean, goal_var)
         # turn rescaling on

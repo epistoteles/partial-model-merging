@@ -246,11 +246,11 @@ def evaluate_two_models_merging_REPAIR(
 
     for alpha in torch.linspace(0.0, 1.0, interpolation_steps) if interpolation_steps > 1 else [0.5]:
         model_merged = smart_interpolate_models(model_a, model_b, alpha)
-        if model_a.bn:  # there is no special REPAIR for models with bn
+        if model_a.bn:  # there is no special REPAIR for models with bn (is there?)
             reset_bn_stats(model_merged.cuda(), repair_loader)
             model_repaired = model_merged
         else:
-            model_repaired = repair(model_merged, model_a, model_b, repair_loader)
+            model_repaired = repair(model_merged, model_a, model_b, repair_loader, alpha)
         acc, loss = get_acc_and_loss(model_repaired, loader)
         accs.append(acc)
         losses.append(loss)
