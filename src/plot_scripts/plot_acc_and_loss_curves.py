@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 from pathlib import Path
+from itertools import product
 
 from src.utils import load_model, normalize, get_plots_dir, parse_model_name, get_all_model_names
 from src.evaluate import evaluate_two_models
@@ -13,7 +14,7 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str):
 
     metrics = evaluate_two_models(model_name_a, model_name_b)
 
-    for metric, split in zip(["accs", "losses"], ["train", "test"]):
+    for metric, split in product(["accs", "losses"], ["train", "test"]):
         plt.figure(figsize=(12, 8))
 
         sns.lineplot(x=metrics["alphas"], y=metrics[f"ensembling_{split}_{metric}"], label="ensembling", color="black")
