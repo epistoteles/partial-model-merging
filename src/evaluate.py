@@ -166,10 +166,16 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
 
             print(f"Collecting partial merging + REPAIR metrics ({k}) ...")
             (
+                metrics[f"partial_merging_REPAIR_{k}_train_accs"],
+                metrics[f"partial_merging_REPAIR_{k}_test_losses"],
+            ) = evaluate_two_models_merging_REPAIR(
+                model_a, model_b_perm, train_noaug_loader, train_aug_loader, interpolation_steps
+            )
+            (
                 metrics[f"partial_merging_REPAIR_{k}_test_accs"],
                 metrics[f"partial_merging_REPAIR_{k}_test_losses"],
             ) = evaluate_two_models_merging_REPAIR(
-                model_a, model_b_perm, test_loader, train_noaug_loader, interpolation_steps
+                model_a, model_b_perm, test_loader, train_aug_loader, interpolation_steps
             )
 
             save_evaluation_checkpoint(metrics, filepath)
