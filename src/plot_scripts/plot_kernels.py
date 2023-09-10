@@ -6,8 +6,9 @@ from pathlib import Path
 from src.utils import load_model, get_plots_dir
 
 
-def plot_kernels(model_name):
-    model = load_model(model_name)
+def plot_kernels(model_name, model=None):
+    if model is None:
+        model = load_model(model_name)
     sd = model.state_dict()
 
     weights = sd["features.0.weight"]
