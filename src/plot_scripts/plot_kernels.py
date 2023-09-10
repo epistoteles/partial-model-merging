@@ -17,7 +17,7 @@ def plot_kernels(model_name, model=None):
     MEAN = torch.Tensor([125.307, 122.961, 113.8575])
     STD = torch.Tensor([51.5865, 50.847, 51.255])
 
-    weights_rgb = ((weights * STD) + MEAN).to(torch.uint8).numpy()
+    weights_rgb = ((weights * STD * 2) + MEAN).to(torch.uint8).numpy()
 
     fig, axes = plt.subplots(8, 8, figsize=(10, 10))
 
