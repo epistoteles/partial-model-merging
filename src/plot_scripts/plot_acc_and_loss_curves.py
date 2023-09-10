@@ -13,152 +13,78 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str):
 
     metrics = evaluate_two_models(model_name_a, model_name_b)
 
-    plt.figure(figsize=(12, 8))
+    for metric, split in zip(["accs", "losses"], ["train", "test"]):
+        plt.figure(figsize=(12, 8))
 
-    sns.lineplot(x=metrics["alphas"], y=metrics["ensembling_test_accs"], label="ensembling", color="black")
-    # sns.lineplot(x=metrics["alphas"], y=metrics["naive_test_accs"], label="naive merging", color='')
-    sns.lineplot(x=metrics["alphas"], y=metrics["merging_test_accs"], label="merging", color="orange")
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_1.1_test_accs"],
-        label="partial merging (110% width)",
-        color="red",
-    )
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_1.5_test_accs"],
-        label="partial merging (150% width)",
-        color="blue",
-    )
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_1.8_test_accs"],
-        label="partial merging (180% width)",
-        color="green",
-    )
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_2.0_test_accs"],
-        label="partial merging (200% width)",
-        color="purple",
-    )
+        sns.lineplot(x=metrics["alphas"], y=metrics[f"ensembling_{split}_{metric}"], label="ensembling", color="black")
+        # sns.lineplot(x=metrics["alphas"], y=metrics[f"naive_{split}_{metric}"], label="naive merging", color='')
+        sns.lineplot(x=metrics["alphas"], y=metrics[f"merging_{split}_{metric}"], label="merging", color="orange")
+        sns.lineplot(
+            x=metrics["alphas"],
+            y=metrics[f"partial_merging_1.1_{split}_{metric}"],
+            label="partial merging (110% width)",
+            color="red",
+        )
+        sns.lineplot(
+            x=metrics["alphas"],
+            y=metrics[f"partial_merging_1.5_{split}_{metric}"],
+            label="partial merging (150% width)",
+            color="blue",
+        )
+        sns.lineplot(
+            x=metrics["alphas"],
+            y=metrics[f"partial_merging_1.8_{split}_{metric}"],
+            label="partial merging (180% width)",
+            color="green",
+        )
+        sns.lineplot(
+            x=metrics["alphas"],
+            y=metrics[f"partial_merging_2.0_{split}_{metric}"],
+            label="partial merging (200% width)",
+            color="purple",
+        )
 
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["merging_REPAIR_test_accs"],
-        label="merging + REPAIR ",
-        color="orange",
-        dashes=(2, 2),
-    )
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_REPAIR_1.1_test_accs"],
-        label="partial merging + REPAIR (110% width)",
-        color="red",
-        dashes=(2, 2),
-    )
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_REPAIR_1.5_test_accs"],
-        label="partial merging + REPAIR (150% width)",
-        color="blue",
-        dashes=(2, 2),
-    )
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_REPAIR_1.8_test_accs"],
-        label="partial merging + REPAIR (180% width)",
-        color="green",
-        dashes=(2, 2),
-    )
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_REPAIR_2.0_test_accs"],
-        label="partial merging + REPAIR (200% width)",
-        color="purple",
-        dashes=(2, 2),
-    )
+        sns.lineplot(
+            x=metrics["alphas"],
+            y=metrics[f"merging_REPAIR_{split}_{metric}"],
+            label="merging + REPAIR ",
+            color="orange",
+            dashes=(2, 2),
+        )
+        sns.lineplot(
+            x=metrics["alphas"],
+            y=metrics[f"partial_merging_REPAIR_1.1_{split}_{metric}"],
+            label="partial merging + REPAIR (110% width)",
+            color="red",
+            dashes=(2, 2),
+        )
+        sns.lineplot(
+            x=metrics["alphas"],
+            y=metrics[f"partial_merging_REPAIR_1.5_{split}_{metric}"],
+            label="partial merging + REPAIR (150% width)",
+            color="blue",
+            dashes=(2, 2),
+        )
+        sns.lineplot(
+            x=metrics["alphas"],
+            y=metrics[f"partial_merging_REPAIR_1.8_{split}_{metric}"],
+            label="partial merging + REPAIR (180% width)",
+            color="green",
+            dashes=(2, 2),
+        )
+        sns.lineplot(
+            x=metrics["alphas"],
+            y=metrics[f"partial_merging_REPAIR_2.0_{split}_{metric}"],
+            label="partial merging + REPAIR (200% width)",
+            color="purple",
+            dashes=(2, 2),
+        )
 
-    plt.xlabel("alpha")
-    plt.ylabel("test accuracy")
-    plt.title(f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width, model {variant_a} vs. {variant_b}")
+        plt.xlabel("alpha")
+        plt.ylabel(f"{split} {metric}")
+        plt.title(f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width, model {variant_a} vs. {variant_b}")
 
-    plots_dir = get_plots_dir(subdir=Path(__file__).stem)
-    plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a}{variant_b}_acc.png"), dpi=600)
-    plt.close()
-    print(f"📊 Accuracy plot saved for {model_name_a}, {model_name_b}")
-
-    plt.figure(figsize=(12, 8))
-
-    sns.lineplot(x=metrics["alphas"], y=metrics["ensembling_test_losses"], label="ensembling", color="black")
-    # sns.lineplot(x=metrics["alphas"], y=metrics["naive_test_losses"], label="naive merging", color='')
-    sns.lineplot(x=metrics["alphas"], y=metrics["merging_test_losses"], label="merging", color="orange")
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_1.1_test_losses"],
-        label="partial merging (110% width)",
-        color="red",
-    )
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_1.5_test_losses"],
-        label="partial merging (150% width)",
-        color="blue",
-    )
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_1.8_test_losses"],
-        label="partial merging (180% width)",
-        color="green",
-    )
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_2.0_test_losses"],
-        label="partial merging (200% width)",
-        color="purple",
-    )
-
-    # sns.lineplot(
-    #     x=metrics["alphas"],
-    #     y=metrics["merging_REPAIR_test_losses"],
-    #     label="merging + REPAIR ",
-    #     color="orange",
-    #     dashes=(2, 2),
-    # )
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_REPAIR_1.1_test_losses"],
-        label="partial merging + REPAIR (110% width)",
-        color="red",
-        dashes=(2, 2),
-    )
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_REPAIR_1.5_test_losses"],
-        label="partial merging + REPAIR (150% width)",
-        color="blue",
-        dashes=(2, 2),
-    )
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_REPAIR_1.8_test_losses"],
-        label="partial merging + REPAIR (180% width)",
-        color="green",
-        dashes=(2, 2),
-    )
-    sns.lineplot(
-        x=metrics["alphas"],
-        y=metrics["partial_merging_REPAIR_2.0_test_losses"],
-        label="partial merging + REPAIR (200% width)",
-        color="purple",
-        dashes=(2, 2),
-    )
-
-    plt.xlabel("alpha")
-    plt.ylabel("test loss")
-    plt.title(f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width, model {variant_a} vs. {variant_b}")
-
-    plots_dir = get_plots_dir(subdir=Path(__file__).stem)
-    plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a}{variant_b}_loss.png"), dpi=600)
-    plt.close()
-    print(f"📊 Loss plot saved for {model_name_a}, {model_name_b}")
+        plots_dir = get_plots_dir(subdir=Path(__file__).stem)
+        plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a}{variant_b}_acc.png"), dpi=600)
+        plt.close()
+        print(f"📊 {metric} plot saved for {model_name_a}, {model_name_b}")
