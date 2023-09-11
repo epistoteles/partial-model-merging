@@ -21,34 +21,34 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str):
         # sns.lineplot(x=metrics["alphas"], y=metrics[f"naive_{split}_{metric}"], label="naive merging", color='')
         sns.lineplot(x=metrics["alphas"], y=metrics[f"merging_{split}_{metric}"], label="merging", color="orange")
 
-        # if f"partial_merging_1.1_{split}_{metric}" in metrics.keys():
-        #     sns.lineplot(
-        #         x=metrics["alphas"],
-        #         y=metrics[f"partial_merging_1.1_{split}_{metric}"],
-        #         label="partial merging (110% width)",
-        #         color="red",
-        #     )
-        # if f"partial_merging_1.5_{split}_{metric}" in metrics.keys():
-        #     sns.lineplot(
-        #         x=metrics["alphas"],
-        #         y=metrics[f"partial_merging_1.5_{split}_{metric}"],
-        #         label="partial merging (150% width)",
-        #         color="blue",
-        #     )
-        # if f"partial_merging_1.8_{split}_{metric}" in metrics.keys():
-        #     sns.lineplot(
-        #         x=metrics["alphas"],
-        #         y=metrics[f"partial_merging_1.8_{split}_{metric}"],
-        #         label="partial merging (180% width)",
-        #         color="green",
-        #     )
-        # if f"partial_merging_2.0_{split}_{metric}" in metrics.keys():
-        #     sns.lineplot(
-        #         x=metrics["alphas"],
-        #         y=metrics[f"partial_merging_2.0_{split}_{metric}"],
-        #         label="partial merging (200% width)",
-        #         color="purple",
-        #     )
+        if f"partial_merging_1.1_{split}_{metric}" in metrics.keys():
+            sns.lineplot(
+                x=metrics["alphas"],
+                y=metrics[f"partial_merging_1.1_{split}_{metric}"],
+                label="partial merging (110% width)",
+                color="red",
+            )
+        if f"partial_merging_1.5_{split}_{metric}" in metrics.keys():
+            sns.lineplot(
+                x=metrics["alphas"],
+                y=metrics[f"partial_merging_1.5_{split}_{metric}"],
+                label="partial merging (150% width)",
+                color="blue",
+            )
+        if f"partial_merging_1.8_{split}_{metric}" in metrics.keys():
+            sns.lineplot(
+                x=metrics["alphas"],
+                y=metrics[f"partial_merging_1.8_{split}_{metric}"],
+                label="partial merging (180% width)",
+                color="green",
+            )
+        if f"partial_merging_2.0_{split}_{metric}" in metrics.keys():
+            sns.lineplot(
+                x=metrics["alphas"],
+                y=metrics[f"partial_merging_2.0_{split}_{metric}"],
+                label="partial merging (200% width)",
+                color="purple",
+            )
         # if f"merging_REPAIR_{split}_{metric}" in metrics.keys():
         #     sns.lineplot(
         #         x=metrics["alphas"],
