@@ -29,15 +29,11 @@ def plot_kernels(model_name, model=None):
 
     fig, axes = plt.subplots(nrows=rows, ncols=cols, figsize=(cols, rows))
 
-    # Loop through the kernels and plot them in the grid
-    for i in range(8):
-        for j in range(8):
-            # Get the kernel weights for this position in the grid
-            kernel = weights_rgb[i * 8 + j]
-
-            # Display the kernel as an image in the corresponding subplot
+    for i in range(cols):
+        for j in range(rows):
+            kernel = weights_rgb[i * rows + j]
             axes[i, j].imshow(kernel)
-            axes[i, j].axis("off")  # Turn off axis labels and ticks
+            axes[i, j].axis("off")
 
     plt.tight_layout()
 
