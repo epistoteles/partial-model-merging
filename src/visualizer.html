@@ -32,13 +32,106 @@
 
       :root {
         --rectangle-width: 60px;
+
+        --color-default: #f7f7f7;
+        --color-default-border: grey;
+
+        --color-a: rgba(201,218,248,255);
+        --color-a-border: rgba(17,85,204,255);
+        --color-b: rgba(255,242,204,255);
+        --color-b-border: rgba(241,194,49,255);
+        --color-ab: rgba(217,234,211,255);
+
+        --layer1-height: 50px;
+        --layer1-overlap: 0.5;
+
+        --layer2-height: 70px;
+        --layer2-overlap: 0.5;
+
+        --layer3-height: 100px;
+        --layer3-overlap: 0;
+
+        --layer4-height: 120px;
+        --layer4-overlap: 0;
+
+        --layer5-height: 140px;
+        --layer5-overlap: 0.95;
+
+        --layer6-height: 160px;
+        --layer6-overlap: 1;
+
+        --layer7-height: 180px;
+        --layer7-overlap: 1;
+
+        --layer8-height: 200px;
+        --layer8-overlap: 1;
+
+        --layer1-height-top: calc(var(--layer1-height) * (1 - var(--layer1-overlap)));
+        --layer1-height-middle: calc(var(--layer1-height) * var(--layer1-overlap));
+        --layer1-height-bottom: calc(var(--layer1-height) * (1 - var(--layer1-overlap)));
+        --layer1-height-total: calc(var(--layer1-height-top) + var(--layer1-height-middle) + var(--layer1-height-bottom));
+
+        --layer2-height-top: calc(var(--layer2-height) * (1 - var(--layer2-overlap)));
+        --layer2-height-middle: calc(var(--layer2-height) * var(--layer2-overlap));
+        --layer2-height-bottom: calc(var(--layer2-height) * (1 - var(--layer2-overlap)));
+        --layer2-height-total: calc(var(--layer2-height-top) + var(--layer2-height-middle) + var(--layer2-height-bottom));
+
+        --layer3-height-top: calc(var(--layer3-height) * (1 - var(--layer3-overlap)));
+        --layer3-height-middle: calc(var(--layer3-height) * var(--layer3-overlap));
+        --layer3-height-bottom: calc(var(--layer3-height) * (1 - var(--layer3-overlap)));
+        --layer3-height-total: calc(var(--layer3-height-top) + var(--layer3-height-middle) + var(--layer3-height-bottom));
+
+        --layer4-height-top: calc(var(--layer4-height) * (1 - var(--layer4-overlap)));
+        --layer4-height-middle: calc(var(--layer4-height) * var(--layer4-overlap));
+        --layer4-height-bottom: calc(var(--layer4-height) * (1 - var(--layer4-overlap)));
+        --layer4-height-total: calc(var(--layer4-height-top) + var(--layer4-height-middle) + var(--layer4-height-bottom));
+
+        --layer5-height-top: calc(var(--layer5-height) * (1 - var(--layer5-overlap)));
+        --layer5-height-middle: calc(var(--layer5-height) * var(--layer5-overlap));
+        --layer5-height-bottom: calc(var(--layer5-height) * (1 - var(--layer5-overlap)));
+        --layer5-height-total: calc(var(--layer5-height-top) + var(--layer5-height-middle) + var(--layer5-height-bottom));
+
+        --layer6-height-top: calc(var(--layer6-height) * (1 - var(--layer6-overlap)));
+        --layer6-height-middle: calc(var(--layer6-height) * var(--layer6-overlap));
+        --layer6-height-bottom: calc(var(--layer6-height) * (1 - var(--layer6-overlap)));
+        --layer6-height-total: calc(var(--layer6-height-top) + var(--layer6-height-middle) + var(--layer6-height-bottom));
+
+        --layer7-height-top: calc(var(--layer7-height) * (1 - var(--layer7-overlap)));
+        --layer7-height-middle: calc(var(--layer7-height) * var(--layer7-overlap));
+        --layer7-height-bottom: calc(var(--layer7-height) * (1 - var(--layer7-overlap)));
+        --layer7-height-total: calc(var(--layer7-height-top) + var(--layer7-height-middle) + var(--layer7-height-bottom));
+
+        --layer8-height-top: calc(var(--layer8-height) * (1 - var(--layer8-overlap)));
+        --layer8-height-middle: calc(var(--layer8-height) * var(--layer8-overlap));
+        --layer8-height-bottom: calc(var(--layer8-height) * (1 - var(--layer8-overlap)));
+        --layer8-height-total: calc(var(--layer8-height-top) + var(--layer8-height-middle) + var(--layer8-height-bottom));
+
+        --max-height: max(var(--layer1-height-total),
+                          var(--layer2-height-total),
+                          var(--layer3-height-total),
+                          var(--layer4-height-total),
+                          var(--layer5-height-total),
+                          var(--layer6-height-total),
+                          var(--layer7-height-total),
+                          var(--layer8-height-total));
+
+        --img-margin-top: calc((var(--max-height) / 2) - (var(--rectangle-width) / 2));
+        --circles-margin-top: calc((var(--max-height) / 2) - ((17px * 10) / 2));
+        --layer1-margin-top: calc((var(--max-height) / 2) - (var(--layer1-height-total) / 2));
+        --layer2-margin-top: calc((var(--max-height) / 2) - (var(--layer2-height-total) / 2));
+        --layer3-margin-top: calc((var(--max-height) / 2) - (var(--layer3-height-total) / 2));
+        --layer4-margin-top: calc((var(--max-height) / 2) - (var(--layer4-height-total) / 2));
+        --layer5-margin-top: calc((var(--max-height) / 2) - (var(--layer5-height-total) / 2));
+        --layer6-margin-top: calc((var(--max-height) / 2) - (var(--layer6-height-total) / 2));
+        --layer7-margin-top: calc((var(--max-height) / 2) - (var(--layer7-height-total) / 2));
+        --layer8-margin-top: calc((var(--max-height) / 2) - (var(--layer8-height-total) / 2));
       }
 
       .rectangle {
         width: calc(var(--rectangle-width) / 2);
         border: 2px solid;
-        background-color: #f7f7f7;
-        border-color: grey;
+        background-color: var(--color-default);
+        border-color: var(--color-default-border);
       }
 
       .top-left {
@@ -89,24 +182,24 @@
         border-left: none;
       }
 
-      .red {
-        background-color: rgba(255, 172, 172, 1);
-        border-color: red;
+      .color-a {
+        background-color: var(--color-a);
+        border-color: var(--color-a-border);
       }
 
-      .blue {
-        background-color: rgba(177, 220, 246, 1);
-        border-color: #144da8;
+      .color-b {
+        background-color: var(--color-b);
+        border-color: var(--color-b-border);
       }
 
-      .red-to-blue-1 {
-        background: linear-gradient(90deg, rgba(255, 172, 172, 1) 60%, rgba(214,197,210,1) 100%);
-        border-color: red;
+      .color-a-to-ab {
+        background: linear-gradient(90deg, var(--color-a) 0%, var(--color-ab) 80%);
+        border-color: var(--color-a-border);
       }
 
-      .red-to-blue-2 {
-        background: linear-gradient(90deg, rgba(214,197,210,1) 0%, rgba(177, 220, 246, 1) 40%);
-        border-color: #144da8;
+      .color-ab-to-b {
+        background: linear-gradient(90deg, var(--color-ab) 20%, var(--color-b) 100%);
+        border-color: var(--color-b-border);
       }
 
       .layer-text {
@@ -132,17 +225,19 @@
     <div class="heading">VGG11</div>
     <div class="network-container">
       <div class="layer-container">
-        <img src="https://img.freepik.com/premium-photo/aerial-view-cargo-ship-with-colorful-containers-square-composition_249973-102.jpg" style="width: var(--rectangle-width); margin-top: 150px">
+        <img src="https://img.freepik.com/premium-photo/aerial-view-cargo-ship-with-colorful-containers-square-composition_249973-102.jpg" style="width: var(--rectangle-width); margin-top: var(--img-margin-top)">
       </div>
       <div class="layer-container">
-        <div class='rectangle-container' style="margin-top: 125px;">
+        <div class='rectangle-container' style="margin-top: var(--layer1-margin-top);">
           <div>
-            <div class="rectangle top-left red" style="height: 50px;"></div>
-            <div class="rectangle bottom-left grey" style="height: 50px;"></div>
+            <div class="rectangle top-left color-a" style="height: var(--layer1-height-top);"></div>
+            <div class="rectangle middle-left color-a-to-ab" style="height: var(--layer1-height-middle);"></div>
+            <div class="rectangle bottom-left" style="height: var(--layer1-height-bottom);"></div>
           </div>
           <div>
-            <div class="rectangle top-right grey" style="height: 50px;"></div>
-            <div class="rectangle bottom-right blue" style="height: 50px;"></div>
+            <div class="rectangle top-right" style="height: var(--layer1-height-top);"></div>
+            <div class="rectangle middle-right color-ab-to-b" style="height: var(--layer1-height-middle);"></div>
+            <div class="rectangle bottom-right color-b" style="height: var(--layer1-height-bottom);"></div>
           </div>
         </div>
         <div class="layer-text">Layer 1 <br>
@@ -150,117 +245,125 @@
         </div>
       </div>
       <div class="layer-container">
-        <div class='rectangle-container' style="margin-top: 100px;">
+        <div class='rectangle-container' style="margin-top: var(--layer2-margin-top);">
           <div>
-            <div class="rectangle top-left red" style="height: 50px;"></div>
-            <div class="rectangle middle-left red-to-blue-1" style="height: 50px;"></div>
-            <div class="rectangle bottom-left" style="height: 50px;"></div>
+            <div class="rectangle top-left color-a" style="height: var(--layer2-height-top);"></div>
+            <div class="rectangle middle-left color-a-to-ab" style="height: var(--layer2-height-middle);"></div>
+            <div class="rectangle bottom-left" style="height: var(--layer2-height-bottom);"></div>
           </div>
           <div>
-            <div class="rectangle top-right" style="height: 50px;"></div>
-            <div class="rectangle middle-right red-to-blue-2" style="height: 50px;"></div>
-            <div class="rectangle bottom-right blue" style="height: 50px;"></div>
+            <div class="rectangle top-right" style="height: var(--layer2-height-top);"></div>
+            <div class="rectangle middle-right color-ab-to-b" style="height: var(--layer2-height-middle);"></div>
+            <div class="rectangle bottom-right color-b" style="height: var(--layer2-height-bottom);"></div>
           </div>
         </div>
-        <div class="layer-text">Layer 2 <br>
-          <em>50%</em>
+        <div class="layer-text">Layer 1 <br>
+          <em>0%</em>
         </div>
       </div>
       <div class="layer-container">
-        <div class='rectangle-container' style="margin-top: 0px;">
+        <div class='rectangle-container' style="margin-top: var(--layer3-margin-top);">
           <div>
-            <div class="rectangle top-left red" style="height: 100px;"></div>
-            <div class="rectangle middle-left red-to-blue-1" style="height: 150px;"></div>
-            <div class="rectangle bottom-left" style="height: 100px;"></div>
+            <div class="rectangle top-left color-a" style="height: var(--layer3-height-top);"></div>
+            <div class="rectangle middle-left color-a-to-ab" style="height: var(--layer3-height-middle);"></div>
+            <div class="rectangle bottom-left" style="height: var(--layer3-height-bottom);"></div>
           </div>
           <div>
-            <div class="rectangle top-right" style="height: 100px;"></div>
-            <div class="rectangle middle-right red-to-blue-2" style="height: 150px;"></div>
-            <div class="rectangle bottom-right blue" style="height: 100px;"></div>
+            <div class="rectangle top-right" style="height: var(--layer3-height-top);"></div>
+            <div class="rectangle middle-right color-ab-to-b" style="height: var(--layer3-height-middle);"></div>
+            <div class="rectangle bottom-right color-b" style="height: var(--layer3-height-bottom);"></div>
           </div>
         </div>
-        <div class="layer-text">Layer 3 <br>
-          <em>50%</em>
+        <div class="layer-text">Layer 1 <br>
+          <em>0%</em>
         </div>
       </div>
       <div class="layer-container">
-        <div class='rectangle-container' style="margin-top: 0px;">
+        <div class='rectangle-container' style="margin-top: var(--layer4-margin-top);">
           <div>
-            <div class="rectangle top-left red" style="height: 100px;"></div>
-            <div class="rectangle middle-left red-to-blue-1" style="height: 150px;"></div>
-            <div class="rectangle bottom-left" style="height: 100px;"></div>
+            <div class="rectangle top-left color-a" style="height: var(--layer4-height-top);"></div>
+            <div class="rectangle middle-left color-a-to-ab" style="height: var(--layer4-height-middle);"></div>
+            <div class="rectangle bottom-left" style="height: var(--layer4-height-bottom);"></div>
           </div>
           <div>
-            <div class="rectangle top-right" style="height: 100px;"></div>
-            <div class="rectangle middle-right red-to-blue-2" style="height: 150px;"></div>
-            <div class="rectangle bottom-right blue" style="height: 100px;"></div>
+            <div class="rectangle top-right" style="height: var(--layer4-height-top);"></div>
+            <div class="rectangle middle-right color-ab-to-b" style="height: var(--layer4-height-middle);"></div>
+            <div class="rectangle bottom-right color-b" style="height: var(--layer4-height-bottom);"></div>
           </div>
         </div>
-        <div class="layer-text">Layer 4 <br>
-          <em>50%</em>
+        <div class="layer-text">Layer 1 <br>
+          <em>0%</em>
         </div>
       </div>
       <div class="layer-container">
-        <div class='rectangle-container' style="margin-top: 0px;">
+        <div class='rectangle-container' style="margin-top: var(--layer5-margin-top);">
           <div>
-            <div class="rectangle top-left red" style="height: 100px;"></div>
-            <div class="rectangle middle-left red-to-blue-1" style="height: 150px;"></div>
-            <div class="rectangle bottom-left" style="height: 100px;"></div>
+            <div class="rectangle top-left color-a" style="height: var(--layer5-height-top);"></div>
+            <div class="rectangle middle-left color-a-to-ab" style="height: var(--layer5-height-middle);"></div>
+            <div class="rectangle bottom-left" style="height: var(--layer5-height-bottom);"></div>
           </div>
           <div>
-            <div class="rectangle top-right" style="height: 100px;"></div>
-            <div class="rectangle middle-right red-to-blue-2" style="height: 150px;"></div>
-            <div class="rectangle bottom-right blue" style="height: 100px;"></div>
+            <div class="rectangle top-right" style="height: var(--layer5-height-top);"></div>
+            <div class="rectangle middle-right color-ab-to-b" style="height: var(--layer5-height-middle);"></div>
+            <div class="rectangle bottom-right color-b" style="height: var(--layer5-height-bottom);"></div>
           </div>
         </div>
-        <div class="layer-text">Layer 5 <br>
-          <em>50%</em>
+        <div class="layer-text">Layer 1 <br>
+          <em>0%</em>
         </div>
       </div>
       <div class="layer-container">
-        <div class='rectangle-container' style="margin-top: 0px;">
+        <div class='rectangle-container' style="margin-top: var(--layer6-margin-top);">
           <div>
-            <div class="rectangle top-left red" style="height: 100px;"></div>
-            <div class="rectangle middle-left red-to-blue-1" style="height: 150px;"></div>
-            <div class="rectangle bottom-left" style="height: 100px;"></div>
+            <div class="rectangle top-left color-a" style="height: var(--layer6-height-top);"></div>
+            <div class="rectangle middle-left color-a-to-ab" style="height: var(--layer6-height-middle);"></div>
+            <div class="rectangle bottom-left" style="height: var(--layer6-height-bottom);"></div>
           </div>
           <div>
-            <div class="rectangle top-right" style="height: 100px;"></div>
-            <div class="rectangle middle-right red-to-blue-2" style="height: 150px;"></div>
-            <div class="rectangle bottom-right blue" style="height: 100px;"></div>
+            <div class="rectangle top-right" style="height: var(--layer6-height-top);"></div>
+            <div class="rectangle middle-right color-ab-to-b" style="height: var(--layer6-height-middle);"></div>
+            <div class="rectangle bottom-right color-b" style="height: var(--layer6-height-bottom);"></div>
           </div>
         </div>
-        <div class="layer-text">Layer 6 <br>
-          <em>50%</em>
+        <div class="layer-text">Layer 1 <br>
+          <em>0%</em>
         </div>
       </div>
       <div class="layer-container">
-        <div class='rectangle-container' style="margin-top: 50px;">
+        <div class='rectangle-container' style="margin-top: var(--layer7-margin-top);">
           <div>
-            <div class="rectangle left red-to-blue-1" style="height: 250px;"></div>
+            <div class="rectangle top-left color-a" style="height: var(--layer7-height-top);"></div>
+            <div class="rectangle middle-left color-a-to-ab" style="height: var(--layer7-height-middle);"></div>
+            <div class="rectangle bottom-left" style="height: var(--layer7-height-bottom);"></div>
           </div>
           <div>
-            <div class="rectangle right red-to-blue-2" style="height: 250px;"></div>
+            <div class="rectangle top-right" style="height: var(--layer7-height-top);"></div>
+            <div class="rectangle middle-right color-ab-to-b" style="height: var(--layer7-height-middle);"></div>
+            <div class="rectangle bottom-right color-b" style="height: var(--layer7-height-bottom);"></div>
           </div>
         </div>
-        <div class="layer-text">Layer 7 <br>
-          <em>100%</em>
+        <div class="layer-text">Layer 1 <br>
+          <em>0%</em>
         </div>
       </div>
       <div class="layer-container">
-        <div class='rectangle-container'>
-          <div style="margin-top: 50px;">
-            <div class="rectangle left red-to-blue-1" style="height: 250px;"></div>
+        <div class='rectangle-container' style="margin-top: var(--layer8-margin-top);">
+          <div>
+            <div class="rectangle top-left color-a" style="height: var(--layer8-height-top);"></div>
+            <div class="rectangle middle-left color-a-to-ab" style="height: var(--layer8-height-middle);"></div>
+            <div class="rectangle bottom-left" style="height: var(--layer8-height-bottom);"></div>
           </div>
-          <div style="margin-top: 50px;">
-            <div class="rectangle right red-to-blue-2" style="height: 250px;"></div>
+          <div>
+            <div class="rectangle top-right" style="height: var(--layer8-height-top);"></div>
+            <div class="rectangle middle-right color-ab-to-b" style="height: var(--layer8-height-middle);"></div>
+            <div class="rectangle bottom-right color-b" style="height: var(--layer8-height-bottom);"></div>
           </div>
         </div>
-        <div class="layer-text">Layer 8 <br>
-          <em>100%</em>
+        <div class="layer-text">Layer 1 <br>
+          <em>0%</em>
         </div>
       </div>
-      <div class="layer-container" style="margin-top: 85px">
+      <div class="layer-container" style="margin-top: var(--circles-margin-top)">
         <div class="circle"></div>
         <div class="circle"></div>
         <div class="circle"></div>
