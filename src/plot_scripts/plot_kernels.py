@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import torch
 import os
 from pathlib import Path
-
+from math import ceil, sqrt
 from src.utils import load_model, get_plots_dir
 
 
@@ -12,6 +12,14 @@ def plot_kernels(model_name, model=None):
     sd = model.state_dict()
 
     weights = sd["features.0.weight"]
+    is_buffer = sd["features.0.is_buffer"]
+
+    num_kernels_nobuffer = weights[~is_buffer].shape[0]
+    num_kernels = weights.shape[0]
+
+    rows = sqrt(num_kernels_nobuffer)
+    cols = ceil(num_kernels / rows)
+    rows = ceil(rows)
 
     # for CIFAR10 (see utils)
     MEAN = torch.Tensor([125.307, 122.961, 113.8575])
@@ -19,7 +27,7 @@ def plot_kernels(model_name, model=None):
 
     weights_rgb = ((weights * STD * 2) + MEAN).to(torch.uint8).numpy()
 
-    fig, axes = plt.subplots(8, 8, figsize=(10, 10))
+    fig, axes = plt.subplots(nrows=rows, ncols=cols, figsize=(10, 10))
 
     # Loop through the kernels and plot them in the grid
     for i in range(8):
@@ -28,8 +36,8 @@ def plot_kernels(model_name, model=None):
             kernel = weights_rgb[i * 8 + j]
 
             # Display the kernel as an image in the corresponding subplot
-            axes[i, j].imshow(kernel)
-            axes[i, j].axis("off")  # Turn off axis labels and ticks
+            axes[j, i].imshow(kernel)
+            axes[j, i].axis("off")  # Turn off axis labels and ticks
 
     plt.tight_layout()
 
