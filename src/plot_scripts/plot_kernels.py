@@ -32,8 +32,8 @@ def plot_kernels(model_name, model=None):
     for i in range(cols):
         for j in range(rows):
             kernel = weights_rgb[i * rows + j]
-            axes[i, j].imshow(kernel)
-            axes[i, j].axis("off")
+            axes[j, i].imshow(kernel)
+            axes[j, i].axis("off")
 
     plt.tight_layout()
 
