@@ -27,7 +27,7 @@ def plot_kernels(model_name, model=None):
 
     weights_rgb = ((weights * STD * 2) + MEAN).to(torch.uint8).numpy()
 
-    fig, axes = plt.subplots(nrows=rows, ncols=cols, figsize=(rows, cols))
+    fig, axes = plt.subplots(nrows=rows, ncols=cols, figsize=(cols, rows))
 
     # Loop through the kernels and plot them in the grid
     for i in range(8):
