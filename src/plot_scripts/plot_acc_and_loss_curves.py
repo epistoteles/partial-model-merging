@@ -18,6 +18,13 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str):
         plt.figure(figsize=(12, 8))
 
         sns.lineplot(x=metrics["alphas"], y=metrics[f"ensembling_{split}_{metric}"], label="ensembling", color="black")
+        sns.lineplot(
+            x=[0, 1],
+            y=[metrics[f"ensembling_{split}_{metric}"][0], metrics[f"ensembling_{split}_{metric}"][-1]],
+            label="zero loss barrier",
+            color="grey",
+            dashes=(2, 2),
+        )
         # sns.lineplot(x=metrics["alphas"], y=metrics[f"naive_{split}_{metric}"], label="naive merging", color='')
         sns.lineplot(x=metrics["alphas"], y=metrics[f"merging_{split}_{metric}"], label="merging", color="orange")
 
