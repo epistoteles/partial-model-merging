@@ -31,12 +31,8 @@ def plot_leave_one_out(model_name_a: str, model_name_b: str):
             x=metrics["layers"], y=metrics[f"full_merging_{split}_{metric}"], label="full merging", color="orange"
         )
 
-        sns.lineplot(
-            x=metrics["layers"], y=metrics_a[i] * len(metrics["layers"]), label="baseline model a", color="grey"
-        )
-        sns.lineplot(
-            x=metrics["layers"], y=metrics_b[i] * len(metrics["layers"]), label="baseline model b", color="grey"
-        )
+        sns.lineplot(x=metrics["layers"], y=metrics_a[i], label="baseline model a", color="grey")
+        sns.lineplot(x=metrics["layers"], y=metrics_b[i], label="baseline model b", color="grey")
 
         sns.lineplot(
             x=metrics["layers"],
