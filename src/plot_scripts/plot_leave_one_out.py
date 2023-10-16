@@ -43,13 +43,13 @@ def plot_leave_one_out(model_name_a: str, model_name_b: str):
 
             sns.lineplot(
                 x=metrics["layers"],
-                y=metrics[f"only_ensemble_i_{split}_{metric}"],
+                y=metrics[f"only_ensemble_i{repair}_{split}_{metric}"],
                 label="only ensemble layer i",
                 color="red",
             )
             sns.lineplot(
                 x=metrics["layers"],
-                y=metrics[f"only_merge_i_{split}_{metric}"],
+                y=metrics[f"only_merge_i{repair}_{split}_{metric}"],
                 label="only merge layer i",
                 color="green",
             )
