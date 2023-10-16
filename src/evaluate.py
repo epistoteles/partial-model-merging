@@ -285,86 +285,91 @@ def experiment_a(model_name_a: str, model_name_b: str):
     evaluations_dir = get_evaluations_dir(subdir="experiment_a")
     filepath = os.path.join(evaluations_dir, f"experiment-a-{model_name_a}{variant_b}.csv")
 
-    model_a = load_model(model_name_a).cuda()
-    model_b = load_model(model_name_b).cuda()
+    if os.path.exists(filepath.replace(".csv", ".safetensors")):
+        metrics = load_file(filepath.replace(".csv", ".safetensors"))
+        print(f"📤 Loaded saved metrics for {model_name_a}{variant_b} from .safetensors")
+    else:
+        model_a = load_model(model_name_a).cuda()
+        model_b = load_model(model_name_b).cuda()
 
-    train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
+        train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
 
-    num_layers = model_a.num_layers
-    default_num_params = get_num_params(model_a)
+        num_layers = model_a.num_layers
+        default_num_params = get_num_params(model_a)
 
-    metrics = {"layers": torch.range(1, num_layers)}
+        metrics = {"layers": torch.range(1, num_layers)}
 
-    duo_metrics = evaluate_two_models(model_name_a, model_name_b)
-    midway_index = ((duo_metrics["alphas"] == 0.5).nonzero(as_tuple=True)[0]).item()
+        duo_metrics = evaluate_two_models(model_name_a, model_name_b)
+        midway_index = ((duo_metrics["alphas"] == 0.5).nonzero(as_tuple=True)[0]).item()
 
-    for metric, split in product(["accs", "losses"], ["train", "test"]):
-        full_ensembling = duo_metrics[f"ensembling_{split}_{metric}"][midway_index].item()
-        metrics[f"full_ensembling_{split}_{metric}"] = torch.Tensor([full_ensembling]).repeat(num_layers)
-        full_merging = duo_metrics[f"ensembling_{split}_{metric}"][midway_index].item()
-        metrics[f"full_merging_{split}_{metric}"] = torch.Tensor([full_merging]).repeat(num_layers)
+        for metric, split in product(["accs", "losses"], ["train", "test"]):
+            full_ensembling = duo_metrics[f"ensembling_{split}_{metric}"][midway_index].item()
+            metrics[f"full_ensembling_{split}_{metric}"] = torch.Tensor([full_ensembling]).repeat(num_layers)
+            full_merging = duo_metrics[f"ensembling_{split}_{metric}"][midway_index].item()
+            metrics[f"full_merging_{split}_{metric}"] = torch.Tensor([full_merging]).repeat(num_layers)
 
-    metrics["default_num_params"] = torch.Tensor([default_num_params]).repeat(num_layers)
+        metrics["default_num_params"] = torch.Tensor([default_num_params]).repeat(num_layers)
 
-    # only ensembling layer i
+        # only ensembling layer i
 
-    train_accs = []
-    train_losses = []
-    test_accs = []
-    test_losses = []
-    nums_params = []
+        train_accs = []
+        train_losses = []
+        test_accs = []
+        test_losses = []
+        nums_params = []
 
-    for i in range(model_a.num_layers):
-        print(f"Only ensembling layer {i+1} of {num_layers}")
-        expansions = torch.ones(model_a.num_layers)
-        expansions[i] = 2.0
-        model_a_exp = expand_model(model_a, expansions).cuda()
-        model_b_exp = expand_model(model_b, expansions).cuda()
-        model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader).cuda()
-        train_acc, train_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, train_noaug_loader, 1)
-        test_acc, test_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, test_loader, 1)
-        num_params = get_num_params(model_a_exp)
+        for i in range(model_a.num_layers):
+            print(f"Only ensembling layer {i+1} of {num_layers}")
+            expansions = torch.ones(model_a.num_layers)
+            expansions[i] = 2.0
+            model_a_exp = expand_model(model_a, expansions).cuda()
+            model_b_exp = expand_model(model_b, expansions).cuda()
+            model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader).cuda()
+            train_acc, train_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, train_noaug_loader, 1)
+            test_acc, test_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, test_loader, 1)
+            num_params = get_num_params(model_a_exp)
 
-        train_accs.append(train_acc.item())
-        train_losses.append(train_loss.item())
-        test_accs.append(test_acc.item())
-        test_losses.append(test_loss.item())
-        nums_params.append(num_params)
+            train_accs.append(train_acc.item())
+            train_losses.append(train_loss.item())
+            test_accs.append(test_acc.item())
+            test_losses.append(test_loss.item())
+            nums_params.append(num_params)
 
-    metrics["only_ensemble_i_train_accs"] = torch.FloatTensor(train_accs)
-    metrics["only_ensemble_i_train_losses"] = torch.FloatTensor(train_losses)
-    metrics["only_ensemble_i_test_accs"] = torch.FloatTensor(test_accs)
-    metrics["only_ensemble_i_test_losses"] = torch.FloatTensor(test_losses)
-    metrics["only_ensemble_i_num_params"] = torch.FloatTensor(nums_params)
+        metrics["only_ensemble_i_train_accs"] = torch.FloatTensor(train_accs)
+        metrics["only_ensemble_i_train_losses"] = torch.FloatTensor(train_losses)
+        metrics["only_ensemble_i_test_accs"] = torch.FloatTensor(test_accs)
+        metrics["only_ensemble_i_test_losses"] = torch.FloatTensor(test_losses)
+        metrics["only_ensemble_i_num_params"] = torch.FloatTensor(nums_params)
 
-    # only merging layer i
-    train_accs = []
-    train_losses = []
-    test_accs = []
-    test_losses = []
-    nums_params = []
+        # only merging layer i
+        train_accs = []
+        train_losses = []
+        test_accs = []
+        test_losses = []
+        nums_params = []
 
-    for i in range(model_a.num_layers):
-        print(f"Only merging layer {i+1} of {num_layers}")
-        expansions = torch.ones(model_a.num_layers) * 2
-        expansions[i] = 1.0
-        model_a_exp = expand_model(model_a, expansions).cuda()
-        model_b_exp = expand_model(model_b, expansions).cuda()
-        model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader).cuda()
-        train_acc, train_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, train_noaug_loader, 1)
-        test_acc, test_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, test_loader, 1)
-        num_params = get_num_params(model_a_exp)
+        for i in range(model_a.num_layers):
+            print(f"Only merging layer {i+1} of {num_layers}")
+            expansions = torch.ones(model_a.num_layers) * 2
+            expansions[i] = 1.0
+            model_a_exp = expand_model(model_a, expansions).cuda()
+            model_b_exp = expand_model(model_b, expansions).cuda()
+            model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader).cuda()
+            train_acc, train_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, train_noaug_loader, 1)
+            test_acc, test_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, test_loader, 1)
+            num_params = get_num_params(model_a_exp)
 
-        train_accs.append(train_acc.item())
-        train_losses.append(train_loss.item())
-        test_accs.append(test_acc.item())
-        test_losses.append(test_loss.item())
-        nums_params.append(num_params)
+            train_accs.append(train_acc.item())
+            train_losses.append(train_loss.item())
+            test_accs.append(test_acc.item())
+            test_losses.append(test_loss.item())
+            nums_params.append(num_params)
 
-    metrics["only_merge_i_train_accs"] = torch.FloatTensor(train_accs)
-    metrics["only_merge_i_train_losses"] = torch.FloatTensor(train_losses)
-    metrics["only_merge_i_test_accs"] = torch.FloatTensor(test_accs)
-    metrics["only_merge_i_test_losses"] = torch.FloatTensor(test_losses)
-    metrics["only_merge_i_num_params"] = torch.FloatTensor(nums_params)
+        metrics["only_merge_i_train_accs"] = torch.FloatTensor(train_accs)
+        metrics["only_merge_i_train_losses"] = torch.FloatTensor(train_losses)
+        metrics["only_merge_i_test_accs"] = torch.FloatTensor(test_accs)
+        metrics["only_merge_i_test_losses"] = torch.FloatTensor(test_losses)
+        metrics["only_merge_i_num_params"] = torch.FloatTensor(nums_params)
 
-    save_evaluation_checkpoint(metrics, filepath)
+        save_evaluation_checkpoint(metrics, filepath)
+        return metrics
