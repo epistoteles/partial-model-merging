@@ -26,6 +26,13 @@ def plot_leave_one_out(model_name_a: str, model_name_b: str):
         plt.title(f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width, leave-one-out experiment")
 
         sns.lineplot(
+            x=metrics["layers"], y=metrics[f"full_ensembling_{split}_{metric}"], label="full ensembling", color="blue"
+        )
+        sns.lineplot(
+            x=metrics["layers"], y=metrics[f"full_merging_{split}_{metric}"], label="full merging", color="orange"
+        )
+
+        sns.lineplot(
             x=metrics["layers"],
             y=metrics[f"only_ensemble_i_{split}_{metric}"],
             label="only ensemble layer i",
@@ -34,3 +41,10 @@ def plot_leave_one_out(model_name_a: str, model_name_b: str):
         sns.lineplot(
             x=metrics["layers"], y=metrics[f"only_merge_i_{split}_{metric}"], label="only merge layer i", color="green"
         )
+
+        plots_dir = get_plots_dir(subdir=Path(__file__).stem)
+        plt.savefig(
+            os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a}{variant_b}_{split}_{metric}.png"), dpi=600
+        )
+        plt.close()
+        print(f"📊 {split} {metric} leave-one-out plot saved for {model_name_a}, {model_name_b}")
