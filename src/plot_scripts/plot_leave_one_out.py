@@ -16,17 +16,27 @@ def plot_leave_one_out(model_name_a: str, model_name_b: str):
 
     metrics = experiment_a(model_name_a, model_name_b)
 
-    for metric, split in product(["accs", "losses"], ["train", "test"]):
+    for i, (metric, split) in enumerate(product(["accs", "losses"], ["train", "test"])):
         plt.figure(figsize=(12, 8))
         plt.xlabel("layer")
         plt.ylabel(f"{split} {metric}")
         plt.title(f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width, leave-one-out experiment")
+
+        metrics_a = evaluate_single_model(model_name_a)
+        metrics_b = evaluate_single_model(model_name_b)
 
         sns.lineplot(
             x=metrics["layers"], y=metrics[f"full_ensembling_{split}_{metric}"], label="full ensembling", color="blue"
         )
         sns.lineplot(
             x=metrics["layers"], y=metrics[f"full_merging_{split}_{metric}"], label="full merging", color="orange"
+        )
+
+        sns.lineplot(
+            x=metrics["layers"], y=metrics_a[i] * len(metrics["layers"]), label="baseline model a", color="grey"
+        )
+        sns.lineplot(
+            x=metrics["layers"], y=metrics_b[i] * len(metrics["layers"]), label="baseline model b", color="grey"
         )
 
         sns.lineplot(
