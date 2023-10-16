@@ -27,7 +27,7 @@ def plot_leave_one_out(model_name_a: str, model_name_b: str):
 
             sns.lineplot(
                 x=metrics["layers"],
-                y=metrics[f"full_ensembling{repair}_{split}_{metric}"],
+                y=metrics[f"full_ensembling_{split}_{metric}"],
                 label="full ensembling",
                 color="blue",
             )
