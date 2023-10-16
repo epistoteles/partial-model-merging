@@ -305,7 +305,7 @@ def experiment_a(model_name_a: str, model_name_b: str):
         for metric, split in product(["accs", "losses"], ["train", "test"]):
             full_ensembling = duo_metrics[f"ensembling_{split}_{metric}"][midway_index].item()
             metrics[f"full_ensembling_{split}_{metric}"] = torch.Tensor([full_ensembling]).repeat(num_layers)
-            full_merging = duo_metrics[f"ensembling_{split}_{metric}"][midway_index].item()
+            full_merging = duo_metrics[f"merging_{split}_{metric}"][midway_index].item()
             metrics[f"full_merging_{split}_{metric}"] = torch.Tensor([full_merging]).repeat(num_layers)
 
         metrics["default_num_params"] = torch.Tensor([default_num_params]).repeat(num_layers)
