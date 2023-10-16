@@ -316,6 +316,7 @@ def experiment_a(model_name_a: str, model_name_b: str):
     nums_params = []
 
     for i in range(model_a.num_layers):
+        print(f"Only ensembling layer {i} of {num_layers}")
         expansions = torch.ones(model_a.num_layers)
         expansions[i] = 2.0
         model_a_exp = expand_model(model_a, expansions).cuda()
@@ -345,6 +346,7 @@ def experiment_a(model_name_a: str, model_name_b: str):
     nums_params = []
 
     for i in range(model_a.num_layers):
+        print(f"Only merging layer {i} of {num_layers}")
         expansions = torch.ones(model_a.num_layers) * 2
         expansions[i] = 1.0
         model_a_exp = expand_model(model_a, expansions).cuda()
