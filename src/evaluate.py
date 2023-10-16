@@ -5,6 +5,7 @@ import torch.nn.functional as F
 from safetensors.torch import save_file, load_file
 import os
 from codecarbon import track_emissions
+from itertools import product
 from src.utils import (
     load_model,
     get_loaders,
@@ -295,16 +296,14 @@ def experiment_a(model_name_a: str, model_name_b: str):
     metrics = {"layers": torch.range(1, num_layers)}
 
     duo_metrics = evaluate_two_models(model_name_a, model_name_b)
-    model_a_test_acc = evaluate_single_model(model_name_a)[2]
-    model_b_test_acc = evaluate_single_model(model_name_b)[2]
     midway_index = ((duo_metrics["alphas"] == 0.5).nonzero(as_tuple=True)[0]).item()
-    full_ensembling_test_acc = duo_metrics["ensembling_test_accs"][midway_index].item()
-    full_merging_test_acc = duo_metrics["merging_test_accs"][midway_index].item()
 
-    metrics["model_a_test_acc"] = torch.Tensor([model_a_test_acc]).repeat(num_layers)
-    metrics["model_b_test_acc"] = torch.Tensor([model_b_test_acc]).repeat(num_layers)
-    metrics["full_ensembling_test_acc"] = torch.Tensor([full_ensembling_test_acc]).repeat(num_layers)
-    metrics["full_merging_test_acc"] = torch.Tensor([full_merging_test_acc]).repeat(num_layers)
+    for metric, split in product(["accs", "losses"], ["train", "test"]):
+        full_ensembling = duo_metrics[f"ensembling_{split}_{metric}"][midway_index].item()
+        metrics[f"full_ensembling_{split}_{metric}"] = torch.Tensor([full_ensembling]).repeat(num_layers)
+        full_merging = duo_metrics[f"ensembling_{split}_{metric}"][midway_index].item()
+        metrics[f"full_merging_{split}_{metric}"] = torch.Tensor([full_merging]).repeat(num_layers)
+
     metrics["default_num_params"] = torch.Tensor([default_num_params]).repeat(num_layers)
 
     # only ensembling layer i
