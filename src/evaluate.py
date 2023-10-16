@@ -287,7 +287,7 @@ def experiment_a(model_name_a: str, model_name_b: str):
 
     if os.path.exists(filepath.replace(".csv", ".safetensors")):
         metrics = load_file(filepath.replace(".csv", ".safetensors"))
-        print(f"📤 Loaded saved metrics for {model_name_a}{variant_b} from .safetensors")
+        print(f"📤 Loaded saved leave-one-out metrics for {model_name_a}{variant_b} from .safetensors")
     else:
         model_a = load_model(model_name_a).cuda()
         model_b = load_model(model_name_b).cuda()
@@ -372,4 +372,6 @@ def experiment_a(model_name_a: str, model_name_b: str):
         metrics["only_merge_i_num_params"] = torch.FloatTensor(nums_params)
 
         save_evaluation_checkpoint(metrics, filepath)
-        return metrics
+        print(f"📥 Saved leave-ont-out for {model_name_a}{variant_b} as .csv and .safetensors")
+
+    return metrics

@@ -14,9 +14,6 @@ def plot_leave_one_out(model_name_a: str, model_name_b: str):
     dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
     dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
 
-    a_train_acc, a_train_loss, a_test_acc, a_test_loss = evaluate_single_model(model_name_a)
-    b_train_acc, b_train_loss, b_test_acc, b_test_loss = evaluate_single_model(model_name_b)
-
     metrics = experiment_a(model_name_a, model_name_b)
 
     for metric, split in product(["accs", "losses"], ["train", "test"]):
