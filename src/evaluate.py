@@ -282,7 +282,7 @@ def experiment_a(model_name_a: str, model_name_b: str):
     assert width_a == width_b  # not strictly necessary, but always the case in our experiments
 
     evaluations_dir = get_evaluations_dir(subdir="experiment_a")
-    filepath = os.path.join(evaluations_dir, f"Experiment-A-{model_name_a}{variant_b}.csv")
+    filepath = os.path.join(evaluations_dir, f"experiment-a-{model_name_a}{variant_b}.csv")
 
     model_a = load_model(model_name_a).cuda()
     model_b = load_model(model_name_b).cuda()
@@ -316,7 +316,7 @@ def experiment_a(model_name_a: str, model_name_b: str):
     nums_params = []
 
     for i in range(model_a.num_layers):
-        print(f"Only ensembling layer {i} of {num_layers}")
+        print(f"Only ensembling layer {i+1} of {num_layers}")
         expansions = torch.ones(model_a.num_layers)
         expansions[i] = 2.0
         model_a_exp = expand_model(model_a, expansions).cuda()
@@ -346,7 +346,7 @@ def experiment_a(model_name_a: str, model_name_b: str):
     nums_params = []
 
     for i in range(model_a.num_layers):
-        print(f"Only merging layer {i} of {num_layers}")
+        print(f"Only merging layer {i+1} of {num_layers}")
         expansions = torch.ones(model_a.num_layers) * 2
         expansions[i] = 1.0
         model_a_exp = expand_model(model_a, expansions).cuda()
