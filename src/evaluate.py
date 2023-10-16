@@ -268,7 +268,7 @@ def evaluate_two_models_merging_REPAIR(
     return torch.FloatTensor(accs), torch.FloatTensor(losses)
 
 
-def experiment_A(model_name_a: str, model_name_b: str):
+def experiment_a(model_name_a: str, model_name_b: str):
     """
     Conducts leave-one-out experiments with full merging vs. ensembling and saves the results
     """
@@ -297,7 +297,7 @@ def experiment_A(model_name_a: str, model_name_b: str):
     duo_metrics = evaluate_two_models(model_name_a, model_name_b)
     model_a_test_acc = evaluate_single_model(model_name_a)[2]
     model_b_test_acc = evaluate_single_model(model_name_b)[2]
-    midway_index = ((metrics["alphas"] == 0.5).nonzero(as_tuple=True)[0]).item()
+    midway_index = ((duo_metrics["alphas"] == 0.5).nonzero(as_tuple=True)[0]).item()
     full_ensembling_test_acc = duo_metrics["ensembling_test_accs"][midway_index].item()
     full_merging_test_acc = duo_metrics["merging_test_accs"][midway_index].item()
 
