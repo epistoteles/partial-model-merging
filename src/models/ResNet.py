@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 import torch.nn.functional as F
 import torch.nn.init as init
@@ -35,7 +36,7 @@ class BasicBlock(nn.Module):
 
 
 class ResNet18(nn.Module):
-    def __init__(self, width: float = 1.0, num_classes: int = 10):
+    def __init__(self, width: float | list[float] | torch.FloatTensor = 1.0, num_classes: int = 10):
         """
         A custom ResNet18 module, adapted from https://github.com/KellerJordan/REPAIR
         :param width: multiplier for the width of the network

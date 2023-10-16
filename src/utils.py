@@ -355,6 +355,15 @@ def get_num_layers(model):
         raise NotImplementedError()  # TODO
 
 
+def get_num_params(model):
+    """
+    Returns the total number of parameters in a model
+    :param model: the model
+    :return: the total number of parameters
+    """
+    return sum([v.numel() for k, v in model.state_dict().items() if "is_buffer" not in k])
+
+
 #####################
 # merging functions #
 #####################
