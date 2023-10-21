@@ -307,10 +307,6 @@ def experiment_a(model_name_a: str, model_name_b: str):
             metrics[f"full_ensembling_{split}_{metric}"] = torch.Tensor([full_ensembling]).repeat(num_layers)
             full_merging = duo_metrics[f"merging_{split}_{metric}"][midway_index].item()
             metrics[f"full_merging_{split}_{metric}"] = torch.Tensor([full_merging]).repeat(num_layers)
-            full_ensembling_REPAIR = duo_metrics[f"ensembling_REPAIR_{split}_{metric}"][midway_index].item()
-            metrics[f"full_ensembling_REPAIR_{split}_{metric}"] = torch.Tensor([full_ensembling_REPAIR]).repeat(
-                num_layers
-            )
             full_merging_REPAIR = duo_metrics[f"merging_REPAIR_{split}_{metric}"][midway_index].item()
             metrics[f"full_merging_REPAIR_{split}_{metric}"] = torch.Tensor([full_merging_REPAIR]).repeat(num_layers)
 
