@@ -297,7 +297,7 @@ def experiment_a(model_name_a: str, model_name_b: str):
         num_layers = model_a.num_layers
         default_num_params = get_num_params(model_a)
 
-        metrics = {"layers": torch.range(1, num_layers)}
+        metrics = {"layers": torch.arange(1, num_layers + 1)}
 
         duo_metrics = evaluate_two_models(model_name_a, model_name_b)
         midway_index = ((duo_metrics["alphas"] == 0.5).nonzero(as_tuple=True)[0]).item()
