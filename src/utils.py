@@ -145,7 +145,7 @@ def parse_model_name(model_name, as_dict=False):
         model_name = model_name[:-12]
     exp = r"([A-Za-z0-9]+)-([A-Za-z]+)([0-9]+)-([A-Za-z]*)-?([0-9]+\.?[0-9]*)x-([a-z]+)(?:.[A-Za-z]+)?"
     dataset, model_type, size, batch_norm, width, variant = re.match(exp, model_name).groups()
-    size, width = float(size), float(width)
+    size, width = int(size), float(width)
     batch_norm = "bn" in batch_norm
     if as_dict:
         return {
