@@ -57,6 +57,8 @@ class MLP(MergeableModule):
         """
         Returns a functionally equivalent but wider model. The appended weights and biases are all zero.
         """
+        pass
 
+    @property
     def num_layers(self):
         return self.size
