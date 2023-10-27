@@ -1069,22 +1069,28 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader] | tuple[DataLoade
 
 def _get_loaders_no_FFCV(dataset: str) -> tuple[DataLoader, DataLoader, DataLoader]:
     dataset = dataset.upper()
-    if dataset == "MNIST":
-        MEAN = [33.318]
-        STD = [78.567]
-    else:
-        raise ValueError(f"Unknown dataset {dataset}")
+    # if dataset == "MNIST":
+    #     MEAN = [33.318]
+    #     STD = [78.567]
+    # else:
+    #     raise ValueError(f"Unknown dataset {dataset}")
 
     aug_transform = T.Compose(
         [
             T.RandomAffine(degrees=0, translate=(0.1, 0.1)),
             T.ToTensor(),
-            T.Normalize(MEAN, STD),
+            # T.Normalize(MEAN, STD),
             T.Lambda(lambda x: torch.flatten(x)),
         ]
     )
 
-    noaug_transform = T.Compose([T.ToTensor(), T.Normalize(MEAN, STD), T.Lambda(lambda x: torch.flatten(x))])
+    noaug_transform = T.Compose(
+        [
+            T.ToTensor(),
+            # T.Normalize(MEAN, STD),
+            T.Lambda(lambda x: torch.flatten(x)),
+        ]
+    )
 
     data_dir = _get_data_dir()
     if dataset == "MNIST":
