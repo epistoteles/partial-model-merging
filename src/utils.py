@@ -137,12 +137,13 @@ def get_paired_model_names() -> list[tuple[str]]:
 def parse_model_name(model_name, as_dict=False):
     """
     Extracts hyperparameters from the model name (or full path)
-    :param model_name: the model name, e.g. "CIFAR10-VGG11-2x-a.safetensors"
+    :param model_name: the model name, e.g. "CIFAR10-VGG11-2x-a.safetensors" or "MNIST-MLP3-bn-1.5x-a"
     :param as_dict: return the values as dict if true
     :return: a hyperparameter list
     """
-    model_name = Path(model_name).stem
-    exp = r"([A-Za-z0-9]+)-([A-Za-z]+)([0-9]+)-([A-Za-z]*)-?([0-9]+[\.]?[0-9]*)x-([a-z]+)(?:.[A-Za-z]+)?"
+    if model_name.endswith(".safetensors"):
+        model_name = model_name[:-12]
+    exp = r"([A-Za-z0-9]+)-([A-Za-z]+)([0-9]+)-([A-Za-z]*)-?([0-9]+\.?[0-9]*)x-([a-z]+)(?:.[A-Za-z]+)?"
     dataset, model_type, size, batch_norm, width, variant = re.match(exp, model_name).groups()
     size, width = float(size), float(width)
     batch_norm = "bn" in batch_norm
