@@ -1,8 +1,9 @@
 import torch
 from torch import nn
+from src.models import MergeableModule
 
 
-class MLP(nn.Module):
+class MLP(MergeableModule):
     def __init__(
         self,
         size: int = 3,
@@ -32,7 +33,6 @@ class MLP(nn.Module):
         self.size = size
         self.bn = bn
         self.num_classes = num_classes
-        self.num_layers = size
         self.width = torch.FloatTensor(width)
 
         self.classifier = nn.Sequential(
@@ -45,3 +45,18 @@ class MLP(nn.Module):
             nn.Linear(round(512 * self.width[2].item()), num_classes),
             nn.LogSoftmax()
         )
+
+        for layer in self.classifier[:-2]:
+            if isinstance(layer, nn.Linear):
+                layer.is_buffer = nn.Parameter(torch.zeros_like(layer.bias).bool(), requires_grad=False)
+
+    def forward(self, x):
+        return self.classifier(x)
+
+    def _expand(self, expansion_factor: int | float | list[float] | torch.FloatTensor):
+        """
+        Returns a functionally equivalent but wider model. The appended weights and biases are all zero.
+        """
+
+    def num_layers(self):
+        return self.size

@@ -989,11 +989,12 @@ def _get_beton_path(dataset) -> tuple[str, str]:
     return train_beton_path, test_beton_path
 
 
-def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader]:
+def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader] | tuple[DataLoader, DataLoader, DataLoader]:
     """
-    Creates and returns three FFCV loaders. Downloads and converts the underlying dataset if necessary.
+    Creates and returns three FFCV (or PyTorch for b/w images) loaders.
+    Downloads and converts the underlying dataset if necessary.
     adapted from https://github.com/KellerJordan/REPAIR
-    :param dataset: one of 'CIFAR10', 'CIFAR100', 'SVHN'  TODO: add more?
+    :param dataset: one of 'CIFAR10', 'CIFAR100', 'SVHN', 'MNIST'  TODO: add more?
     :return: (train_aug_loader, train_noaug_loader, test_loader)
     """
     dataset = dataset.upper()
