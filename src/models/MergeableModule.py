@@ -25,7 +25,7 @@ class MergeableModule(nn.Module, ABC):
             expansion_factor = float(expansion_factor)
         if type(expansion_factor) is float:
             assert expansion_factor > 1, "Expansion factor must be greater than 1.0"
-            expansion_factor = [expansion_factor] * self.num_layers
+            expansion_factor = [expansion_factor]
         expansion_factor = torch.FloatTensor(expansion_factor)
         assert expansion_factor.min() >= 1.0, "Expansion factors <1 are not allowed"
         assert expansion_factor.max() > 1.0, "At least one expansion factor must be >1"

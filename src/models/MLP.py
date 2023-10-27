@@ -20,6 +20,7 @@ class MLP(MergeableModule):
         :param bn: uses batch norm if True, uses nothing if False
         :param num_classes: the number of output classes
         """
+        super(MLP, self).__init__()
 
         assert size == 3
 
@@ -29,7 +30,6 @@ class MLP(MergeableModule):
             width = [width] * size
         assert (type(width) is list or type(width) is torch.Tensor) and len(width) == size
 
-        super(MLP, self).__init__()
         self.size = size
         self.bn = bn
         self.num_classes = num_classes
