@@ -963,6 +963,9 @@ def _download_dataset(dataset) -> tuple[torch.utils.data.Dataset, torch.utils.da
     elif dataset == "SVHN":
         train_dset = torchvision.datasets.SVHN(data_dir, split="train", download=True)
         test_dset = torchvision.datasets.SVHN(data_dir, split="test", download=True)
+    elif dataset == "MNIST":
+        train_dset = torchvision.datasets.MNIST(data_dir, train=True, download=True)
+        test_dset = torchvision.datasets.MNIST(data_dir, train=False, download=True)
     else:
         raise ValueError(f"Unknown dataset {dataset}")
     return train_dset, test_dset
@@ -989,7 +992,7 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader]:
     """
     Creates and returns three FFCV loaders. Downloads and converts the underlying dataset if necessary.
     adapted from https://github.com/KellerJordan/REPAIR
-    :param dataset: one of 'CIFAR10', 'CIFAR100', 'SVHN'  TODO: add more
+    :param dataset: one of 'CIFAR10', 'CIFAR100', 'SVHN', 'MNIST'  TODO: add more
     :return: (train_aug_loader, train_noaug_loader, test_loader)
     """
     dataset = dataset.upper()
@@ -1004,6 +1007,9 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader]:
     elif dataset == "SVHN":
         MEAN = [111.60893668, 113.16127466, 120.56512767]
         STD = [50.49768174, 51.2589843, 50.24421614]
+    elif dataset == "MNIST":
+        MEAN = ([33.318],)
+        STD = [78.567]
     else:
         raise ValueError(f"Unknown dataset {dataset}")
 
