@@ -1075,9 +1075,16 @@ def _get_loaders_no_FFCV(dataset: str) -> tuple[DataLoader, DataLoader, DataLoad
     else:
         raise ValueError(f"Unknown dataset {dataset}")
 
-    aug_transform = T.Compose([T.RandomAffine(degrees=0, translate=(0.1, 0.1)), T.ToTensor(), T.Normalize(MEAN, STD)])
+    aug_transform = T.Compose(
+        [
+            T.RandomAffine(degrees=0, translate=(0.1, 0.1)),
+            T.ToTensor(),
+            T.Normalize(MEAN, STD),
+            T.Lambda(lambda x: torch.flatten(x)),
+        ]
+    )
 
-    noaug_transform = T.Compose([T.ToTensor(), T.Normalize(MEAN, STD)])
+    noaug_transform = T.Compose([T.ToTensor(), T.Normalize(MEAN, STD), T.Lambda(lambda x: torch.flatten(x))])
 
     data_dir = _get_data_dir()
     if dataset == "MNIST":
