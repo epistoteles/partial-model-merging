@@ -252,7 +252,7 @@ def model_like(model: str | torch.nn.Module) -> torch.nn.Module:
         dataset, model_type, size, batch_norm, width, _ = parse_model_name(model)
         num_classes = get_num_classes(dataset)
     elif isinstance(model, torch.nn.Module):
-        model_type = "VGG" if isinstance(model, VGG) else "ResNet"
+        model_type = "VGG" if isinstance(model, VGG) else "MLP" if isinstance(model, MLP) else "ResNet"
         size = model.size
         width = model.width
         batch_norm = model.bn
@@ -260,7 +260,7 @@ def model_like(model: str | torch.nn.Module) -> torch.nn.Module:
     else:
         raise ValueError("Model has to be string (filename) or model instance")
     if model_type == "VGG":
-        new_model = VGG(size, width=width, bn=batch_norm, num_classes=num_classes)
+        new_model = VGG(size=size, width=width, bn=batch_norm, num_classes=num_classes)
     elif model_type == "ResNet":
         if size == 18:
             ResNet = ResNet18
@@ -269,6 +269,8 @@ def model_like(model: str | torch.nn.Module) -> torch.nn.Module:
         else:
             raise ValueError(f"Unknown ResNet size {size}")
         new_model = ResNet(width=width, num_classes=num_classes)
+    elif model_type == "MLP":
+        new_model = MLP(size=size, width=width, bn=batch_norm, num_classes=num_classes)
     else:
         raise ValueError(f"Unknown model type {model_type} in {model}")
     return new_model
