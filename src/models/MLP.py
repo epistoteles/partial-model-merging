@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from src.models import MergeableModule
+from src.models.MergeableModule import MergeableModule
 
 
 class MLP(MergeableModule):
