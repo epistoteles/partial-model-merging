@@ -51,7 +51,7 @@ class MLP(MergeableModule):
                 layer.is_buffer = nn.Parameter(torch.zeros_like(layer.bias).bool(), requires_grad=False)
 
     def forward(self, x):
-        return self.classifier(x)
+        return self.classifier(x.flatten)
 
     def _expand(self, expansion_factor: torch.FloatTensor):
         """
