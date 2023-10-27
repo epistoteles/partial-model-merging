@@ -36,6 +36,7 @@ from ffcv.transforms.common import Squeeze
 
 from src.models.VGG import VGG
 from src.models.ResNet import ResNet18, ResNet20
+from src.models.MLP import MLP
 
 
 ##############################
@@ -322,6 +323,9 @@ def expand_model(
         model_expanded = ResNet18(width=model.width * expansion_factor, num_classes=model.num_classes)
         raise NotImplementedError
     elif isinstance(model, ResNet20):
+        model_expanded = ResNet20(width=model.width * expansion_factor, num_classes=model.num_classes)
+        raise NotImplementedError
+    elif isinstance(model, MLP):
         model_expanded = ResNet20(width=model.width * expansion_factor, num_classes=model.num_classes)
         raise NotImplementedError
     else:

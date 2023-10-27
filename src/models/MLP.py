@@ -36,7 +36,7 @@ class MLP(MergeableModule):
         self.width = torch.FloatTensor(width)
 
         self.classifier = nn.Sequential(
-            nn.Linear(32 * 32, round(512 * self.width[0].item())),
+            nn.Linear(28 * 28, round(512 * self.width[0].item())),
             *[nn.BatchNorm1d(round(512 * self.width[0].item())), nn.ReLU()] if bn else [nn.ReLU()],
             nn.Linear(round(512 * self.width[0].item()), round(512 * self.width[1].item())),
             *[nn.BatchNorm1d(round(512 * self.width[1].item())), nn.ReLU()] if bn else [nn.ReLU()],

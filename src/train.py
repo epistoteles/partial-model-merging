@@ -9,6 +9,7 @@ from torch.optim import SGD, lr_scheduler
 
 from models.VGG import VGG
 from models.ResNet import ResNet18, ResNet20
+from models.MLP import MLP
 from src.utils import get_loaders, save_model, get_num_classes
 from src.evaluate import get_acc_and_loss
 
@@ -38,6 +39,10 @@ def main():
         else:
             raise ValueError(f"Unavailable ResNet size {args.size}")
         model = ResNet(width=args.width, num_classes=get_num_classes(args.dataset)).cuda()
+    elif args.model_type == "MLP":
+        model = MLP(
+            size=args.size, width=args.width, bn=args.batch_norm, num_classes=get_num_classes(args.dataset)
+        ).cuda()
     else:
         raise ValueError(f"Unknown model type {args.model_type}")
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=args.weight_decay)
