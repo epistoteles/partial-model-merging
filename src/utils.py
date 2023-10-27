@@ -142,7 +142,7 @@ def parse_model_name(model_name, as_dict=False):
     :return: a hyperparameter list
     """
     model_name = Path(model_name).stem
-    exp = "([A-Za-z0-9]+)-([A-Za-z]+)([0-9]+)-([A-Za-z]*)-?([0-9]+)x-([a-z]+)(?:.[A-Za-z]+)?"
+    exp = "([A-Za-z0-9]+)-([A-Za-z]+)([0-9]+)-([A-Za-z]*)-?([0-9]+.?[0-9]*)x-([a-z]+)(?:.[A-Za-z]+)?"
     dataset, model_type, size, batch_norm, width, variant = re.match(exp, model_name).groups()
     size, width = int(size), int(width)
     batch_norm = "bn" in batch_norm
