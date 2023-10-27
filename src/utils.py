@@ -935,7 +935,7 @@ def repair(model, parent_model_a, parent_model_b, loader, alpha: float = 0.5):
 
 def get_num_classes(dataset: str):
     """Returns the number of classes in a dataset"""
-    cfg = {"CIFAR10": 10, "CIFAR100": 100, "SVHN": 10}
+    cfg = {"CIFAR10": 10, "CIFAR100": 100, "SVHN": 10, "MNIST": 10}
     return cfg[dataset]
 
 
