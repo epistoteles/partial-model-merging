@@ -60,6 +60,16 @@ class MLP(MergeableModule):
         model_expanded = MLP(
             size=self.size, width=self.width * expansion_factor, bn=self.bn, num_classes=self.num_classes
         )
+        sd_expanded = model_expanded.state_dict()
+        sd = self.state_dict()
+        for key in sd.keys():
+            if "is_buffer" in key:  # e.g. features.0.is_buffer
+                sd_expanded[key] = torch.ones_like(sd_expanded[key]).bool()  # init is_buffer flags as True
+            else:  # weight, bias, running_var, ...
+                sd_expanded[key] = torch.zeros_like(sd_expanded[key])  # init weights/biases as 0.0
+            slice_indices = tuple(slice(0, sd[key].size(i)) for i in range(sd[key].dim()))
+            sd_expanded[key][slice_indices] = sd[key]
+        model_expanded.load_state_dict(sd_expanded)
         return model_expanded
 
     @property
