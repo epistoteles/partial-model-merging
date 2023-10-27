@@ -97,8 +97,10 @@ def main():
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-d", "--dataset", type=str, choices=["CIFAR10", "CIFAR100", "SVHN", "ImageNet"], default="CIFAR10")
-parser.add_argument("-m", "--model_type", type=str, choices=["VGG", "ResNet"], default="VGG")
+parser.add_argument(
+    "-d", "--dataset", type=str, choices=["CIFAR10", "CIFAR100", "SVHN", "ImageNet", "MNIST"], default="CIFAR10"
+)
+parser.add_argument("-m", "--model_type", type=str, choices=["VGG", "ResNet", "MLP"], default="VGG")
 parser.add_argument("-s", "--size", type=int, default=11)
 parser.add_argument(
     "-bn", "--batch_norm", action="store_true", help="use batch norm layers in the model (default: none)"
