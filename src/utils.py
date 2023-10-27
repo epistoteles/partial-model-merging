@@ -1077,7 +1077,7 @@ def _get_loaders_no_FFCV(dataset: str) -> tuple[DataLoader, DataLoader, DataLoad
 
     aug_transform = T.Compose(
         [
-            T.RandomAffine(degrees=0, translate=(0.1, 0.1)),
+            T.RandomAffine(degrees=0, translate=(0.05, 0.05)),
             T.ToTensor(),
             # T.Normalize(MEAN, STD),
             T.Lambda(lambda x: torch.flatten(x)),
