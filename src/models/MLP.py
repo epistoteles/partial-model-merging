@@ -53,11 +53,14 @@ class MLP(MergeableModule):
     def forward(self, x):
         return self.classifier(x)
 
-    def _expand(self, expansion_factor: int | float | list[float] | torch.FloatTensor):
+    def _expand(self, expansion_factor: torch.FloatTensor):
         """
         Returns a functionally equivalent but wider model. The appended weights and biases are all zero.
         """
-        pass
+        model_expanded = MLP(
+            size=self.size, width=self.width * expansion_factor, bn=self.bn, num_classes=self.num_classes
+        )
+        return model_expanded
 
     @property
     def num_layers(self):
