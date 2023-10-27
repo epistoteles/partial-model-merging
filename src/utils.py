@@ -1009,8 +1009,7 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader]:
         MEAN = [111.60893668, 113.16127466, 120.56512767]
         STD = [50.49768174, 51.2589843, 50.24421614]
     elif dataset == "MNIST":
-        MEAN = ([33.318],)
-        STD = [78.567]
+        return _get_loaders_no_FFCV(dataset)
     else:
         raise ValueError(f"Unknown dataset {dataset}")
 
@@ -1063,7 +1062,7 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader]:
     return train_aug_loader, train_noaug_loader, test_loader
 
 
-def get_loaders_no_FFCV(dataset: str) -> tuple[DataLoader, DataLoader, DataLoader]:
+def _get_loaders_no_FFCV(dataset: str) -> tuple[DataLoader, DataLoader, DataLoader]:
     dataset = dataset.upper()
     if dataset == "MNIST":
         MEAN = [33.318]
