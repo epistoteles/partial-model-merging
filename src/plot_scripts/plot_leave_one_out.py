@@ -23,7 +23,9 @@ def plot_leave_one_out(model_name_a: str, model_name_b: str):
             plt.figure(figsize=(12, 8))
             plt.xlabel("layer")
             plt.ylabel(f"{split} {metric}")
-            plt.title(f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width, leave-one-out experiment")
+            plt.title(
+                f"{dataset_a}, {model_type_a}{size_a}, bn={batch_norm_a}, {width_a}×width, leave-one-out experiment"
+            )
 
             sns.lineplot(
                 x=metrics["layers"],

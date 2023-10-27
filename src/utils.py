@@ -17,6 +17,7 @@ import torchvision
 import torchvision.transforms as T
 from torch.cuda.amp import autocast
 from safetensors.torch import save_file, load_file
+from torch.utils.data import DataLoader
 
 from ffcv.writer import DatasetWriter
 from ffcv.fields import IntField, RGBImageField
@@ -992,7 +993,7 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader]:
     """
     Creates and returns three FFCV loaders. Downloads and converts the underlying dataset if necessary.
     adapted from https://github.com/KellerJordan/REPAIR
-    :param dataset: one of 'CIFAR10', 'CIFAR100', 'SVHN', 'MNIST'  TODO: add more
+    :param dataset: one of 'CIFAR10', 'CIFAR100', 'SVHN'  TODO: add more?
     :return: (train_aug_loader, train_noaug_loader, test_loader)
     """
     dataset = dataset.upper()
@@ -1028,7 +1029,7 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader]:
             RandomHorizontalFlip(),
             RandomTranslate(padding=4),
         ]
-        if dataset != "SVHN"
+        if dataset not in ["SVHN", "MNIST"]
         else [RandomTranslate(padding=4)]
     )
 
@@ -1058,5 +1059,32 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader]:
         drop_last=False,
         pipelines={"image": pre_p + post_p, "label": label_pipeline},
     )
+
+    return train_aug_loader, train_noaug_loader, test_loader
+
+
+def get_loaders_no_FFCV(dataset: str) -> tuple[DataLoader, DataLoader, DataLoader]:
+    dataset = dataset.upper()
+    if dataset == "MNIST":
+        MEAN = [33.318]
+        STD = [78.567]
+    else:
+        raise ValueError(f"Unknown dataset {dataset}")
+
+    aug_transform = T.Compose([T.RandomAffine(degrees=0, translate=(0.1, 0.1)), T.ToTensor(), T.Normalize(MEAN, STD)])
+
+    noaug_transform = T.Compose([T.ToTensor(), T.Normalize(MEAN, STD)])
+
+    data_dir = _get_data_dir()
+    if dataset == "MNIST":
+        train_aug_data = torchvision.datasets.MNIST(data_dir, train=True, download=True, transform=aug_transform)
+        train_noaug_data = torchvision.datasets.MNIST(data_dir, train=True, download=True, transform=noaug_transform)
+        test_data = torchvision.datasets.MNIST(data_dir, train=False, download=True, transform=noaug_transform)
+
+    train_aug_loader = DataLoader(train_aug_data, batch_size=1000, num_workers=min(8, os.cpu_count()), shuffle=True)
+
+    train_noaug_loader = DataLoader(train_noaug_data, batch_size=1000, num_workers=min(8, os.cpu_count()), shuffle=True)
+
+    test_loader = DataLoader(test_data, batch_size=1000, num_workers=min(8, os.cpu_count()), shuffle=True)
 
     return train_aug_loader, train_noaug_loader, test_loader
