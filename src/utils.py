@@ -372,6 +372,17 @@ def get_num_params(model):
     return sum([v.numel() for k, v in model.state_dict().items() if "is_buffer" not in k])
 
 
+def remove_buffer_flags(model):
+    """
+    Sets all .is_buffer parameters in the model to None (necessary for sinkhorn-rebasin)
+    :param model: the model
+    :return: None, modifies the model in-place
+    """
+    for module in model.modules():
+        if "is_buffer" in dict(module.named_parameters()).keys():
+            module.is_buffer = None
+
+
 #####################
 # merging functions #
 #####################
@@ -707,7 +718,7 @@ def print_corr_matrix(corr_mtx):
     DrawImage(img, size=(corr_mtx.shape[1], corr_mtx.shape[0])).draw_image()
 
 
-def manipulate_corr_matrix(corr_mtx):
+def manipulate_corr_matrix(corr_mtx):  # TODO: check if still used, then delete!
     """
     Auto-detects the buffer areas in the correlation matrix (all zeros) and manipulates them like this:
 
@@ -744,9 +755,9 @@ def manipulate_corr_matrix(corr_mtx):
 
 def get_layer_perm_from_corr(corr_mtx):
     """
-    TODO: write docs
-    :param corr_mtx:
-    :return:
+    Given a correlation matrix, returns the optimal permutation map that the LAP solver returns.
+    :param corr_mtx: a correlation matrix
+    :return: the permutation map
     """
     corr_mtx = ensure_numpy(corr_mtx)
     row_ind, col_ind = scipy.optimize.linear_sum_assignment(corr_mtx, maximize=True)
@@ -757,10 +768,11 @@ def get_layer_perm_from_corr(corr_mtx):
 
 def get_layer_perm(subnet_a, subnet_b, loader):
     """
-    Returns the channel permutation map to make the activations of layer 1..n in subnet_a most closely
-    match those in subnet_b.  TODO(Check if this actually right - only last layer?)
+    Returns the channel permutation map to make the activations of the last layer in subnet_a
+    most closely match those in the last layer of subnet_b.
     :param subnet_a: The reference subnet that stays the same
     :param subnet_b: The subnet for which we want the permutation map
+    :param loader: The data loader used to collect the activations
     :return: the permutation map
     """
     corr_mtx = get_corr_matrix(subnet_a, subnet_b, loader)
@@ -817,7 +829,7 @@ def make_tracked_model(model):
 
 def fuse_conv_bn(conv: torch.nn.Conv2d, bn: torch.nn.BatchNorm2d):
     """
-    Fuses the convolutional and tracking batch norm layer into a single convolutional layers with appropriate
+    Fuses the convolutional and tracking batch norm layer into a single convolutional layer with appropriate
     parameters that exhibits the same activation pattern.
     :param conv: the Conv2d layer
     :param bn: the batch norm layer
