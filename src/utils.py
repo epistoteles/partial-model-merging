@@ -880,7 +880,7 @@ def reset_bn_stats(model: torch.nn.Module, loader, epochs: int = 1) -> None:
     Recalculates and overwrites the batch norm statistics in all BatchNorm2d layers of the model.
     :param model: the model which to modify
     :param loader: the loader for calculating the batch norm stats; typically train_aug_loader
-    :param epochs: for how many epochs to collect the batch norm stats; more is better (if augmentations are used)
+    :param epochs: for how many epochs to collect the batch norm stats; more is better (only if augmentations are used)
     :return: None
     """
     # resetting stats to baseline first as below is necessary for stability
@@ -929,6 +929,64 @@ def repair(model, parent_model_a, parent_model_b, loader, alpha: float = 0.5):
         var_a = m_a.bn.running_var
         var_b = m_b.bn.running_var
         goal_var = ((1 - alpha) * var_a.sqrt() + alpha * var_b.sqrt()).square()
+        # set these in the interpolated bn controller
+        m.set_stats(goal_mean, goal_var)
+        # turn rescaling on
+        m.rescale = True
+
+    # reset the tracked mean/var and fuse rescalings back into conv layers
+    reset_bn_stats(tracked_model, loader)
+
+    # fuse the rescaling+shift coefficients back into conv layers
+    tracked_model = fuse_tracked_model(tracked_model)
+
+    return tracked_model
+
+
+def partial_repair(model, parent_model_a, parent_model_b, loader, alpha: float = 0.5):
+    """
+    REPAIRs a (merged) model
+    TODO: implement for ResNet
+    adapted from https://github.com/KellerJordan/REPAIR
+    :param model: the merged model before REPAIR
+    :param parent_model_a: one of the parent models
+    :param parent_model_b: the other parent model (order doesn't matter)
+    :param loader: a data loader for recalculating the barch norm statistics; typically train_aug_loader
+    :param alpha: the alpha value used to create the model from the parent models
+    :return: the merged model after REPAIR
+    """
+    # calculate the statistics of every hidden unit in the endpoint networks
+    # this is done practically using PyTorch BatchNorm2d layers
+    tracked_model_a = make_tracked_model(parent_model_a)
+    tracked_model_b = make_tracked_model(parent_model_b)
+    tracked_model = make_tracked_model(model)
+
+    reset_bn_stats(tracked_model_a, loader)
+    reset_bn_stats(tracked_model_b, loader)
+
+    # set the goal mean/std in added bn layers of interpolated network, and turn batch renormalization on
+    for m_a, m, m_b in zip(tracked_model_a.modules(), tracked_model.modules(), tracked_model_b.modules()):
+        if not isinstance(m_a, REPAIRTracker):
+            continue
+        # get buffer flags
+        buffer_a = m_a.conv.is_buffer
+        buffer_b = m_b.conv.is_buffer
+        mask = buffer_a | buffer_b
+        # get goal statistics -- interpolate the mean and std of parent networks
+        mu_a = m_a.bn.running_mean
+        mu_b = m_b.bn.running_mean
+        goal_mean = torch.where(
+            mask,
+            mu_a + mu_b,
+            (1 - alpha) * mu_a + alpha * mu_b,
+        )
+        var_a = m_a.bn.running_var
+        var_b = m_b.bn.running_var
+        goal_var = torch.where(
+            mask,
+            var_a + var_b,
+            ((1 - alpha) * var_a.sqrt() + alpha * var_b.sqrt()).square(),
+        )
         # set these in the interpolated bn controller
         m.set_stats(goal_mean, goal_var)
         # turn rescaling on
