@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --output=$(find "$(pwd)" -type d -name "slurmlogs")/%j.out
+#SBATCH --output=./slurmjobs/slurmlogs/%j.out
 #SBATCH --gres=gpu:gtx1060:1
 #SBATCH --job-name=plot
 
