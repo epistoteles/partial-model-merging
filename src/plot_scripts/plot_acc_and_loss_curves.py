@@ -10,7 +10,11 @@ from src.utils import load_model, normalize, get_plots_dir, parse_model_name, ge
 from src.evaluate import evaluate_two_models
 
 
-def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str):
+def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
+    if model_name_b is None:
+        model_name_b = f"{model_name_a}-b"
+        model_name_a = f"{model_name_a}-a"
+
     dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
     dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
 
