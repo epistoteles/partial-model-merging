@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#SBATCH --output=$(find "$(pwd)" -type d -name "slurmlogs")/%j.out
 #SBATCH --gres=gpu:gtx1060:1
 #SBATCH --job-name=plot
 
@@ -7,4 +8,7 @@ export CUDA_DEVICE_ORDER="PCI_BUS_ID"
 export CUDA_VISIBLE_DEVICES=$(echo $SLURM_JOB_GPUS | cut -d "," -f1)
 
 source venv/bin/activate
-python -c "from src.plot_scripts.plot_acc_and_loss_curves import *; plot_acc_and_loss_curves('CIFAR10-VGG11-2x');"
+python -c \
+"from src.plot_scripts.plot_acc_and_loss_curves import *; \
+plot_acc_and_loss_curves('CIFAR10-VGG16-1x'); \
+plot_acc_and_loss_curves('CIFAR10-VGG11-4x')"
