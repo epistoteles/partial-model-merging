@@ -553,7 +553,7 @@ def smart_interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module,
         matching_buffer[-1] = "is_buffer"
         matching_buffer = ".".join(matching_buffer)
         if key.endswith("is_buffer"):
-            sd_interpolated[key] = torch.zeros_like(sd_a[key]).bool().cuda()
+            sd_interpolated[key] = (sd_a[key] | sd_b[key]).cuda()
         elif matching_buffer in sd_a.keys():
             mask = sd_a[matching_buffer] | sd_b[matching_buffer]
             sd_interpolated[key] = torch.where(
@@ -999,6 +999,39 @@ def partial_repair(model, parent_model_a, parent_model_b, loader, alpha: float =
     tracked_model = fuse_tracked_model(tracked_model)
 
     return tracked_model
+
+
+def get_variance_per_layer(model, loader):
+    tracked_model = make_tracked_model(model)
+    reset_bn_stats(tracked_model, loader)
+    mu_per_layer = []
+    var_per_layer = []
+    mu_per_layer_buffer = []
+    mu_per_layer_nobuffer = []
+    var_per_layer_buffer = []
+    var_per_layer_nobuffer = []
+    for m in tracked_model.modules():
+        if not isinstance(m, REPAIRTracker):
+            continue
+        buffer = m.conv.is_buffer
+        mu = m.bn.running_mean
+        var = m.bn.running_var
+        mu_per_layer.append(mu.mean().item())
+        var_per_layer.append(var.mean().item())
+        mu_per_layer_buffer.append(mu[buffer].mean().item())
+        var_per_layer_buffer.append(var[buffer].mean().item())
+        mu_per_layer_nobuffer.append(mu[~buffer].mean().item())
+        var_per_layer_nobuffer.append(var[~buffer].mean().item())
+    return torch.Tensor(
+        [
+            mu_per_layer,
+            mu_per_layer_buffer,
+            mu_per_layer_nobuffer,
+            var_per_layer,
+            var_per_layer_buffer,
+            var_per_layer_nobuffer,
+        ]
+    )
 
 
 ############################

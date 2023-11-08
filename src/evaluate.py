@@ -18,6 +18,7 @@ from src.utils import (
     expand_model,
     reset_bn_stats,
     repair,
+    partial_repair,
     get_num_params,
 )
 
@@ -261,7 +262,7 @@ def evaluate_two_models_merging_REPAIR(
             reset_bn_stats(model_merged.cuda(), repair_loader)
             model_repaired = model_merged
         else:
-            model_repaired = repair(model_merged, model_a, model_b, repair_loader, alpha)
+            model_repaired = partial_repair(model_merged, model_a, model_b, repair_loader, alpha)
         acc, loss = get_acc_and_loss(model_repaired, loader)
         accs.append(acc)
         losses.append(loss)
