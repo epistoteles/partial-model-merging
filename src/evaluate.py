@@ -81,7 +81,7 @@ def evaluate_single_model(model_name: str):
 
 
 @track_emissions()
-def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_steps: int = 21):
+def evaluate_two_models(model_name_a: str, model_name_b: str = None, interpolation_steps: int = 21):
     """
     Evaluates two models in terms of accuracy and loss with different combination techniques (and saves the result)
     :param model_name_a: the name of the first (reference) model checkpoint
@@ -89,6 +89,10 @@ def evaluate_two_models(model_name_a: str, model_name_b: str, interpolation_step
     :param interpolation_steps: number of interpolation steps between the models, i.e. 21 = 1.0, 0.95, 0.9, 0.85, ...
     :return: TODO
     """
+    if model_name_b is None:
+        model_name_b = f"{model_name_a}-b"
+        model_name_a = f"{model_name_a}-a"
+
     dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
     dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
 
