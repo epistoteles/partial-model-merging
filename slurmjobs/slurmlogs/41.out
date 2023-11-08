@@ -1,0 +1,10 @@
+📤 Loaded saved metrics for CIFAR10-VGG16-1x-ab from .safetensors
+📊 train accs plot saved for CIFAR10-VGG16-1x-a, CIFAR10-VGG16-1x-b
+📊 test accs plot saved for CIFAR10-VGG16-1x-a, CIFAR10-VGG16-1x-b
+📊 train losses plot saved for CIFAR10-VGG16-1x-a, CIFAR10-VGG16-1x-b
+📊 test losses plot saved for CIFAR10-VGG16-1x-a, CIFAR10-VGG16-1x-b
+📤 Loaded saved metrics for CIFAR10-VGG11-4x-ab from .safetensors
+📊 train accs plot saved for CIFAR10-VGG11-4x-a, CIFAR10-VGG11-4x-b
+📊 test accs plot saved for CIFAR10-VGG11-4x-a, CIFAR10-VGG11-4x-b
+📊 train losses plot saved for CIFAR10-VGG11-4x-a, CIFAR10-VGG11-4x-b
+📊 test losses plot saved for CIFAR10-VGG11-4x-a, CIFAR10-VGG11-4x-b
