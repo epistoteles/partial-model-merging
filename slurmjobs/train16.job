@@ -2,6 +2,8 @@
 
 #SBATCH --output=./slurmjobs/slurmlogs/%j.out
 #SBATCH --gres=gpu:rtx3060:1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem-per-gpu=32G
 #SBATCH --job-name=train-vgg16-c10
 
 export CUDA_DEVICE_ORDER="PCI_BUS_ID"
