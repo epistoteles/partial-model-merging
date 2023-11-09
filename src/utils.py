@@ -1148,7 +1148,7 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader] | tuple[DataLoade
     train_aug_loader = Loader(
         train_beton_path,
         batch_size=500,
-        num_workers=min(8, os.cpu_count()),
+        num_workers=min(8, len(os.sched_getaffinity(0))),
         order=OrderOption.RANDOM,
         drop_last=True,
         pipelines={"image": pre_p + aug_p + post_p, "label": label_pipeline},
@@ -1156,7 +1156,7 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader] | tuple[DataLoade
     train_noaug_loader = Loader(
         train_beton_path,
         batch_size=1000,
-        num_workers=min(8, os.cpu_count()),
+        num_workers=min(8, len(os.sched_getaffinity(0))),
         order=OrderOption.SEQUENTIAL,
         drop_last=False,
         pipelines={"image": pre_p + post_p, "label": label_pipeline},
@@ -1164,7 +1164,7 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader] | tuple[DataLoade
     test_loader = Loader(
         test_beton_path,
         batch_size=1000,
-        num_workers=min(8, os.cpu_count()),
+        num_workers=min(8, len(os.sched_getaffinity(0))),
         order=OrderOption.SEQUENTIAL,
         drop_last=False,
         pipelines={"image": pre_p + post_p, "label": label_pipeline},
