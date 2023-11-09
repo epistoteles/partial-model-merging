@@ -12,7 +12,7 @@ export CUDA_VISIBLE_DEVICES=$(echo $SLURM_JOB_GPUS | cut -d "," -f1)
 
 source venv/bin/activate
 python -c \
-" \
+"\
 import os; \
 import torch; \
 print(f'{'SBATCH STATS:^-30'}'); \
