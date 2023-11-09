@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#SBATCH --output=./slurmjobs/slurmlogs/%j.out
+#SBATCH --gres=gpu:rtx3060:1
+#SBATCH --job-name=train-vgg16-c10
+
+export CUDA_DEVICE_ORDER="PCI_BUS_ID"
+export CUDA_VISIBLE_DEVICES=$(echo $SLURM_JOB_GPUS | cut -d "," -f1)
+
+source venv/bin/activate
+python src/train.py --dataset CIFAR10 --model VGG --size 16 -wandb -test
