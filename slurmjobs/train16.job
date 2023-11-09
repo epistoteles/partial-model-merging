@@ -2,8 +2,8 @@
 
 #SBATCH --output=./slurmjobs/slurmlogs/%j.out
 #SBATCH --gres=gpu:rtx3060:1
-#SBATCH --cpus-per-task=3
-#SBATCH --threads-per-core=2
+#SBATCH --cpus-per-task=4
+#SBATCH --threads-per-core=1
 #SBATCH --mem-per-gpu=32G
 #SBATCH --job-name=train-vgg16-c10
 
