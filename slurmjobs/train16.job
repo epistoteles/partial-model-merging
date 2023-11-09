@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #SBATCH --output=./slurmjobs/slurmlogs/%j.out
-#SBATCH --gres=gpu:gtx1060:1
-#SBATCH --cpus-per-task=1
+#SBATCH --gres=gpu:rtx3060:1
+#SBATCH --cpus-per-task=4
 #SBATCH --threads-per-core=1
 #SBATCH --mem-per-gpu=16G
-#SBATCH --job-name=train-test
+#SBATCH --job-name=train-19
 
 export CUDA_DEVICE_ORDER="PCI_BUS_ID"
 export CUDA_VISIBLE_DEVICES=$(echo $SLURM_JOB_GPUS | cut -d "," -f1)
@@ -15,11 +15,12 @@ python -c \
 "\
 import os; \
 import torch; \
-print('---------------SBATCH STATS---------------'); \
-print(f'Total CPU cores:     {os.cpu_count()}'); \
-print(f'Available CPU cores: {len(os.sched_getaffinity(0))}'); \
-print(f'Available GPUs: {torch.cuda.get_device_name(torch.cuda.current_device())}'); \
-print('-'*42)
+import psutil; \
+print('-------------------SBATCH STATS-------------------'); \
+print(f'Total CPU cores:      {os.cpu_count()}'); \
+print(f'Available CPU cores:  {len(os.sched_getaffinity(0))}'); \
+print(f'Memory:               {psutil.virtual_memory()}'); \
+print(f'Available GPUs:       {torch.cuda.get_device_name(torch.cuda.current_device())}'); \
+print('-'*50)
 "
-echo 111
-# python src/train.py --dataset CIFAR10 --model VGG --size 16 -wandb -test
+python src/train.py --dataset CIFAR10 --model VGG --size 19 -wandb -test
