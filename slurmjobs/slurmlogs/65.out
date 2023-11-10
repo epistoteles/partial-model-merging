@@ -1,0 +1,9 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    4
+Visible GPUs:         NVIDIA GeForce RTX 3060
+--------------------------------------------------
+  File "<string>", line 1
+    from src.evaluate import * from src.plot_scripts.plot_acc_and_loss_curves import * model_name = 'CIFAR10-VGG11-bn-1x' evaluate_two_models(model_name) plot_acc_and_loss_curves(model_name) 
+                               ^^^^
+SyntaxError: invalid syntax
