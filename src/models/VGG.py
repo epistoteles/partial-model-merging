@@ -66,7 +66,9 @@ class VGG(nn.Module):
                 conv.is_buffer = nn.Parameter(torch.zeros_like(conv.bias).bool(), requires_grad=False)
                 layers.append(conv)
                 if self.bn:
-                    layers.append(nn.BatchNorm2d(round(width * x)))
+                    _bn = nn.BatchNorm2d(round(width * x))
+                    _bn.is_buffer = nn.Parameter(torch.zeros(_bn.num_features).bool(), requires_grad=False)
+                    layers.append(_bn)
                 layers.append(nn.ReLU(inplace=True))
                 in_channels = x
         layers += [nn.AvgPool2d(kernel_size=1, stride=1)]
