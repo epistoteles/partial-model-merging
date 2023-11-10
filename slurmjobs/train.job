@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --threads-per-core=1
 #SBATCH --mem-per-gpu=16G
-#SBATCH --job-name=train-19
+#SBATCH --job-name=train
 
 export CUDA_DEVICE_ORDER="PCI_BUS_ID"
 export CUDA_VISIBLE_DEVICES=$(echo $SLURM_JOB_GPUS | cut -d "," -f1)
@@ -22,4 +22,7 @@ print(f'Visible CPU cores:    {len(os.sched_getaffinity(0))}'); \
 print(f'Visible GPUs:         {torch.cuda.get_device_name(torch.cuda.current_device())}'); \
 print('-'*50)
 "
-python src/train.py --dataset CIFAR10 --model VGG --size 16 --lr 0.2 -wandb -test
+python src/train.py --dataset CIFAR10 --model VGG --size 11 --width 0.5 --variant a -bn -wandb -test
+python src/train.py --dataset CIFAR10 --model VGG --size 11 --width 0.5 --variant b -bn -wandb -test
+python src/train.py --dataset CIFAR10 --model VGG --size 11 --width 0.25 --variant a -bn -wandb -test
+python src/train.py --dataset CIFAR10 --model VGG --size 11 --width 0.25 --variant b -bn -wandb -test
