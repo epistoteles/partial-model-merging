@@ -42,8 +42,13 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
         sns.lineplot(x=metrics["alphas"], y=metrics[f"merging_{split}_{metric}"], label="merging", color="orange")
 
         plots_dir = get_plots_dir(subdir=Path(__file__).stem)
+        os.makedirs(os.path.join(plots_dir, f"{model_name_a}{variant_b}/"), exist_ok=True)
         plt.savefig(
-            os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a}{variant_b}_{split}_{metric}_1.png"), dpi=600
+            os.path.join(
+                plots_dir,
+                f"{model_name_a}{variant_b}/{Path(__file__).stem}_{model_name_a}{variant_b}_{split}_{metric}_1.png",
+            ),
+            dpi=600,
         )
 
         if f"partial_merging_1.1_{split}_{metric}" in metrics.keys():
@@ -76,7 +81,11 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
             )
 
         plt.savefig(
-            os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a}{variant_b}_{split}_{metric}_2.png"), dpi=600
+            os.path.join(
+                plots_dir,
+                f"{model_name_a}{variant_b}/{Path(__file__).stem}_{model_name_a}{variant_b}_{split}_{metric}_2.png",
+            ),
+            dpi=600,
         )
 
         if f"merging_REPAIR_{split}_{metric}" in metrics.keys():
