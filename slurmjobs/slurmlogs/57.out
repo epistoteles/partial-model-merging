@@ -1,0 +1,4 @@
+  File "<string>", line 1
+    import os; import torch; print(f'{'SBATCH STATS:^-30'}'); print(f'Total CPU cores:     {os.cpu_count()}'); print(f'Available CPU cores: {len(os.sched_getaffinity(0))}'); print(f'Available GPUs: {torch.cuda.get_device_name(torch.cuda.current_device())}'); print('-'*42)
+IndentationError: unexpected indent
+111

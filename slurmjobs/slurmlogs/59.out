@@ -1,0 +1,6 @@
+---------------SBATCH STATS---------------
+Total CPU cores:     6
+Available CPU cores: 1
+Available GPUs: NVIDIA GeForce GTX 1060 6GB
+------------------------------------------
+111
