@@ -130,7 +130,11 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
             )
 
         plt.savefig(
-            os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a}{variant_b}_{split}_{metric}_3.png"), dpi=600
+            os.path.join(
+                plots_dir,
+                f"{model_name_a}{variant_b}/{Path(__file__).stem}_{model_name_a}{variant_b}_{split}_{metric}_3.png",
+            ),
+            dpi=600,
         )
         plt.close()
         print(f"📊 {split} {metric} plot saved for {model_name_a}, {model_name_b}")
