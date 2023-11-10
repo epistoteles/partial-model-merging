@@ -1,0 +1,39 @@
+from src.utils import *
+from src.evaluate import *
+
+model_a, model_b = load_models_ab('CIFAR10-VGG11-1x')
+
+model_a_1_1 = expand_model(model_a, 1.1)
+model_a_1_5 = expand_model(model_a, 1.5)
+model_a_1_8 = expand_model(model_a, 1.8)
+model_a_2_0 = expand_model(model_a, 2.0)
+model_b_1_1 = expand_model(model_b, 1.1)
+model_b_1_5 = expand_model(model_b, 1.5)
+model_b_1_8 = expand_model(model_b, 1.8)
+model_b_2_0 = expand_model(model_b, 2.0)
+
+train_aug_loader, train_noaug_loader, test_loader = get_loaders('CIFAR10')
+
+model_b_perm = permute_model(model_a, model_b, train_aug_loader)
+model_b_1_1_perm = permute_model(model_a_1_1, model_b_1_1, train_aug_loader)
+model_b_1_5_perm = permute_model(model_a_1_5, model_b_1_5, train_aug_loader)
+model_b_1_8_perm = permute_model(model_a_1_8, model_b_1_8, train_aug_loader)
+model_b_2_0_perm = permute_model(model_a_2_0, model_b_2_0, train_aug_loader)
+
+model = smart_interpolate_models(model_a, model_b_perm, 0.5)
+model_1_1 = smart_interpolate_models(model_a_1_1, model_b_1_1_perm, 0.5)
+model_1_5 = smart_interpolate_models(model_a_1_5, model_b_1_5_perm, 0.5)
+model_1_8 = smart_interpolate_models(model_a_1_8, model_b_1_8_perm, 0.5)
+model_2_0 = smart_interpolate_models(model_a_2_0, model_b_2_0_perm, 0.5)
+
+model_r = repair(model, model_a, model_b_perm, train_noaug_loader)
+model_1_1_r = repair(model_1_1, model_a_1_1, model_b_1_1_perm, train_noaug_loader)
+model_1_5_r = repair(model_1_5, model_a_1_5, model_b_1_5_perm, train_noaug_loader)
+model_1_8_r = repair(model_1_8, model_a_1_8, model_b_1_8_perm, train_noaug_loader)
+model_2_0_r = repair(model_2_0, model_a_2_0, model_b_2_0_perm, train_noaug_loader)
+
+model_pr = partial_repair(model, model_a, model_b_perm, train_noaug_loader)
+model_1_1_pr = partial_repair(model_1_1, model_a_1_1, model_b_1_1_perm, train_noaug_loader)
+model_1_5_pr = partial_repair(model_1_5, model_a_1_5, model_b_1_5_perm, train_noaug_loader)
+model_1_8_pr = partial_repair(model_1_8, model_a_1_8, model_b_1_8_perm, train_noaug_loader)
+model_2_0_pr = partial_repair(model_2_0, model_a_2_0, model_b_2_0_perm, train_noaug_loader)
