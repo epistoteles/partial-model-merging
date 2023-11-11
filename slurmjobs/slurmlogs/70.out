@@ -1,0 +1,18 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    4
+Visible GPUs:         NVIDIA GeForce RTX 3060
+--------------------------------------------------
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/codecarbon/emissions_tracker.py", line 791, in wrapped_fn
+    fn_result = fn(*args, **kwargs)
+  File "/home/korbinian/Documents/partial-model-merging/src/evaluate.py", line 128, in evaluate_two_models
+    metrics["naive_train_accs"], metrics["naive_train_losses"] = evaluate_two_models_merging(
+  File "/home/korbinian/Documents/partial-model-merging/src/evaluate.py", line 246, in evaluate_two_models_merging
+    model_merged = smart_interpolate_models(model_a, model_b, alpha)
+  File "/home/korbinian/Documents/partial-model-merging/src/utils.py", line 560, in smart_interpolate_models
+    mask.view(-1, *((1,) * (sd_a[key].dim() - 1))).expand_as(sd_a[key]),
+RuntimeError: expand(CUDABoolType{[64]}, size=[]): the number of sizes provided (0) must be greater or equal to the number of dimensions in the tensor (1)
+Collecting ensembling metrics ...
+Collecting naive merging metrics ...
