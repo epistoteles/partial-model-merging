@@ -81,7 +81,12 @@ def evaluate_single_model(model_name: str):
 
 
 @track_emissions()
-def evaluate_two_models(model_name_a: str, model_name_b: str = None, interpolation_steps: int = 21):
+def evaluate_two_models(
+    model_name_a: str,
+    model_name_b: str = None,
+    interpolation_steps: int = 21,
+    expansions: list[int] = [1.1, 1.5, 1.8, 2.0],
+):
     """
     Evaluates two models in terms of accuracy and loss with different combination techniques (and saves the result)
     :param model_name_a: the name of the first (reference) model checkpoint
@@ -154,7 +159,7 @@ def evaluate_two_models(model_name_a: str, model_name_b: str = None, interpolati
 
         save_evaluation_checkpoint(metrics, filepath)
 
-        for k in [1.1, 1.5, 1.8, 2.0]:
+        for k in expansions:
             print(f"Collecting partial merging metrics ({k}) ...")
             model_a = load_model(model_name_a).cuda()
             model_b = load_model(model_name_b).cuda()
