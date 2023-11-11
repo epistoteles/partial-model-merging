@@ -553,7 +553,7 @@ def smart_interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module,
         matching_buffer[-1] = "is_buffer"
         matching_buffer = ".".join(matching_buffer)
         if key.endswith("is_buffer"):
-            sd_interpolated[key] = (sd_a[key] | sd_b[key]).cuda()
+            sd_interpolated[key] = (sd_a[key] | sd_b[key]).cuda()  # TODO replace with bit-wise and (&)?
         elif matching_buffer in sd_a.keys():
             mask = sd_a[matching_buffer] | sd_b[matching_buffer]
             sd_interpolated[key] = torch.where(
