@@ -41,7 +41,9 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
 
         sns.lineplot(x=metrics["alphas"], y=metrics[f"ensembling_{split}_{metric}"], label="ensembling", color="black")
         # sns.lineplot(x=metrics["alphas"], y=metrics[f"naive_{split}_{metric}"], label="naive merging", color='')
-        sns.lineplot(x=metrics["alphas"], y=metrics[f"merging_{split}_{metric}"], label="merging", color="orange")
+        sns.lineplot(
+            x=metrics["alphas"], y=metrics[f"merging_{split}_{metric}"], label="merging", color=plt.cm.rainbow(0)
+        )
 
         plots_dir = get_plots_dir(subdir=Path(__file__).stem)
         os.makedirs(os.path.join(plots_dir, f"{model_name_a}{variant_b}/"), exist_ok=True)
@@ -53,34 +55,16 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
             dpi=600,
         )
 
-        if f"partial_merging_1.1_{split}_{metric}" in metrics.keys():
-            sns.lineplot(
-                x=metrics["alphas"],
-                y=metrics[f"partial_merging_1.1_{split}_{metric}"],
-                label="partial merging (+10% buffer)",
-                color="red",
-            )
-        if f"partial_merging_1.5_{split}_{metric}" in metrics.keys():
-            sns.lineplot(
-                x=metrics["alphas"],
-                y=metrics[f"partial_merging_1.5_{split}_{metric}"],
-                label="partial merging (+50% buffer)",
-                color="blue",
-            )
-        if f"partial_merging_1.8_{split}_{metric}" in metrics.keys():
-            sns.lineplot(
-                x=metrics["alphas"],
-                y=metrics[f"partial_merging_1.8_{split}_{metric}"],
-                label="partial merging (+80% buffer)",
-                color="green",
-            )
-        if f"partial_merging_2.0_{split}_{metric}" in metrics.keys():
-            sns.lineplot(
-                x=metrics["alphas"],
-                y=metrics[f"partial_merging_2.0_{split}_{metric}"],
-                label="partial merging (+100% buffer)",
-                color="purple",
-            )
+        expansions = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
+
+        for k in expansions:
+            if f"partial_merging_{k}_{split}_{metric}" in metrics.keys():
+                sns.lineplot(
+                    x=metrics["alphas"],
+                    y=metrics[f"partial_merging_{k}_{split}_{metric}"],
+                    label=f"partial merging (+{int((1.1-1)*100)}% buffer)",
+                    color=plt.cm.rainbow(k - 1),
+                )
 
         plt.savefig(
             os.path.join(
@@ -95,41 +79,19 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
                 x=metrics["alphas"],
                 y=metrics[f"merging_REPAIR_{split}_{metric}"],
                 label="merging + REPAIR ",
-                color="orange",
+                color=plt.cm.rainbow(0),
                 dashes=(2, 2),
             )
-        if f"partial_merging_REPAIR_1.1_{split}_{metric}" in metrics.keys():
-            sns.lineplot(
-                x=metrics["alphas"],
-                y=metrics[f"partial_merging_REPAIR_1.1_{split}_{metric}"],
-                label="partial merging + REPAIR (+10% buffer)",
-                color="red",
-                dashes=(2, 2),
-            )
-        if f"partial_merging_REPAIR_1.5_{split}_{metric}" in metrics.keys():
-            sns.lineplot(
-                x=metrics["alphas"],
-                y=metrics[f"partial_merging_REPAIR_1.5_{split}_{metric}"],
-                label="partial merging + REPAIR (+50% buffer)",
-                color="blue",
-                dashes=(2, 2),
-            )
-        if f"partial_merging_REPAIR_1.8_{split}_{metric}" in metrics.keys():
-            sns.lineplot(
-                x=metrics["alphas"],
-                y=metrics[f"partial_merging_REPAIR_1.8_{split}_{metric}"],
-                label="partial merging + REPAIR (+80% buffer)",
-                color="green",
-                dashes=(2, 2),
-            )
-        if f"partial_merging_REPAIR_2.0_{split}_{metric}" in metrics.keys():
-            sns.lineplot(
-                x=metrics["alphas"],
-                y=metrics[f"partial_merging_REPAIR_2.0_{split}_{metric}"],
-                label="partial merging + REPAIR (+100% buffer)",
-                color="purple",
-                dashes=(2, 2),
-            )
+
+        for k in expansions:
+            if f"partial_merging_REPAIR_{k}_{split}_{metric}" in metrics.keys():
+                sns.lineplot(
+                    x=metrics["alphas"],
+                    y=metrics[f"partial_merging_REPAIR_{k}_{split}_{metric}"],
+                    label=f"partial merging + REPAIR (+{int((1.1-1)*100)}% buffer)",
+                    color=plt.cm.rainbow(k - 1),
+                    dashes=(2, 2),
+                )
 
         plt.savefig(
             os.path.join(
