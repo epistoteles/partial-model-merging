@@ -62,7 +62,7 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
                 sns.lineplot(
                     x=metrics["alphas"],
                     y=metrics[f"partial_merging_{k}_{split}_{metric}"],
-                    label=f"partial merging (+{int((k-1)*100)}% buffer)",
+                    label=f"partial merging (+{int(round((k-1)*100))}% buffer)",
                     color=plt.cm.rainbow(k - 1),
                 )
 
@@ -88,7 +88,7 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
                 sns.lineplot(
                     x=metrics["alphas"],
                     y=metrics[f"partial_merging_REPAIR_{k}_{split}_{metric}"],
-                    label=f"partial merging + REPAIR (+{int((k-1)*100)}% buffer)",
+                    label=f"partial merging + REPAIR (+{int(round((k-1)*100))}% buffer)",
                     color=plt.cm.rainbow(k - 1),
                     dashes=(2, 2),
                 )
