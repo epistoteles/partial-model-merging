@@ -464,7 +464,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                     next_layer = model.classifier
                 permute_input(perm_map, next_layer)  # in-place modification
 
-    elif isinstance(model, ResNet20):
+    elif isinstance(model, ResNet18):
         raise NotImplementedError()
     else:
         raise ValueError(f"Unknown model type {type(model)}")
