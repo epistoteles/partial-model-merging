@@ -52,11 +52,7 @@ class ResNet18(nn.Module):
             width = float(width)
         if isinstance(width, float):
             width = [width] * 17
-        assert (
-            isinstance(width, list)
-            and all(isinstance(item, float) for item in width)
-            or isinstance(width, torch.Tensor)
-        ) and len(width) == 17
+        assert (isinstance(width, list) or isinstance(width, torch.Tensor)) and len(width) == 17
         assert (
             width[0] == width[2] == width[4]
             and width[6] == width[8]
