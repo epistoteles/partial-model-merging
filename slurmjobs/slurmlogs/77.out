@@ -1,0 +1,11 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    4
+Visible GPUs:         NVIDIA GeForce RTX 3060
+--------------------------------------------------
+📤 Loaded saved metrics for SVHN-VGG11-bn-1x-ab from .safetensors
+📤 Loaded saved metrics for SVHN-VGG11-bn-1x-ab from .safetensors
+📊 train accs plot saved for SVHN-VGG11-bn-1x-a, SVHN-VGG11-bn-1x-b
+📊 test accs plot saved for SVHN-VGG11-bn-1x-a, SVHN-VGG11-bn-1x-b
+📊 train losses plot saved for SVHN-VGG11-bn-1x-a, SVHN-VGG11-bn-1x-b
+📊 test losses plot saved for SVHN-VGG11-bn-1x-a, SVHN-VGG11-bn-1x-b
