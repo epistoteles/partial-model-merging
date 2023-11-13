@@ -48,9 +48,9 @@ class ResNet18(nn.Module):
         :param width: multiplier for the width of the network; per layer if provided as iterable
         :param num_classes: the number of output classes
         """
-        if type(width) is int:
+        if isinstance(width, int):
             width = float(width)
-        if type(width) is float:
+        if isinstance(width, float):
             width = [width] * 17
         assert (
             isinstance(width, list)
@@ -69,7 +69,7 @@ class ResNet18(nn.Module):
         self.bn = True  # these marked base_sizes must stay the same after model expansion
         self.num_classes = num_classes  # ╭───────┬───────╮       ╭───────╮       ╭───────╮         ╭─────────╮
         self.base_sizes = torch.LongTensor([16, 16, 16, 16, 16, 32, 32, 32, 32, 64, 64, 64, 64, 128, 128, 128, 128])
-        self.width = width
+        self.width = torch.FloatTensor(width)
         self.scaled_sizes = torch.round(self.base_sizes * self.width).long()
         self.in_planes = self.scaled_sizes[0]
 
