@@ -85,15 +85,18 @@ def evaluate_two_models(
     model_name_a: str,
     model_name_b: str = None,
     interpolation_steps: int = 21,
-    expansions: list[int] = [1.1, 1.5, 1.8, 2.0],
+    expansions: list[float] = None,
 ):
     """
     Evaluates two models in terms of accuracy and loss with different combination techniques (and saves the result)
     :param model_name_a: the name of the first (reference) model checkpoint
     :param model_name_b: the name of the second model checkpoint.
     :param interpolation_steps: number of interpolation steps between the models, i.e. 21 = 1.0, 0.95, 0.9, 0.85, ...
+    :param expansions: which expansions to evaluate (original width + buffer width)
     :return: TODO
     """
+    if expansions is None:
+        expansions = [1.1, 1.5, 1.8, 2.0]
     if model_name_b is None:
         model_name_b = f"{model_name_a}-b"
         model_name_a = f"{model_name_a}-a"
