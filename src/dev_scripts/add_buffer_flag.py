@@ -65,6 +65,9 @@ for filename in model_names:
     for key in list(state_dict.keys()):
         if key.endswith("num_batches_tracked"):
             continue
+        if "linear" in key:
+            state_dict.pop("linear.is_buffer", None)
+            continue
         buffer_name = ".".join([key.rsplit(".", 1)[0], "is_buffer"])
         if buffer_name not in state_dict.keys():
             dim = state_dict[key].shape[0]
