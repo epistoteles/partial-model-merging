@@ -35,7 +35,7 @@ class BasicBlock(nn.Module):
         return out
 
 
-class ResNet18(nn.Module):
+class ResNet20(nn.Module):
     def __init__(self, width: float | list[float] | torch.FloatTensor = 1.0, num_classes: int = 10):
         """
         A custom ResNet18 module, adapted from https://github.com/KellerJordan/REPAIR
@@ -76,7 +76,7 @@ class ResNet18(nn.Module):
         return out
 
 
-class ResNet20(nn.Module):
+class ResNet18(nn.Module):
     def __init__(self, width: float = 1.0, num_classes: int = 10):
         """
         A custom ResNet20 module, adapted from https://github.com/KellerJordan/REPAIR
@@ -90,6 +90,7 @@ class ResNet20(nn.Module):
         self.in_planes = round(width * 16)
 
         self.conv1 = nn.Conv2d(3, round(width * 16), kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv1.is_buffer = nn.Parameter(torch.zeros(round(width * 16)), requires_grad=False)
         self.bn1 = nn.BatchNorm2d(round(width * 16))
         self.layer1 = self._make_layer(BasicBlock, planes=round(width * 16), num_blocks=2, stride=1)
         self.layer2 = self._make_layer(BasicBlock, planes=round(width * 32), num_blocks=2, stride=2)
