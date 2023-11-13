@@ -24,29 +24,29 @@ def _convert(x):
 ####################
 # fix VGGs with bn #
 ####################
-#
-# model_names = [name for name in get_all_model_names() if "VGG" in name and "bn" in name]
-#
-# for filename in model_names:
-#     filename += ".safetensors"
-#     checkpoints_dir = _get_checkpoints_dir()
-#     filename = os.path.join(checkpoints_dir, filename)
-#
-#     state_dict = load_file(filename)
-#
-#     d = defaultdict(list)
-#     entries = list(map(lambda x: x.split("."), state_dict.keys()))
-#     for entry in entries:
-#         if len(entry) == 3:
-#             d[entry[1]].append(entry[2])
-#
-#     for key, values in d.items():
-#         if "is_buffer" not in values:
-#             state_dict[f"features.{key}.is_buffer"] = torch.zeros_like(state_dict[f"features.{key}.bias"])
-#
-#     state_dict = dict(sorted(state_dict.items(), key=_sd_item_to_key))
-#
-#     save_file(state_dict, filename)
+
+model_names = [name for name in get_all_model_names() if "VGG" in name and "bn" in name]
+
+for filename in model_names:
+    filename += ".safetensors"
+    checkpoints_dir = _get_checkpoints_dir()
+    filename = os.path.join(checkpoints_dir, filename)
+
+    state_dict = load_file(filename)
+
+    d = defaultdict(list)
+    entries = list(map(lambda x: x.split("."), state_dict.keys()))
+    for entry in entries:
+        if len(entry) == 3:
+            d[entry[1]].append(entry[2])
+
+    for key, values in d.items():
+        if "is_buffer" not in values:
+            state_dict[f"features.{key}.is_buffer"] = torch.zeros_like(state_dict[f"features.{key}.bias"])
+
+    state_dict = dict(sorted(state_dict.items(), key=_sd_item_to_key))
+
+    save_file(state_dict, filename)
 
 
 ###############

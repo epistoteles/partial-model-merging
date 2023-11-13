@@ -302,37 +302,37 @@ def expand_model(
     assert expansion_factor.min() >= 1.0, "Expansion factors <1 are not allowed"
     assert expansion_factor.max() > 1.0, "At least one expansion factor must be >1"
     assert append in ["right", "left"], "Append parameter must be 'right' or 'left'"
+
     if isinstance(model, VGG):
         model_expanded = VGG(
             size=model.size, width=model.width * expansion_factor, bn=model.bn, num_classes=model.num_classes
         )
-        sd_expanded = model_expanded.state_dict()
-        sd = model.state_dict()
-        for key in sd.keys():
-            if "is_buffer" in key:  # features.0.is_buffer
-                sd_expanded[key] = torch.ones_like(sd_expanded[key]).bool()  # init is_buffer flags as True
-            else:  # features.0.weight; features.0.bias; classifier.weight; classifier.bias
-                sd_expanded[key] = torch.zeros_like(sd_expanded[key])  # init weights/biases as 0.0
-            if append == "right":
-                slice_indices = tuple(slice(0, sd[key].size(i)) for i in range(sd[key].dim()))
-            else:  # append == "left"
-                slice_indices = tuple(
-                    slice(sd_expanded[key].size(i) - sd[key].size(i), sd_expanded[key].size(i))
-                    for i in range(sd[key].dim())
-                )
-            sd_expanded[key][slice_indices] = sd[key]
-        model_expanded.load_state_dict(sd_expanded)
     elif isinstance(model, ResNet18):
         model_expanded = ResNet18(width=model.width * expansion_factor, num_classes=model.num_classes)
-        raise NotImplementedError
     elif isinstance(model, ResNet20):
         model_expanded = ResNet20(width=model.width * expansion_factor, num_classes=model.num_classes)
-        raise NotImplementedError
     elif isinstance(model, MLP):
-        model_expanded = ResNet20(width=model.width * expansion_factor, num_classes=model.num_classes)
-        raise NotImplementedError
+        model_expanded = MLP(width=model.width * expansion_factor, num_classes=model.num_classes)
     else:
         raise ValueError("Unknown model type")
+
+    sd_expanded = model_expanded.state_dict()
+    sd = model.state_dict()
+    for key in sd.keys():
+        if "is_buffer" in key:  # e.g. features.0.is_buffer
+            sd_expanded[key] = torch.ones_like(sd_expanded[key]).bool()  # init is_buffer flags as True
+        else:  # e.g. features.0.weight, features.0.bias, classifier.weight, classifier.bias, ...
+            sd_expanded[key] = torch.zeros_like(sd_expanded[key])  # init weights/biases as 0.0
+        if append == "right":
+            slice_indices = tuple(slice(0, sd[key].size(i)) for i in range(sd[key].dim()))
+        else:  # append == "left"
+            slice_indices = tuple(
+                slice(sd_expanded[key].size(i) - sd[key].size(i), sd_expanded[key].size(i))
+                for i in range(sd[key].dim())
+            )
+        sd_expanded[key][slice_indices] = sd[key]
+    model_expanded.load_state_dict(sd_expanded)
+
     return model_expanded
 
 
