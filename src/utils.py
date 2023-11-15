@@ -308,6 +308,17 @@ def expand_model(
             size=model.size, width=model.width * expansion_factor, bn=model.bn, num_classes=model.num_classes
         )
     elif isinstance(model, ResNet18):
+        assert (
+            isinstance(expansion_factor, int)
+            or isinstance(expansion_factor, float)
+            or (
+                len(expansion_factor) == 17
+                and expansion_factor[0] == expansion_factor[2] == expansion_factor[4]
+                and expansion_factor[6] == expansion_factor[8]
+                and expansion_factor[10] == expansion_factor[12]
+                and expansion_factor[14] == expansion_factor[16]
+            )
+        ), "width of residual activations must match after expansion"
         model_expanded = ResNet18(width=model.width * expansion_factor, num_classes=model.num_classes)
     elif isinstance(model, ResNet20):
         model_expanded = ResNet20(width=model.width * expansion_factor, num_classes=model.num_classes)
@@ -435,8 +446,8 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                         .cpu()
                         .numpy()
                     )
-                    corr[reference_is_buffer, :] = 1.0
-                    corr[:, model_is_buffer] = 1.0
+                    corr[reference_is_buffer, :] = 1.1
+                    corr[:, model_is_buffer] = 1.1
                     corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.0
                     # print_corr_matrix(corr)
                     perm_map = get_layer_perm_from_corr(corr)
@@ -448,8 +459,8 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                         .cpu()
                         .numpy()
                     )
-                    corr[reference_is_buffer, :] = 1.0
-                    corr[:, model_is_buffer] = 1.0
+                    corr[reference_is_buffer, :] = 1.1
+                    corr[:, model_is_buffer] = 1.1
                     corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.0
                     # print_corr_matrix(corr)
                     perm_map = get_layer_perm_from_corr(corr)
@@ -497,6 +508,8 @@ def permute_output(perm_map, conv, bn):
                 bn.running_var,
             ]
         )
+    if bn.is_buffer is not None:
+        pre_weights.append(bn.is_buffer)
     for w in pre_weights:
         w.data = w[perm_map]
 

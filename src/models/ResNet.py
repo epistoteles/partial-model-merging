@@ -62,8 +62,9 @@ class ResNet18(nn.Module):
 
         super().__init__()
         self.size = 18
-        self.bn = True  # these marked base_sizes must stay the same after model expansion
-        self.num_classes = num_classes  # ╭───────┬───────╮       ╭───────╮       ╭───────╮         ╭─────────╮
+        self.num_layers = 17  # number of layers which can be expanded
+        self.bn = True  # the marked self.base_sizes in the following line must stay the same after model expansion
+        self.num_classes = num_classes  # . ╭───────┬───────╮       ╭───────╮       ╭───────╮         ╭─────────╮
         self.base_sizes = torch.LongTensor([16, 16, 16, 16, 16, 32, 32, 32, 32, 64, 64, 64, 64, 128, 128, 128, 128])
         self.width = torch.FloatTensor(width)
         self.scaled_sizes = torch.round(self.base_sizes * self.width).long()
