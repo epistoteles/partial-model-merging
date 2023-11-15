@@ -508,8 +508,8 @@ def permute_output(perm_map, conv, bn):
                 bn.running_var,
             ]
         )
-    if bn.is_buffer is not None:
-        pre_weights.append(bn.is_buffer)
+        if bn.is_buffer is not None:
+            pre_weights.append(bn.is_buffer)
     for w in pre_weights:
         w.data = w[perm_map]
 
