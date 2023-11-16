@@ -380,6 +380,26 @@ def get_blocks(resnet: ResNet18 | ResNet20):
     return blocks
 
 
+def add_junctures(resnet: ResNet18 | ResNet20):
+    """
+    Adds artificial downsampling point-wise convolutions to BasicBlocks to keep track of
+    applied permutations while aligning two models.
+    :param resnet: the ResNet
+    :return: a new identical ResNet with junctures
+    """
+    new_resnet = model_like(resnet)
+    new_resnet.load_state_dict(resnet.state_dict())
+    blocks = get_blocks(new_resnet)[1:]
+    for block in blocks:
+        if block.downsample is not None and len(block.downsample) > 0:
+            continue
+        planes = len(block.bn2.weight)
+        shortcut = torch.nn.Conv2d(planes, planes, kernel_size=1, stride=1, padding=0, bias=False)
+        shortcut.weight.data[:, :, 0, 0] = torch.eye(planes)
+        block.downsample = shortcut
+    return new_resnet.cuda().eval()
+
+
 def get_num_layers(model):
     """
     Returns the number of layers ({conv + bn + relu} and classifier) of a model
