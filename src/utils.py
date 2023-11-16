@@ -358,6 +358,23 @@ def subnet(model: torch.nn.Module, n_layers: int):
     return model.features[:n_layers]
 
 
+def get_blocks(resnet: ResNet18 | ResNet20):
+    """
+    Returns the individual blocks of the ResNet as an iterable
+    :param resnet: the ResNet model
+    :return: the
+    """
+    blocks = torch.nn.Sequential(
+        torch.nn.Sequential(resnet.conv1, resnet.bn1, resnet.relu, resnet.maxpool),
+        *resnet.layer1,
+        *resnet.layer2,
+        *resnet.layer3,
+    )
+    if hasattr(resnet, "layer4"):  # ResNet18
+        blocks.extend(resnet.layer4)
+    return blocks
+
+
 def get_num_layers(model):
     """
     Returns the number of layers ({conv + bn + relu} and classifier) of a model
