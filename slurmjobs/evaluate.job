@@ -27,6 +27,6 @@ python -c "\
 from src.evaluate import *; \
 from src.plot_scripts.plot_acc_and_loss_curves import *; \
 model_name = 'CIFAR10-VGG11-bn-1x'; \
-evaluate_two_models('CIFAR10-VGG11-bn-1x-b', 'CIFAR10-VGG11-bn-1x-a', expansions=[1.1, 1.5, 2.0]); \
+evaluate_two_models('CIFAR10-VGG11-bn-1x-b', 'CIFAR10-VGG11-bn-1x-a', expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
 plot_acc_and_loss_curves('CIFAR10-VGG11-bn-1x-b', 'CIFAR10-VGG11-bn-1x-a'); \
 "
