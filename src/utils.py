@@ -515,15 +515,18 @@ def permute_output(perm_map, conv, bn):
 
 # modifies the weight matrix of a layer for a given permutation of the input channels
 # works for both conv2d and linear
-def permute_input(perm_map, layer):
+def permute_input(perm_map, after_convs):
     """
     TODO: write docs
     :param perm_map:
     :param layer:
     :return:
     """
-    w = layer.weight
-    w.data = w[:, perm_map]
+    if not isinstance(after_convs, list):
+        after_convs = [after_convs]
+    post_weights = [c.weight for c in after_convs]
+    for w in post_weights:
+        w.data = w[:, perm_map, :, :]
 
 
 def interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module, alpha: float = 0.5):
