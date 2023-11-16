@@ -26,6 +26,12 @@ print('-'*50)
 python -c "\
 from src.evaluate import *; \
 from src.plot_scripts.plot_acc_and_loss_curves import *; \
-evaluate_two_models('CIFAR10-VGG13-bn-1x-a', 'CIFAR10-VGG13-bn-1x-b', expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
-plot_acc_and_loss_curves('CIFAR10-VGG13-bn-1x-a', 'CIFAR10-VGG13-bn-1x-b'); \
+evaluate_two_models('CIFAR10-VGG11-bn-0.25x-a', 'CIFAR10-VGG11-bn-0.25x-b', expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
+plot_acc_and_loss_curves('CIFAR10-VGG11-bn-0.25x-a', 'CIFAR10-VGG11-bn-0.25x-b'); \
+evaluate_two_models('CIFAR10-VGG11-bn-0.5x-a', 'CIFAR10-VGG11-bn-0.5x-b', expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
+plot_acc_and_loss_curves('CIFAR10-VGG11-bn-0.5x-a', 'CIFAR10-VGG11-bn-0.5x-b'); \
+evaluate_two_models('SVHN-VGG13-bn-1x-a', 'SVHN-VGG13-bn-1x-b', expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
+plot_acc_and_loss_curves('SVHN-VGG13-bn-1x-a', 'SVHN-VGG13-bn-1x-b'); \
+evaluate_two_models('SVHN-VGG16-bn-1x-a', 'SVHN-VGG16-bn-1x-b', expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
+plot_acc_and_loss_curves('SVHN-VGG16-bn-1x-a', 'SVHN-VGG16-bn-1x-b'); \
 "
