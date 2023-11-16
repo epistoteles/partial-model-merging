@@ -424,13 +424,12 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                       4. use correlation matrix + normalized mean activation of model for matching
     :return: the permuted model
     """
-    reference_model = reference_model.cuda()
     sd = model.state_dict()
     model = model_like(model)
     model.load_state_dict(sd)
-    model = model.cuda()
+    model.cuda().eval()
+    reference_model.cuda().eval()
 
-    # version 1: models are VGGs
     if isinstance(model, VGG):
         features = model.features
         for i in range(len(features)):
@@ -448,7 +447,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                     )
                     corr[reference_is_buffer, :] = 1.1
                     corr[:, model_is_buffer] = 1.1
-                    corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.0
+                    corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.1
                     # print_corr_matrix(corr)
                     perm_map = get_layer_perm_from_corr(corr)
                     permute_output(perm_map, conv=features[i], bn=features[i + 1])  # in-place modification
@@ -461,7 +460,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                     )
                     corr[reference_is_buffer, :] = 1.1
                     corr[:, model_is_buffer] = 1.1
-                    corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.0
+                    corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.1
                     # print_corr_matrix(corr)
                     perm_map = get_layer_perm_from_corr(corr)
                     permute_output(perm_map, conv=features[i], bn=None)  # in-place modification
