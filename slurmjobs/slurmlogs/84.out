@@ -1,0 +1,5 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    4
+Visible GPUs:         NVIDIA GeForce RTX 3060
+--------------------------------------------------
