@@ -383,20 +383,9 @@ def get_num_params(model):
     return sum([v.numel() for k, v in model.state_dict().items() if "is_buffer" not in k])
 
 
-def add_buffer_flags(model):
-    """
-    Sets all .is_buffer parameters in the model to None (necessary for sinkhorn-rebasin)
-    :param model: the model
-    :return: None, modifies the model in-place
-    """
-    for module in model.modules():
-        if "is_buffer" in dict(module.named_parameters()).keys():
-            module.is_buffer = None
-
-
 def remove_buffer_flags(model):
     """
-    Sets all .is_buffer parameters in the model to None (necessary for sinkhorn-rebasin)
+    Sets all .is_buffer parameters in the model to None (only necessary for sinkhorn-rebasin)
     :param model: the model
     :return: None, modifies the model in-place
     """
