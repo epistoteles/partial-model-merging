@@ -11,7 +11,7 @@ from models.VGG import VGG
 from models.ResNet import ResNet18, ResNet20
 from models.MLP import MLP
 from src.utils import get_loaders, save_model, get_num_classes
-from src.evaluate import get_acc_and_loss
+from src.evaluate import get_acc_and_loss, evaluate_single_model
 
 from rich import pretty, print
 from rich.progress import track
@@ -89,11 +89,12 @@ def main():
                 metrics["test_loss"] = test_loss
             wandb.log(metrics)
 
-    save_model(
-        model,
-        f"{args.dataset}-{args.model_type}{args.size}-{'bn-' if args.batch_norm else ''}"
-        f"{args.width}x-{args.variant}",
+    model_name = (
+        f"{args.dataset}-{args.model_type}{args.size}-{'bn-' if args.batch_norm else ''}{args.width}x-{args.variant}"
     )
+    save_model(model, model_name)
+
+    evaluate_single_model(model_name)
 
 
 parser = argparse.ArgumentParser()
