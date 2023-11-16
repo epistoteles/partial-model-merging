@@ -515,7 +515,7 @@ def permute_input(perm_map, after_convs):
         after_convs = [after_convs]
     post_weights = [c.weight for c in after_convs]
     for w in post_weights:
-        w.data = w[:, perm_map, :, :]
+        w.data = w[:, perm_map]
 
 
 def interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module, alpha: float = 0.5):
