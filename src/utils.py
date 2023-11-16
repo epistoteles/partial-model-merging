@@ -364,8 +364,13 @@ def get_blocks(resnet: ResNet18 | ResNet20):
     :param resnet: the ResNet model
     :return: the
     """
+    first_block = torch.nn.Sequential(resnet.conv1, resnet.bn1)
+    if hasattr(resnet, "relu"):  # torchvision resnet
+        first_block.append(resnet.relu)
+    if hasattr(resnet, "maxpool"):  # torchvision resnet
+        first_block.append(resnet.maxpool)
     blocks = torch.nn.Sequential(
-        torch.nn.Sequential(resnet.conv1, resnet.bn1, resnet.relu, resnet.maxpool),
+        first_block,
         *resnet.layer1,
         *resnet.layer2,
         *resnet.layer3,

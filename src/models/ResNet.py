@@ -24,19 +24,19 @@ class BasicBlock(nn.Module):
         self.conv2.is_buffer = nn.Parameter(torch.zeros(out_planes).bool(), requires_grad=False)
         self.bn2 = nn.BatchNorm2d(out_planes)
         self.bn2.is_buffer = nn.Parameter(torch.zeros(out_planes).bool(), requires_grad=False)
-        self.shortcut = nn.Sequential()
+        self.downsample = nn.Sequential()
         if stride != 1 or in_planes != out_planes:
-            self.shortcut = nn.Sequential(
+            self.downsample = nn.Sequential(
                 nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False),
                 nn.BatchNorm2d(out_planes),
             )
-            self.shortcut[0].is_buffer = nn.Parameter(torch.zeros(out_planes).bool(), requires_grad=False)
-            self.shortcut[1].is_buffer = nn.Parameter(torch.zeros(out_planes).bool(), requires_grad=False)
+            self.downsample[0].is_buffer = nn.Parameter(torch.zeros(out_planes).bool(), requires_grad=False)
+            self.downsample[1].is_buffer = nn.Parameter(torch.zeros(out_planes).bool(), requires_grad=False)
 
     def forward(self, x):
         out = F.relu(self.bn1(self.conv1(x)))
         out = self.bn2(self.conv2(out))
-        out += self.shortcut(x)
+        out += self.downsample(x)
         out = F.relu(out)
         return out
 
@@ -63,7 +63,7 @@ class ResNet18(nn.Module):
         super().__init__()
         self.size = 18
         self.num_layers = 17  # number of layers which can be expanded
-        self.bn = True  # the marked self.base_sizes in the following line must stay the same after model expansion
+        self.bn = True  # . . . . . . . . . the marked self.base_sizes below  must stay the same after model expansion
         self.num_classes = num_classes  # . ╭───────┬───────╮       ╭───────╮       ╭───────╮         ╭─────────╮
         self.base_sizes = torch.LongTensor([16, 16, 16, 16, 16, 32, 32, 32, 32, 64, 64, 64, 64, 128, 128, 128, 128])
         self.width = torch.FloatTensor(width)
