@@ -1,0 +1,16 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    4
+Visible GPUs:         NVIDIA GeForce RTX 3060
+--------------------------------------------------
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/codecarbon/emissions_tracker.py", line 791, in wrapped_fn
+    fn_result = fn(*args, **kwargs)
+  File "/home/korbinian/Documents/partial-model-merging/src/evaluate.py", line 120, in evaluate_two_models
+    model_a = load_model(model_name_a).cuda()
+  File "/home/korbinian/Documents/partial-model-merging/src/utils.py", line 225, in load_model
+    state_dict = load_file(filename)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/safetensors/torch.py", line 259, in load_file
+    with safe_open(filename, framework="pt", device=device) as f:
+FileNotFoundError: No such file or directory: "/home/korbinian/Documents/partial-model-merging/checkpoints/CIFAR10-VGG11-bn-4x-a.safetensors"
