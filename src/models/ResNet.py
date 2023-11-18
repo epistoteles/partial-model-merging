@@ -10,11 +10,14 @@ def _weights_init(m):
 
 
 class BasicBlock(nn.Module):
-    """
-    A basic ResNet block, adapted from https://github.com/KellerJordan/REPAIR
-    """
-
-    def __init__(self, in_planes: int, mid_planes: int, out_planes: int, stride: int = 1):
+    def __init__(
+        self, in_planes: int, mid_planes: int, out_planes: int, stride: int = 1, downsample_kernel_size: int = 1
+    ):
+        """
+        A basic ResNet block, adapted from https://github.com/KellerJordan/REPAIR
+        :param downsample_kernel_size: the kernel size for the downsampling layer;
+                                       can be set to 3 for reproducing the experiments of Git-ReBasin (ResNet20)
+        """
         super(BasicBlock, self).__init__()
         self.conv1 = nn.Conv2d(in_planes, mid_planes, kernel_size=3, stride=stride, padding=1, bias=False)
         self.conv1.is_buffer = nn.Parameter(torch.zeros(mid_planes).bool(), requires_grad=False)
@@ -27,7 +30,9 @@ class BasicBlock(nn.Module):
         self.downsample = nn.Sequential()
         if stride != 1 or in_planes != out_planes:
             self.downsample = nn.Sequential(
-                nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False),
+                nn.Conv2d(
+                    in_planes, out_planes, kernel_size=downsample_kernel_size, stride=stride, padding=1, bias=False
+                ),
                 nn.BatchNorm2d(out_planes),
             )
             self.downsample[0].is_buffer = nn.Parameter(torch.zeros(out_planes).bool(), requires_grad=False)
@@ -42,11 +47,12 @@ class BasicBlock(nn.Module):
 
 
 class ResNet18(nn.Module):
-    def __init__(self, width: float | list[float] | torch.FloatTensor = 1.0, num_classes: int = 10):
+    def __init__(self, width: float | list[float] | torch.FloatTensor = 1.0, num_classes: int = 10, norm: str = "bn"):
         """
         A custom ResNet18 module, adapted from https://github.com/KellerJordan/REPAIR
         :param width: multiplier for the width of the network; per layer if provided as iterable
         :param num_classes: the number of output classes
+        :param norm: which normalization layers to use; either 'bn' (BatchNorm2d) or 'ln' (LayerNorm)  # TODO: implement
         """
         if isinstance(width, int):
             width = float(width)
@@ -63,7 +69,8 @@ class ResNet18(nn.Module):
         super().__init__()
         self.size = 18
         self.num_layers = 17  # number of layers which can be expanded
-        self.bn = True  # . . . . . . . . . the marked self.base_sizes below  must stay the same after model expansion
+        self.bn = norm == "bn"
+        self.ln = norm == "ln"  # . . . . . the marked self.base_sizes below  must stay the same after model expansion
         self.num_classes = num_classes  # . ╭───────┬───────╮       ╭───────╮       ╭───────╮         ╭─────────╮
         self.base_sizes = torch.LongTensor([16, 16, 16, 16, 16, 32, 32, 32, 32, 64, 64, 64, 64, 128, 128, 128, 128])
         self.width = torch.FloatTensor(width)
@@ -132,7 +139,7 @@ class ResNet20(nn.Module):
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
         for stride in strides:
-            layers.append(block(self.in_planes, planes, stride))
+            layers.append(block(self.in_planes, planes, stride, downsample_kernel_size=3))
             self.in_planes = planes
         return nn.Sequential(*layers)
 

@@ -347,15 +347,29 @@ def expand_model(
     return model_expanded
 
 
-def subnet(model: torch.nn.Module, n_layers: int):
+def subnet(model: torch.nn.Module, num_layers: int):
     """
     Returns a subnet from layer 1 to layer n_layers (in the feature extractor)
     adapted from https://github.com/KellerJordan/REPAIR
     :param model: the original model
-    :param n_layers: the first n_layers will be sliced
+    :param num_layers: the first n_layers will be sliced
     :return: torch.nn.Module
     """
-    return model.features[:n_layers]
+    assert isinstance(num_layers, int) and num_layers > 0
+    if isinstance(model, VGG):
+        return model.features[:num_layers]
+    elif isinstance(model, ResNet18):
+        blocks = get_blocks(model)
+        if num_layers % 2 == 1:
+            index = (num_layers + 1) // 2
+            return blocks[:index]
+        else:
+            index = num_layers // 2
+            result = blocks[:index]
+            result.append(torch.nn.Sequential(blocks[index].conv1, blocks[index].bn1, torch.nn.ReLU()))
+            return result
+    else:
+        raise NotImplementedError(f"Cannot create subnet of type {type(model)}")
 
 
 def get_blocks(resnet: ResNet18 | ResNet20):
@@ -365,9 +379,11 @@ def get_blocks(resnet: ResNet18 | ResNet20):
     :return: the
     """
     first_block = torch.nn.Sequential(resnet.conv1, resnet.bn1)
-    if hasattr(resnet, "relu"):  # torchvision resnet
+    if hasattr(resnet, "relu"):  # torchvision.models.resnet has named layer
         first_block.append(resnet.relu)
-    if hasattr(resnet, "maxpool"):  # torchvision resnet
+    else:
+        first_block.append(torch.nn.ReLU())
+    if hasattr(resnet, "maxpool"):  # torchvision.models.resnet uses maxpool in layer 1
         first_block.append(resnet.maxpool)
     blocks = torch.nn.Sequential(
         first_block,
@@ -382,7 +398,7 @@ def get_blocks(resnet: ResNet18 | ResNet20):
 
 def add_junctures(resnet: ResNet18 | ResNet20):
     """
-    Adds artificial downsampling point-wise convolutions to BasicBlocks to keep track of
+    Adds artificial downsampling point-wise convolutions to BasicBlocks to keep track of  TODO: check if still needed
     applied permutations while aligning two models.
     :param resnet: the ResNet
     :return: a new identical ResNet with junctures
@@ -506,20 +522,25 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                 permute_input(perm_map, next_layer)  # in-place modification
 
     elif isinstance(model, ResNet18):
-        blocks_ref = get_blocks(reference_model)
-        blocks = get_blocks(model)
-
         # intra-block permutation
-        for k in range(1, len(blocks)):
-            block_ref = blocks_ref[k]
-            block = blocks[k]
-            subnet_ref = torch.nn.Sequential(blocks_ref[:k], block_ref.conv1, block_ref.bn1, torch.nn.ReLU())
-            subnet_model = torch.nn.Sequential(blocks[:k], block.conv1, block.bn1, torch.nn.ReLU())
+        for layer in [2, 4, 6, 8, 10, 12, 14, 16]:
+            subnet_ref = subnet(reference_model, layer)
+            subnet_model = subnet(model, layer)
             perm_map = get_layer_perm(subnet_ref, subnet_model, loader)
-            permute_output(perm_map, block.conv1, block.bn1)
-            permute_input(perm_map, block.conv2)
-
+            permute_output(perm_map, subnet_model[-1].conv1, subnet_model[-1].bn1)
+            permute_input(perm_map, subnet_model[-1].conv2)
         # inter-block permutation
+        for layer in [5, 9, 13, 17]:
+            subnet_ref = subnet(reference_model, layer)
+            subnet_model = subnet(model, layer)
+            if layer >= 9:
+                permute_input(perm_map, [subnet_model[-2].conv1, subnet_model[-2].downsample[0]])
+            perm_map = get_layer_perm(subnet_ref, subnet_model, loader)
+            if layer == 5:  # special case for first conv
+                permute_output(perm_map, model.conv1, model.bn1)
+            permute_output(perm_map, subnet_model[-1].conv2, subnet_model[-1].bn2)
+            permute_output(perm_map, subnet_model[-2].conv2, subnet_model[-2].bn2)
+            permute_input(perm_map, [subnet_model[-1].conv1, subnet_model[-2].conv1])
 
     else:
         raise ValueError(f"Unknown model type {type(model)}")
