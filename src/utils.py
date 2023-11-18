@@ -506,7 +506,21 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                 permute_input(perm_map, next_layer)  # in-place modification
 
     elif isinstance(model, ResNet18):
-        raise NotImplementedError()
+        blocks_ref = get_blocks(reference_model)
+        blocks = get_blocks(model)
+
+        # intra-block permutation
+        for k in range(1, len(blocks)):
+            block_ref = blocks_ref[k]
+            block = blocks[k]
+            subnet_ref = torch.nn.Sequential(blocks_ref[:k], block_ref.conv1, block_ref.bn1, torch.nn.ReLU())
+            subnet_model = torch.nn.Sequential(blocks[:k], block.conv1, block.bn1, torch.nn.ReLU())
+            perm_map = get_layer_perm(subnet_ref, subnet_model, loader)
+            permute_output(perm_map, block.conv1, block.bn1)
+            permute_input(perm_map, block.conv2)
+
+        # inter-block permutation
+
     else:
         raise ValueError(f"Unknown model type {type(model)}")
 
