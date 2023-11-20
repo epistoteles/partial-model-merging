@@ -536,14 +536,14 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             subnet_model = subnet(model, layer)
             if layer >= 9:
                 permute_input(perm_map, [subnet_model[-2].conv1, subnet_model[-2].downsample[0]])
-                break
             perm_map = get_layer_perm(subnet_ref, subnet_model, loader)
             if layer == 5:  # special case for first conv
                 permute_output(perm_map, model.conv1, model.bn1)
                 permute_input(perm_map, [subnet_model[-1].conv1, subnet_model[-2].conv1])
             else:
+                permute_input(perm_map, [subnet_model[-2].downsample[0], subnet_model[-2].downsample[1]])
                 permute_input(perm_map, [subnet_model[-1].conv1])
-            if layer == 17:
+            if layer == 17:  # special case for linear classifier
                 permute_input(perm_map, model.linear)
             permute_output(perm_map, subnet_model[-1].conv2, subnet_model[-1].bn2)
             permute_output(perm_map, subnet_model[-2].conv2, subnet_model[-2].bn2)
