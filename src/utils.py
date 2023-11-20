@@ -531,11 +531,12 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             permute_output(perm_map, subnet_model[-1].conv1, subnet_model[-1].bn1)
             permute_input(perm_map, subnet_model[-1].conv2)
         # inter-block permutation
-        for layer in [5]:  # , 9, 13, 17]:
+        for layer in [5, 9, 13, 17]:
             subnet_ref = subnet(reference_model, layer)
             subnet_model = subnet(model, layer)
             if layer >= 9:
                 permute_input(perm_map, [subnet_model[-2].conv1, subnet_model[-2].downsample[0]])
+                break
             perm_map = get_layer_perm(subnet_ref, subnet_model, loader)
             if layer == 5:  # special case for first conv
                 permute_output(perm_map, model.conv1, model.bn1)
