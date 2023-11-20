@@ -582,6 +582,7 @@ def permute_output(perm_map, conv, bn):
             pre_weights.append(bn.is_buffer)
     for w in pre_weights:
         w.data = w[perm_map]
+    print("--permute_output finished--")
 
 
 # modifies the weight matrix of a layer for a given permutation of the input channels
@@ -605,6 +606,7 @@ def permute_input(perm_map, after_convs):
     post_weights = [c.weight for c in after_convs]
     for w in post_weights:
         w.data = w[:, perm_map]
+    print("--permute_input finished--")
 
 
 def interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module, alpha: float = 0.5):
