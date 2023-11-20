@@ -593,8 +593,12 @@ def permute_input(perm_map, after_convs):
     :param layer:
     :return:
     """
+    print("--permute_output called--")
+    print(perm_map.shape)
     if not isinstance(after_convs, list):
         after_convs = [after_convs]
+    for conv in after_convs:
+        print(conv.weight.shape)
     post_weights = [c.weight for c in after_convs]
     for w in post_weights:
         w.data = w[:, perm_map]
