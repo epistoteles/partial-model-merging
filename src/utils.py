@@ -527,6 +527,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             subnet_ref = subnet(reference_model, layer)
             subnet_model = subnet(model, layer)
             perm_map = get_layer_perm(subnet_ref, subnet_model, loader)
+            subnet_model = subnet(model, layer + 1)
             permute_output(perm_map, subnet_model[-1].conv1, subnet_model[-1].bn1)
             permute_input(perm_map, subnet_model[-1].conv2)
         # inter-block permutation
