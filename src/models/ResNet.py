@@ -163,7 +163,9 @@ class ResNet20(nn.Module):
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
         for (p1, p2), stride in zip(zip(planes[::2], planes[1::2]), strides):
-            layers.append(block(in_planes=self.in_planes, mid_planes=p1, out_planes=p2, stride=stride))
+            layers.append(
+                block(in_planes=self.in_planes, mid_planes=p1, out_planes=p2, stride=stride, downsample_kernel_size=3)
+            )
             self.in_planes = p2
         return nn.Sequential(*layers)
 
