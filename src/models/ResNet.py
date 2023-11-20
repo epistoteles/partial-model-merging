@@ -94,7 +94,7 @@ class ResNet18(nn.Module):
 
         self.apply(_weights_init)
 
-    def _make_layer(self, block, planes, num_blocks, stride):
+    def _make_layer(self, block, planes: list[int] | torch.LongTensor, num_blocks: int, stride: int):
         assert len(planes) == num_blocks * 2
         assert planes[1] == planes[3]
         strides = [stride] + [1] * (num_blocks - 1)
@@ -146,6 +146,8 @@ class ResNet20(nn.Module):
         self.scaled_sizes = torch.round(self.base_sizes * self.width).long()
         self.in_planes = self.scaled_sizes[0]
 
+        breakpoint()
+
         self.conv1 = nn.Conv2d(3, self.scaled_sizes[0], kernel_size=3, stride=1, padding=1, bias=False)
         self.conv1.is_buffer = nn.Parameter(torch.zeros(self.scaled_sizes[0]).bool(), requires_grad=False)
         self.bn1 = nn.BatchNorm2d(self.scaled_sizes[0])
@@ -157,7 +159,9 @@ class ResNet20(nn.Module):
 
         self.apply(_weights_init)
 
-    def _make_layer(self, block, planes: int, num_blocks: int, stride: int):
+    def _make_layer(self, block, planes: list[int] | torch.LongTensor, num_blocks: int, stride: int):
+        assert len(planes) == num_blocks * 2
+        assert planes[1] == planes[3]
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
         for stride in strides:
