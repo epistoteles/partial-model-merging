@@ -541,7 +541,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                 permute_output(perm_map, model.conv1, model.bn1)
                 permute_input(perm_map, [subnet_model[-1].conv1, subnet_model[-2].conv1])
             else:
-                permute_input(perm_map, [subnet_model[-2].downsample[0], subnet_model[-2].downsample[1]])
+                permute_output(perm_map, subnet_model[-2].downsample[0], subnet_model[-2].downsample[1])
                 permute_input(perm_map, [subnet_model[-1].conv1])
             if layer == 17:  # special case for linear classifier
                 permute_input(perm_map, model.linear)
