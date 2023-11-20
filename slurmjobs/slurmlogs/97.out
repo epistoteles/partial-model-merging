@@ -1,0 +1,83 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    3
+Visible GPUs:         NVIDIA GeForce RTX 3060
+--------------------------------------------------
+Namespace(dataset='CIFAR10', model_type='ResNet', size=18, batch_norm=True, 
+width=1.0, epochs=100, lr=0.08, weight_decay=0.0005, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231118_220844-ii6vzoda
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run flowing-puddle-162
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/ii6vzoda
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:08:31
+📥 Accuracies and losses saved for CIFAR10-ResNet18-bn-1.0x-a
+train_acc    0.99744
+train_loss   0.011735780974850058
+test_acc     0.9068
+test_loss    0.35920368432998656
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▃▅▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇█▇▇██████████████
+wandb:      test_loss █▆▄▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▁▁▂▁▂▁▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▄▅▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇█████████████████
+wandb:     train_loss █▆▄▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9068
+wandb:      test_loss 0.3592
+wandb: train_accuracy 0.99604
+wandb:     train_loss 0.01761
+wandb: 
+wandb: 🚀 View run flowing-puddle-162 at: https://wandb.ai/epistoteles/partial-model-merging/runs/ii6vzoda
+wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231118_220844-ii6vzoda/logs
+Namespace(dataset='CIFAR10', model_type='ResNet', size=18, batch_norm=True, 
+width=1.0, epochs=100, lr=0.08, weight_decay=0.0005, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231118_221747-6vsir16v
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run fragrant-night-163
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/6vsir16v
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:08:32
+📥 Accuracies and losses saved for CIFAR10-ResNet18-bn-1.0x-b
+train_acc    0.9981
+train_loss   0.01102635490708053
+test_acc     0.9071
+test_loss    0.3633017182350159
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.003 MB uploaded (0.000 MB deduped)wandb: | 0.003 MB of 0.007 MB uploaded (0.000 MB deduped)wandb: / 0.007 MB of 0.007 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▃▅▆▆▇▆▇▇▇▇▇▇▇▇▇▇▇▇▇█▇█▇██▇█████████████
+wandb:      test_loss █▆▄▃▃▂▂▂▂▂▂▂▂▂▂▂▂▁▂▂▁▁▁▂▁▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▃▅▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇████████████████
+wandb:     train_loss █▆▄▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9071
+wandb:      test_loss 0.3633
+wandb: train_accuracy 0.99608
+wandb:     train_loss 0.01713
+wandb: 
+wandb: 🚀 View run fragrant-night-163 at: https://wandb.ai/epistoteles/partial-model-merging/runs/6vsir16v
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231118_221747-6vsir16v/logs

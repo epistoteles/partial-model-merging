@@ -1,0 +1,268 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    3
+Visible GPUs:         NVIDIA GeForce RTX 3060
+--------------------------------------------------
+Namespace(dataset='CIFAR10', model_type='VGG', size=11, batch_norm=True, 
+width=1.7, epochs=100, lr=0.08, weight_decay=0.0005, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231118_194401-akk1vihz
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run absurd-disco-154
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/akk1vihz
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:20:59
+📥 Accuracies and losses saved for CIFAR10-VGG11-bn-1.7x-a
+train_acc    0.99998
+train_loss   0.0007600306964013725
+test_acc     0.9209
+test_loss    0.32097268402576445
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▄▅▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇█▇▇██████████████████
+wandb:      test_loss █▄▃▂▂▂▂▂▂▂▂▂▁▂▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▄▅▆▆▇▇▇▇▇▇▇▇▇██████████████████████████
+wandb:     train_loss █▅▄▃▃▃▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9209
+wandb:      test_loss 0.32097
+wandb: train_accuracy 0.99992
+wandb:     train_loss 0.00107
+wandb: 
+wandb: 🚀 View run absurd-disco-154 at: https://wandb.ai/epistoteles/partial-model-merging/runs/akk1vihz
+wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231118_194401-akk1vihz/logs
+Namespace(dataset='CIFAR10', model_type='VGG', size=11, batch_norm=True, 
+width=1.7, epochs=100, lr=0.08, weight_decay=0.0005, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231118_200536-bwpbidda
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run fallen-valley-155
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/bwpbidda
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:20:59
+📥 Accuracies and losses saved for CIFAR10-VGG11-bn-1.7x-b
+train_acc    0.99998
+train_loss   0.0007716595148667693
+test_acc     0.9244
+test_loss    0.29597206711769103
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▁▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇████████████████
+wandb:      test_loss ▆█▂▂▂▂▂▁▂▁▁▁▁▁▁▁▁▁▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▄▅▆▆▇▇▇▇▇▇▇▇███████████████████████████
+wandb:     train_loss █▅▄▃▃▃▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9244
+wandb:      test_loss 0.29597
+wandb: train_accuracy 0.99994
+wandb:     train_loss 0.00103
+wandb: 
+wandb: 🚀 View run fallen-valley-155 at: https://wandb.ai/epistoteles/partial-model-merging/runs/bwpbidda
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231118_200536-bwpbidda/logs
+Namespace(dataset='CIFAR10', model_type='VGG', size=11, batch_norm=True, 
+width=1.8, epochs=100, lr=0.08, weight_decay=0.0005, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231118_202709-a9wf4vmv
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run efficient-pyramid-156
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/a9wf4vmv
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:22:27
+📥 Accuracies and losses saved for CIFAR10-VGG11-bn-1.8x-a
+train_acc    1.0
+train_loss   0.0007086884055752307
+test_acc     0.9236
+test_loss    0.30179393887519834
+wandb: Waiting for W&B process to finish... (success).
+wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▂▅▅▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇██████████████
+wandb:      test_loss ██▄▄▃▃▂▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▄▅▆▆▇▇▇▇▇▇▇▇▇▇█████████████████████████
+wandb:     train_loss █▅▄▃▃▃▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9236
+wandb:      test_loss 0.30179
+wandb: train_accuracy 0.99998
+wandb:     train_loss 0.00103
+wandb: 
+wandb: 🚀 View run efficient-pyramid-156 at: https://wandb.ai/epistoteles/partial-model-merging/runs/a9wf4vmv
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231118_202709-a9wf4vmv/logs
+Exception in thread NetStatThr:
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.10/threading.py", line 953, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/wandb_run.py", line 260, in check_network_status
+    self._loop_check_status(
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/wandb_run.py", line 216, in _loop_check_status
+    local_handle = request()
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/interface/interface.py", line 795, in deliver_network_status
+    return self._deliver_network_status(status)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/interface/interface_shared.py", line 601, in _deliver_network_status
+    return self._deliver_record(record)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/interface/interface_shared.py", line 560, in _deliver_record
+    handle = mailbox._deliver_record(record, interface=self)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/lib/mailbox.py", line 455, in _deliver_record
+    interface._publish(record)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/interface/interface_sock.py", line 51, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 221, in send_record_publish
+    self.send_server_request(server_req)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 155, in send_server_request
+    self._send_message(msg)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 152, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
+Namespace(dataset='CIFAR10', model_type='VGG', size=11, batch_norm=True, 
+width=1.8, epochs=100, lr=0.08, weight_decay=0.0005, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231118_205010-pomvaxcm
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run crisp-gorge-157
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/pomvaxcm
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:22:28
+📥 Accuracies and losses saved for CIFAR10-VGG11-bn-1.8x-b
+train_acc    1.0
+train_loss   0.000733140385709703
+test_acc     0.9208
+test_loss    0.3066054955124855
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▄▅▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇█▇█████████████
+wandb:      test_loss █▆▄▃▃▃▂▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▄▅▆▆▇▇▇▇▇▇▇▇▇██████████████████████████
+wandb:     train_loss █▅▄▃▃▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9208
+wandb:      test_loss 0.30661
+wandb: train_accuracy 0.99998
+wandb:     train_loss 0.00096
+wandb: 
+wandb: 🚀 View run crisp-gorge-157 at: https://wandb.ai/epistoteles/partial-model-merging/runs/pomvaxcm
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231118_205010-pomvaxcm/logs
+Namespace(dataset='CIFAR10', model_type='VGG', size=11, batch_norm=True, 
+width=1.9, epochs=100, lr=0.08, weight_decay=0.0005, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231118_211313-3l7hu7nc
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run dauntless-puddle-158
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/3l7hu7nc
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:24:35
+📥 Accuracies and losses saved for CIFAR10-VGG11-bn-1.9x-a
+train_acc    1.0
+train_loss   0.0007091755489818752
+test_acc     0.9222
+test_loss    0.3076634377241135
+wandb: Waiting for W&B process to finish... (success).
+wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▅▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇█████████████████████
+wandb:      test_loss █▃▂▂▂▂▂▁▁▂▁▁▁▂▁▁▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▄▅▆▆▇▇▇▇▇▇▇▇███████████████████████████
+wandb:     train_loss █▅▄▃▃▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9222
+wandb:      test_loss 0.30766
+wandb: train_accuracy 0.99998
+wandb:     train_loss 0.00097
+wandb: 
+wandb: 🚀 View run dauntless-puddle-158 at: https://wandb.ai/epistoteles/partial-model-merging/runs/3l7hu7nc
+wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231118_211313-3l7hu7nc/logs
+Namespace(dataset='CIFAR10', model_type='VGG', size=11, batch_norm=True, 
+width=1.9, epochs=100, lr=0.08, weight_decay=0.0005, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231118_213824-tnnh7tjg
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run fragrant-pyramid-159
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/tnnh7tjg
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:24:32
+📥 Accuracies and losses saved for CIFAR10-VGG11-bn-1.9x-b
+train_acc    1.0
+train_loss   0.0007213846233207733
+test_acc     0.9235
+test_loss    0.29499791115522384
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▄▄▅▆▆▇▆▇▆▇▇▇▇▇▇▇▇▇▇▇█▇▇▇▇▇█████████████
+wandb:      test_loss █▅▅▃▃▃▂▂▂▃▂▂▂▂▃▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▄▅▆▆▇▇▇▇▇▇▇▇███████████████████████████
+wandb:     train_loss █▅▄▃▃▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9235
+wandb:      test_loss 0.295
+wandb: train_accuracy 1.0
+wandb:     train_loss 0.00094
+wandb: 
+wandb: 🚀 View run fragrant-pyramid-159 at: https://wandb.ai/epistoteles/partial-model-merging/runs/tnnh7tjg
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231118_213824-tnnh7tjg/logs
