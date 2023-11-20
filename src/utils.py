@@ -593,8 +593,11 @@ def permute_input(perm_map, after_convs):
     :param layer:
     :return:
     """
-    print("--permute_output called--")
+    print("--permute_input called--")
     print(perm_map.shape)
+    print(perm_map)
+    print(perm_map.max())
+    print(perm_map.min())
     if not isinstance(after_convs, list):
         after_convs = [after_convs]
     for conv in after_convs:
