@@ -563,9 +563,9 @@ def permute_output(perm_map, conv, bn):
     print("--permute_output called--")
     print(perm_map.shape)
     print(conv.weight.shape)
-    print(conv.bias.shape)
     pre_weights = [conv.weight]
     if conv.bias is not None:
+        print(conv.bias.shape)
         pre_weights.append(conv.bias)
     if conv.is_buffer is not None:
         pre_weights.append(conv.is_buffer)
