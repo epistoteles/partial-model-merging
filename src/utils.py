@@ -565,12 +565,8 @@ def permute_output(perm_map, conv, bn):
     :param bn:
     :return:
     """
-    print("--permute_output called--")
-    print(perm_map.shape)
-    print(conv.weight.shape)
     pre_weights = [conv.weight]
     if conv.bias is not None:
-        print(conv.bias.shape)
         pre_weights.append(conv.bias)
     if conv.is_buffer is not None:
         pre_weights.append(conv.is_buffer)
@@ -587,7 +583,6 @@ def permute_output(perm_map, conv, bn):
             pre_weights.append(bn.is_buffer)
     for w in pre_weights:
         w.data = w[perm_map]
-    print("--permute_output finished--")
 
 
 # modifies the weight matrix of a layer for a given permutation of the input channels
@@ -599,19 +594,11 @@ def permute_input(perm_map, after_convs):
     :param layer:
     :return:
     """
-    print("--permute_input called--")
-    print(perm_map.shape)
-    print(perm_map)
-    print(perm_map.max())
-    print(perm_map.min())
     if not isinstance(after_convs, list):
         after_convs = [after_convs]
-    for conv in after_convs:
-        print(conv.weight.shape)
     post_weights = [c.weight for c in after_convs]
     for w in post_weights:
         w.data = w[:, perm_map]
-    print("--permute_input finished--")
 
 
 def interpolate_models(model_a: torch.nn.Module, model_b: torch.nn.Module, alpha: float = 0.5):
