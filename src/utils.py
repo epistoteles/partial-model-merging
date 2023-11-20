@@ -604,6 +604,7 @@ def permute_input(perm_map, after_convs):
     for conv in after_convs:
         print(conv.weight.shape)
     post_weights = [c.weight for c in after_convs]
+    breakpoint()
     for w in post_weights:
         w.data = w[:, perm_map]
     print("--permute_input finished--")
