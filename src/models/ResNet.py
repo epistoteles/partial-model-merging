@@ -146,8 +146,6 @@ class ResNet20(nn.Module):
         self.scaled_sizes = torch.round(self.base_sizes * self.width).long()
         self.in_planes = self.scaled_sizes[0]
 
-        breakpoint()
-
         self.conv1 = nn.Conv2d(3, self.scaled_sizes[0], kernel_size=3, stride=1, padding=1, bias=False)
         self.conv1.is_buffer = nn.Parameter(torch.zeros(self.scaled_sizes[0]).bool(), requires_grad=False)
         self.bn1 = nn.BatchNorm2d(self.scaled_sizes[0])
@@ -164,9 +162,9 @@ class ResNet20(nn.Module):
         assert planes[1] == planes[3]
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
-        for stride in strides:
-            layers.append(block(self.in_planes, planes, stride, downsample_kernel_size=3))
-            self.in_planes = planes
+        for (p1, p2), stride in zip(zip(planes[::2], planes[1::2]), strides):
+            layers.append(block(in_planes=self.in_planes, mid_planes=p1, out_planes=p2, stride=stride))
+            self.in_planes = p2
         return nn.Sequential(*layers)
 
     def forward(self, x):
