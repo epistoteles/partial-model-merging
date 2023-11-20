@@ -539,9 +539,13 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             perm_map = get_layer_perm(subnet_ref, subnet_model, loader)
             if layer == 5:  # special case for first conv
                 permute_output(perm_map, model.conv1, model.bn1)
+                permute_input(perm_map, [subnet_model[-1].conv1, subnet_model[-2].conv1])
+            else:
+                permute_input(perm_map, [subnet_model[-1].conv1])
+            if layer == 17:
+                permute_input(perm_map, model.linear)
             permute_output(perm_map, subnet_model[-1].conv2, subnet_model[-1].bn2)
             permute_output(perm_map, subnet_model[-2].conv2, subnet_model[-2].bn2)
-            permute_input(perm_map, [subnet_model[-1].conv1, subnet_model[-2].conv1])
 
     else:
         raise ValueError(f"Unknown model type {type(model)}")
@@ -604,7 +608,6 @@ def permute_input(perm_map, after_convs):
     for conv in after_convs:
         print(conv.weight.shape)
     post_weights = [c.weight for c in after_convs]
-    breakpoint()
     for w in post_weights:
         w.data = w[:, perm_map]
     print("--permute_input finished--")
