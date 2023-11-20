@@ -117,26 +117,43 @@ class ResNet18(nn.Module):
 
 
 class ResNet20(nn.Module):
-    def __init__(self, width: float | list[float] | torch.FloatTensor = 1.0, num_classes: int = 10):
+    def __init__(self, width: float | list[float] | torch.FloatTensor = 1.0, num_classes: int = 10, norm: str = "bn"):
         """
         A custom ResNet20 module, adapted from https://github.com/KellerJordan/REPAIR
         :param width: multiplier for the width of the network
         :param num_classes: the number of output classes
+        :param norm: which normalization layers to use; either 'bn' (BatchNorm2d) or 'ln' (LayerNorm)  # TODO: implement
         """
+        if isinstance(width, int):
+            width = float(width)
+        if isinstance(width, float):
+            width = [width] * 19
+        assert (isinstance(width, list) or isinstance(width, torch.Tensor)) and len(width) == 19
+        assert (
+            width[0] == width[2] == width[4] == width[6]
+            and width[8] == width[10] == width[12]
+            and width[14] == width[16] == width[18]
+        ), "width of residual activations must match"
+
         super().__init__()
         self.size = 20
-        self.bn = True
-        self.num_classes = num_classes
-        self.in_planes = round(width * 16)
+        self.num_layers = 19  # number of layers which can be expanded
+        self.bn = norm == "bn"
+        self.ln = norm == "ln"  # . . . . . the marked self.base_sizes below  must stay the same after model expansion
+        self.num_classes = num_classes  # . ╭───────┬───────┬───────╮       ╭───────┬───────╮       ╭───────┬───────╮
+        self.base_sizes = torch.LongTensor([16, 16, 16, 16, 16, 16, 16, 32, 32, 32, 32, 32, 32, 64, 64, 64, 64, 64, 64])
+        self.width = torch.FloatTensor(width)
+        self.scaled_sizes = torch.round(self.base_sizes * self.width).long()
+        self.in_planes = self.scaled_sizes[0]
 
-        self.conv1 = nn.Conv2d(3, round(width * 16), kernel_size=3, stride=1, padding=1, bias=False)
-        self.conv1.is_buffer = nn.Parameter(torch.zeros(round(width * 16)).bool(), requires_grad=False)
-        self.bn1 = nn.BatchNorm2d(round(width * 16))
-        self.bn1.is_buffer = nn.Parameter(torch.zeros(round(width * 16)).bool(), requires_grad=False)
-        self.layer1 = self._make_layer(BasicBlock, planes=round(width * 16), num_blocks=3, stride=1)
-        self.layer2 = self._make_layer(BasicBlock, planes=round(width * 32), num_blocks=3, stride=2)
-        self.layer3 = self._make_layer(BasicBlock, planes=round(width * 64), num_blocks=3, stride=2)
-        self.linear = nn.Linear(round(width * 64), num_classes)
+        self.conv1 = nn.Conv2d(3, self.scaled_sizes[0], kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv1.is_buffer = nn.Parameter(torch.zeros(self.scaled_sizes[0]).bool(), requires_grad=False)
+        self.bn1 = nn.BatchNorm2d(self.scaled_sizes[0])
+        self.bn1.is_buffer = nn.Parameter(torch.zeros(self.scaled_sizes[0]).bool(), requires_grad=False)
+        self.layer1 = self._make_layer(BasicBlock, planes=self.scaled_sizes[1:7], num_blocks=3, stride=1)
+        self.layer2 = self._make_layer(BasicBlock, planes=self.scaled_sizes[7:13], num_blocks=3, stride=2)
+        self.layer3 = self._make_layer(BasicBlock, planes=self.scaled_sizes[13:], num_blocks=3, stride=2)
+        self.linear = nn.Linear(self.scaled_sizes[-1], num_classes)
 
         self.apply(_weights_init)
 

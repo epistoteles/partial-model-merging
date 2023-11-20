@@ -35,7 +35,7 @@ from ffcv.transforms import (
 from ffcv.transforms.common import Squeeze
 
 from src.models.VGG import VGG
-from src.models.ResNet import ResNet18, ResNet20
+from src.models.ResNet import ResNet18, ResNet20, BasicBlock
 from src.models.MLP import MLP
 
 
@@ -483,32 +483,26 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             layer = features[i]
             if isinstance(layer, torch.nn.Conv2d):
                 # get permutation and permute output of conv and maybe bn
-                model_is_buffer = layer.is_buffer.cpu()
-                reference_is_buffer = reference_model.features[i].is_buffer.cpu()
                 if isinstance(features[i + 1], torch.nn.BatchNorm2d):
                     assert isinstance(features[i + 2], torch.nn.ReLU)
                     corr = (
-                        get_corr_matrix(subnet(reference_model, i + 3), subnet(model, i + 3), loader, strategy=strategy)
+                        smart_get_corr_matrix(
+                            subnet(reference_model, i + 3), subnet(model, i + 3), loader, strategy=strategy
+                        )
                         .cpu()
                         .numpy()
                     )
-                    corr[reference_is_buffer, :] = 1.1
-                    corr[:, model_is_buffer] = 1.1
-                    corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.1
-                    # print_corr_matrix(corr)
                     perm_map = get_layer_perm_from_corr(corr)
                     permute_output(perm_map, conv=features[i], bn=features[i + 1])  # in-place modification
                 else:
                     assert isinstance(features[i + 1], torch.nn.ReLU)
                     corr = (
-                        get_corr_matrix(subnet(reference_model, i + 2), subnet(model, i + 2), loader, strategy=strategy)
+                        smart_get_corr_matrix(
+                            subnet(reference_model, i + 2), subnet(model, i + 2), loader, strategy=strategy
+                        )
                         .cpu()
                         .numpy()
                     )
-                    corr[reference_is_buffer, :] = 1.1
-                    corr[:, model_is_buffer] = 1.1
-                    corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.1
-                    # print_corr_matrix(corr)
                     perm_map = get_layer_perm_from_corr(corr)
                     permute_output(perm_map, conv=features[i], bn=None)  # in-place modification
                 # look for succeeding layer to permute input
@@ -805,6 +799,44 @@ def get_corr_matrix(
         return corr + normalize(mean_b)
 
 
+def smart_get_corr_matrix(
+    subnet_a: torch.nn.Sequential, subnet_b: torch.nn.Sequential, loader: Loader, epochs: int = 1, strategy: int = 1
+):
+    """
+    The same as get_corr_matrix, but takes is_buffer flags into account and modifies the correlation
+    matrix accordingly (by setting buffer parts to 1.1 or -1.1).
+    """
+    reference_is_buffer = get_is_buffer_from_subnet(subnet_a)
+    model_is_buffer = get_is_buffer_from_subnet(subnet_b)
+    corr = get_corr_matrix(subnet_a, subnet_b, loader, epochs, strategy)
+    corr[reference_is_buffer, :] = 1.1
+    corr[:, model_is_buffer] = 1.1
+    corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.1
+    return corr
+
+
+def get_is_buffer_from_subnet(net: torch.nn.Sequential) -> torch.BoolTensor:
+    """
+    Given any subnet made with subnet(), returns the last relevant is_buffer parameter.
+    :param net: the subnet
+    :return: the is_buffer torch.BoolTensor
+    """
+    if isinstance(net[-1], BasicBlock):  # it's a ResNet
+        is_buffer = net[-1].bn2.is_buffer
+    elif isinstance(net[-1], torch.nn.Sequential):  # it's half a ResNet block
+        is_buffer = net[-1][1].is_buffer
+    elif isinstance(net[-1], torch.nn.Conv2d) or isinstance(net[-1], torch.nn.BatchNorm2d):  # from here: it's a VGG
+        is_buffer = net[-1].is_buffer
+    elif isinstance(net[-2], torch.nn.Conv2d) or isinstance(net[-1], torch.nn.BatchNorm2d):
+        is_buffer = net[-2].is_buffer
+    elif isinstance(net[-3], torch.nn.Conv2d) or isinstance(net[-1], torch.nn.BatchNorm2d):
+        is_buffer = net[-3].is_buffer
+    else:
+        raise ValueError(f"Unknown subnet makeup, last module has type {type(net[-1])}")
+    assert isinstance(is_buffer, torch.BoolTensor)
+    return is_buffer
+
+
 def print_corr_matrix(corr_mtx):
     """
     Prints the correlation matrix as color image in the terminal where red = -1, white = 0, blue = 1.
@@ -875,7 +907,7 @@ def get_layer_perm(subnet_a, subnet_b, loader):
     :param loader: The data loader used to collect the activations
     :return: the permutation map
     """
-    corr_mtx = get_corr_matrix(subnet_a, subnet_b, loader)
+    corr_mtx = smart_get_corr_matrix(subnet_a, subnet_b, loader)
     return get_layer_perm_from_corr(corr_mtx)
 
 
