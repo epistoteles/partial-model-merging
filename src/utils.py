@@ -349,7 +349,7 @@ def expand_model(
 
 def subnet(model: torch.nn.Module, num_layers: int):
     """
-    Returns a subnet from layer 1 to layer n_layers (in the feature extractor)
+    Returns a subnet from layer 1 to layer n_layers (in the feature extractor; no classifier)
     adapted from https://github.com/KellerJordan/REPAIR
     :param model: the original model
     :param num_layers: the first n_layers will be sliced
@@ -358,7 +358,7 @@ def subnet(model: torch.nn.Module, num_layers: int):
     assert isinstance(num_layers, int) and num_layers > 0
     if isinstance(model, VGG):
         return model.features[:num_layers]
-    elif isinstance(model, ResNet18):
+    elif isinstance(model, ResNet18) or isinstance(model, ResNet20):
         blocks = get_blocks(model)
         if num_layers % 2 == 1:
             index = (num_layers + 1) // 2
@@ -456,7 +456,7 @@ def remove_buffer_flags(model):
 # merging functions #
 #####################
 
-
+# flake8: noqa: C901
 def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, loader, strategy: int = 1):
     """
     Merges the two models using traditional activation matching
@@ -541,6 +541,34 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                 permute_input(perm_map, model.linear)
             permute_output(perm_map, subnet_model[-1].conv2, subnet_model[-1].bn2)
             permute_output(perm_map, subnet_model[-2].conv2, subnet_model[-2].bn2)
+
+    elif isinstance(model, ResNet20):
+        # intra-block permutation
+        for layer in [2, 4, 6, 8, 10, 12, 14, 16, 18]:
+            subnet_ref = subnet(reference_model, layer)
+            subnet_model = subnet(model, layer)
+            perm_map = get_layer_perm(subnet_ref, subnet_model, loader)
+            subnet_model = subnet(model, layer + 1)
+            permute_output(perm_map, subnet_model[-1].conv1, subnet_model[-1].bn1)
+            permute_input(perm_map, subnet_model[-1].conv2)
+        # inter-block permutation
+        for layer in [7, 13, 19]:
+            subnet_ref = subnet(reference_model, layer)
+            subnet_model = subnet(model, layer)
+            if layer >= 13:
+                permute_input(perm_map, [subnet_model[-3].conv1, subnet_model[-3].downsample[0]])
+            perm_map = get_layer_perm(subnet_ref, subnet_model, loader)
+            if layer == 7:  # special case for first conv
+                permute_output(perm_map, model.conv1, model.bn1)
+                permute_input(perm_map, [subnet_model[-1].conv1, subnet_model[-2].conv1, subnet_model[-3].conv1])
+            else:
+                permute_output(perm_map, subnet_model[-3].downsample[0], subnet_model[-3].downsample[1])
+                permute_input(perm_map, [subnet_model[-1].conv1, subnet_model[-2].conv1])
+            if layer == 19:  # special case for linear classifier
+                permute_input(perm_map, model.linear)
+            permute_output(perm_map, subnet_model[-1].conv2, subnet_model[-1].bn2)
+            permute_output(perm_map, subnet_model[-2].conv2, subnet_model[-2].bn2)
+            permute_output(perm_map, subnet_model[-3].conv2, subnet_model[-3].bn2)
 
     else:
         raise ValueError(f"Unknown model type {type(model)}")
