@@ -347,28 +347,25 @@ def expand_model(
     return model_expanded
 
 
-def subnet(model: torch.nn.Module, num_layers: int):
+def subnet(model: torch.nn.Module, num_layers: int) -> torch.nn.Sequential:
     """
-    Returns a subnet from layer 1 to layer n_layers (only counting conv layers in the feature extractor; no classifier)
+    Returns a subnet from layer 1 to layer n_layers (only counting conv layers in the feature extractor; no classifier).
+    The returned subnet will include following bn and relu layers before the next conv, but no pooling layers.
     adapted from https://github.com/KellerJordan/REPAIR
     :param model: the original model
     :param num_layers: the first n_layers will be sliced
     :return: torch.nn.Module
     """
-    assert isinstance(num_layers, int) and num_layers > 0
+    assert isinstance(num_layers, int) and 0 < num_layers <= model.num_layers
     if isinstance(model, VGG):
         result = torch.nn.Sequential()
-        conv_counter = num_layers
         for layer in model.features:
             result.append(layer)
-            if conv_counter == 0:
-                break
+            if num_layers == 0:
+                if isinstance(layer, torch.nn.ReLU):
+                    break
             if isinstance(layer, torch.nn.Conv2d):
-                conv_counter -= 1
-        if conv_counter != 0:
-            raise ValueError(
-                f"Not enough conv layers in model (requested in subnet: {num_layers}, found max: {num_layers-conv_counter})"
-            )
+                num_layers -= 1
         return result
     elif isinstance(model, ResNet18) or isinstance(model, ResNet20):
         blocks = get_blocks(model)
@@ -490,42 +487,21 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
     reference_model.cuda().eval()
 
     if isinstance(model, VGG):
-        features = model.features
-        for i in range(len(features)):
-            layer = features[i]
-            if isinstance(layer, torch.nn.Conv2d):
-                # get permutation and permute output of conv and maybe bn
-                if isinstance(features[i + 1], torch.nn.BatchNorm2d):
-                    assert isinstance(features[i + 2], torch.nn.ReLU)
-                    corr = (
-                        smart_get_corr_matrix(
-                            subnet(reference_model, i + 3), subnet(model, i + 3), loader, strategy=strategy
-                        )
-                        .cpu()
-                        .numpy()
-                    )
-                    perm_map = get_layer_perm_from_corr(corr)
-                    permute_output(perm_map, conv=features[i], bn=features[i + 1])  # in-place modification
+        for layer in range(1, model.num_layers + 1):
+            subnet_ref = subnet(reference_model, layer)
+            subnet_model = subnet(model, layer)
+            if layer >= 2:
+                if isinstance(subnet_model[-2], torch.nn.BatchNorm2d):
+                    permute_input(perm_map, subnet_model[-3])
                 else:
-                    assert isinstance(features[i + 1], torch.nn.ReLU)
-                    corr = (
-                        smart_get_corr_matrix(
-                            subnet(reference_model, i + 2), subnet(model, i + 2), loader, strategy=strategy
-                        )
-                        .cpu()
-                        .numpy()
-                    )
-                    perm_map = get_layer_perm_from_corr(corr)
-                    permute_output(perm_map, conv=features[i], bn=None)  # in-place modification
-                # look for succeeding layer to permute input
-                next_layer = None
-                for j in range(i + 1, len(features)):
-                    if isinstance(features[j], torch.nn.Conv2d):
-                        next_layer = features[j]
-                        break
-                if next_layer is None:
-                    next_layer = model.classifier
-                permute_input(perm_map, next_layer)  # in-place modification
+                    permute_input(perm_map, subnet_model[-2])
+            perm_map = get_layer_perm(subnet_ref, subnet_model, loader)
+            if isinstance(subnet_model[-2], torch.nn.BatchNorm2d):
+                permute_output(perm_map, subnet_model[-3], subnet_model[-2])
+            else:
+                permute_output(perm_map, subnet_model[-2])
+            if layer == model.num_layers:
+                permute_input(perm_map, model.classifier)
 
     elif isinstance(model, ResNet18):
         # intra-block permutation
