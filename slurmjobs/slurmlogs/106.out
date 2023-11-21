@@ -1,0 +1,17 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    3
+Visible GPUs:         NVIDIA GeForce RTX 3060
+--------------------------------------------------
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/codecarbon/emissions_tracker.py", line 791, in wrapped_fn
+    fn_result = fn(*args, **kwargs)
+  File "/home/korbinian/Documents/partial-model-merging/src/evaluate.py", line 144, in evaluate_two_models
+    model_b_perm = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader)
+  File "/home/korbinian/Documents/partial-model-merging/src/utils.py", line 546, in permute_model
+    raise ValueError(f"Unknown model type {type(model)}")
+ValueError: Unknown model type <class 'src.models.ResNet.ResNet20'>
+Collecting ensembling metrics ...
+Collecting naive merging metrics ...
+Collecting permuted merging metrics ...
