@@ -1,0 +1,17 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    3
+Visible GPUs:         NVIDIA GeForce RTX 3060
+--------------------------------------------------
+📤 Loaded saved metrics for CIFAR10-ResNet18-bn-1.0x-ab from .safetensors
+📤 Loaded saved metrics for CIFAR10-ResNet18-bn-1.0x-ab from .safetensors
+📊 train accs plot saved for CIFAR10-ResNet18-bn-1.0x-a, CIFAR10-ResNet18-bn-1.0x-b
+📊 test accs plot saved for CIFAR10-ResNet18-bn-1.0x-a, CIFAR10-ResNet18-bn-1.0x-b
+📊 train losses plot saved for CIFAR10-ResNet18-bn-1.0x-a, CIFAR10-ResNet18-bn-1.0x-b
+📊 test losses plot saved for CIFAR10-ResNet18-bn-1.0x-a, CIFAR10-ResNet18-bn-1.0x-b
+📤 Loaded saved metrics for CIFAR10-ResNet18-bn-4.0x-ab from .safetensors
+📤 Loaded saved metrics for CIFAR10-ResNet18-bn-4.0x-ab from .safetensors
+📊 train accs plot saved for CIFAR10-ResNet18-bn-4.0x-a, CIFAR10-ResNet18-bn-4.0x-b
+📊 test accs plot saved for CIFAR10-ResNet18-bn-4.0x-a, CIFAR10-ResNet18-bn-4.0x-b
+📊 train losses plot saved for CIFAR10-ResNet18-bn-4.0x-a, CIFAR10-ResNet18-bn-4.0x-b
+📊 test losses plot saved for CIFAR10-ResNet18-bn-4.0x-a, CIFAR10-ResNet18-bn-4.0x-b
