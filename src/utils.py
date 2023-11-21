@@ -861,7 +861,7 @@ def get_is_buffer_from_subnet(net: torch.nn.Sequential) -> torch.BoolTensor:
         is_buffer = net[-3].is_buffer
     else:
         raise ValueError(f"Unknown subnet makeup, last module has type {type(net[-1])}")
-    assert isinstance(is_buffer, torch.BoolTensor)
+    assert isinstance(is_buffer, torch.BoolTensor) or isinstance(is_buffer, torch.cuda.BoolTensor)
     return is_buffer
 
 
