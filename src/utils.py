@@ -349,7 +349,7 @@ def expand_model(
 
 def subnet(model: torch.nn.Module, num_layers: int):
     """
-    Returns a subnet from layer 1 to layer n_layers (in the feature extractor; no classifier)
+    Returns a subnet from layer 1 to layer n_layers (only counting conv layers in the feature extractor; no classifier)
     adapted from https://github.com/KellerJordan/REPAIR
     :param model: the original model
     :param num_layers: the first n_layers will be sliced
@@ -357,7 +357,19 @@ def subnet(model: torch.nn.Module, num_layers: int):
     """
     assert isinstance(num_layers, int) and num_layers > 0
     if isinstance(model, VGG):
-        return model.features[:num_layers]
+        result = torch.nn.Sequential()
+        conv_counter = num_layers
+        for layer in model.features:
+            result.append(layer)
+            if conv_counter == 0:
+                break
+            if isinstance(layer, torch.nn.Conv2d):
+                conv_counter -= 1
+        if conv_counter != 0:
+            raise ValueError(
+                f"Not enough conv layers in model (requested in subnet: {num_layers}, found max: {num_layers-conv_counter})"
+            )
+        return result
     elif isinstance(model, ResNet18) or isinstance(model, ResNet20):
         blocks = get_blocks(model)
         if num_layers % 2 == 1:
@@ -372,11 +384,11 @@ def subnet(model: torch.nn.Module, num_layers: int):
         raise NotImplementedError(f"Cannot create subnet of type {type(model)}")
 
 
-def get_blocks(resnet: ResNet18 | ResNet20):
+def get_blocks(resnet: ResNet18 | ResNet20) -> torch.nn.Sequential:
     """
     Returns the individual blocks of the ResNet as an iterable
     :param resnet: the ResNet model
-    :return: the
+    :return: the iterable
     """
     first_block = torch.nn.Sequential(resnet.conv1, resnet.bn1)
     if hasattr(resnet, "relu"):  # torchvision.models.resnet has named layer
@@ -398,7 +410,7 @@ def get_blocks(resnet: ResNet18 | ResNet20):
 
 def add_junctures(resnet: ResNet18 | ResNet20):
     """
-    Adds artificial downsampling point-wise convolutions to BasicBlocks to keep track of  TODO: check if still needed
+    Adds artificial downsampling point-wise convolutions to BasicBlocks to keep track of  TODO: not needed, delete
     applied permutations while aligning two models.
     :param resnet: the ResNet
     :return: a new identical ResNet with junctures
