@@ -6,6 +6,7 @@ from safetensors.torch import save_file, load_file
 import os
 from codecarbon import track_emissions
 from itertools import product
+from tqdm import tqdm
 from src.utils import (
     load_model,
     get_loaders,
@@ -100,6 +101,8 @@ def evaluate_two_models(
     if model_name_b is None:
         model_name_b = f"{model_name_a}-b"
         model_name_a = f"{model_name_a}-a"
+
+    print(f"Evaluating {model_name_a}, {model_name_b}\n" f"steps: {interpolation_steps}; expansions: {expansions}")
 
     dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
     dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
@@ -250,7 +253,10 @@ def evaluate_two_models_merging(
     accs = []
     losses = []
 
-    for alpha in torch.linspace(0.0, 1.0, interpolation_steps) if interpolation_steps > 1 else [0.5]:
+    for alpha in tqdm(
+        torch.linspace(0.0, 1.0, interpolation_steps) if interpolation_steps > 1 else [0.5],
+        desc="Interpolating and evaluating permuted model",
+    ):
         model_merged = smart_interpolate_models(model_a, model_b, alpha)
         acc, loss = get_acc_and_loss(model_merged, loader)
         accs.append(acc)
@@ -268,7 +274,10 @@ def evaluate_two_models_merging_REPAIR(
     accs = []
     losses = []
 
-    for alpha in torch.linspace(0.0, 1.0, interpolation_steps) if interpolation_steps > 1 else [0.5]:
+    for alpha in tqdm(
+        torch.linspace(0.0, 1.0, interpolation_steps) if interpolation_steps > 1 else [0.5],
+        desc="Interpolating, REPAIRing and evaluating permuted model",
+    ):
         model_merged = smart_interpolate_models(model_a, model_b, alpha)
         model_merged.eval()
         if model_a.bn:  # there is no special REPAIR for models with bn
