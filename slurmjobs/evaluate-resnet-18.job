@@ -1,0 +1,32 @@
+#!/bin/bash
+
+#SBATCH --output=./slurmjobs/slurmlogs/%j.out
+#SBATCH --gres=gpu:rtx3060:1
+#SBATCH --cpus-per-task=3
+#SBATCH --threads-per-core=1
+#SBATCH --mem-per-gpu=16G
+#SBATCH --job-name=evaluate-resnet
+
+export CUDA_DEVICE_ORDER="PCI_BUS_ID"
+export CUDA_VISIBLE_DEVICES=$(echo $SLURM_JOB_GPUS | cut -d "," -f1)
+
+source venv/bin/activate
+python -c \
+"\
+import os; \
+import torch; \
+import psutil; \
+print('-------------------SBATCH STATS-------------------'); \
+print(f'Total CPU cores:      {os.cpu_count()}'); \
+print(f'Visible CPU cores:    {len(os.sched_getaffinity(0))}'); \
+print(f'Visible GPUs:         {torch.cuda.get_device_name(torch.cuda.current_device())}'); \
+print('-'*50)
+"
+
+python -c "\
+from src.evaluate import *; \
+from src.plot_scripts.plot_acc_and_loss_curves import *; \
+model_name = 'CIFAR10-ResNet18-bn-1.0x'; \
+evaluate_two_models(model_name, expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
+plot_acc_and_loss_curves(model_name); \
+"
