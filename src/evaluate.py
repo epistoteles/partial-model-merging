@@ -247,16 +247,15 @@ def evaluate_two_models_ensembling(
 def evaluate_two_models_merging(
     model_a: torch.nn.Module, model_b: torch.nn.Module, loader, interpolation_steps: int = 21
 ):
+    print("Interpolating and evaluating permuted model")
+
     model_a.eval()
     model_b.eval()
 
     accs = []
     losses = []
 
-    for alpha in tqdm(
-        torch.linspace(0.0, 1.0, interpolation_steps) if interpolation_steps > 1 else [0.5],
-        desc="Interpolating and evaluating permuted model",
-    ):
+    for alpha in tqdm(torch.linspace(0.0, 1.0, interpolation_steps) if interpolation_steps > 1 else [0.5]):
         model_merged = smart_interpolate_models(model_a, model_b, alpha)
         acc, loss = get_acc_and_loss(model_merged, loader)
         accs.append(acc)
@@ -268,16 +267,15 @@ def evaluate_two_models_merging(
 def evaluate_two_models_merging_REPAIR(
     model_a: torch.nn.Module, model_b: torch.nn.Module, loader, repair_loader, interpolation_steps: int = 21
 ):
+    print("Interpolating, REPAIRing, and evaluating permuted model")
+
     model_a.eval()
     model_b.eval()
 
     accs = []
     losses = []
 
-    for alpha in tqdm(
-        torch.linspace(0.0, 1.0, interpolation_steps) if interpolation_steps > 1 else [0.5],
-        desc="Interpolating, REPAIRing and evaluating permuted model",
-    ):
+    for alpha in tqdm(torch.linspace(0.0, 1.0, interpolation_steps) if interpolation_steps > 1 else [0.5]):
         model_merged = smart_interpolate_models(model_a, model_b, alpha)
         model_merged.eval()
         if model_a.bn:  # there is no special REPAIR for models with bn
