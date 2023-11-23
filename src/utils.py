@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import git
 import os
 from pathlib import Path
@@ -35,7 +37,7 @@ from ffcv.transforms import (
 from ffcv.transforms.common import Squeeze
 
 from src.models.VGG import VGG
-from src.models.ResNet import ResNet18, ResNet20, BasicBlock
+from src.models.ResNet import ResNet18, ResNet20, BasicBlock, forward_just_residual, forward_just_downsample
 from src.models.MLP import MLP
 
 
@@ -347,13 +349,15 @@ def expand_model(
     return model_expanded
 
 
-def subnet(model: torch.nn.Module, num_layers: int) -> torch.nn.Sequential:
+def subnet(model: torch.nn.Module, num_layers: int, only_return: str = None) -> torch.nn.Sequential:
     """
     Returns a subnet from layer 1 to layer n_layers (only counting conv layers in the feature extractor; no classifier).
     The returned subnet will include following bn and relu layers before the next conv, but no pooling layers.
     adapted from https://github.com/KellerJordan/REPAIR
     :param model: the original model
     :param num_layers: the first n_layers will be sliced
+    :param only_return: for ResNets: after a block, only return the "residual" or "downsample" output (i.e. don't add)
+                        do *not* use this for permuting, as it returns a copy of the model
     :return: torch.nn.Module
     """
     assert isinstance(num_layers, int) and 0 < num_layers <= model.num_layers
@@ -371,7 +375,19 @@ def subnet(model: torch.nn.Module, num_layers: int) -> torch.nn.Sequential:
         blocks = get_blocks(model)
         if num_layers % 2 == 1:
             index = (num_layers + 1) // 2
-            return blocks[:index]
+            result = blocks[:index]
+            if only_return is not None:
+                result = deepcopy(result)
+                match only_return:
+                    case "residual":
+                        new_forward_func = forward_just_residual
+                    case "downsample":
+                        new_forward_func = forward_just_downsample
+                    case _:
+                        raise ValueError("Invalid only_return argument")
+                funcType = type(result[-1].forward)
+                result[-1].forward = funcType(new_forward_func, result[-1], BasicBlock)
+            return result
         else:
             index = num_layers // 2
             result = blocks[:index]

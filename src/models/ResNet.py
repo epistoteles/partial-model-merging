@@ -51,6 +51,19 @@ class BasicBlock(nn.Module):
         return out
 
 
+def forward_just_residual(self, x):
+    out = F.relu(self.bn1(self.conv1(x)))
+    out = self.bn2(self.conv2(out))
+    out = F.relu(out)
+    return out
+
+
+def forward_just_downsample(self, x):
+    out = self.downsample(x)
+    out = F.relu(out)
+    return out
+
+
 class ResNet18(nn.Module):
     def __init__(self, width: float | list[float] | torch.FloatTensor = 1.0, num_classes: int = 10, norm: str = "bn"):
         """

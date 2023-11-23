@@ -252,7 +252,7 @@ def evaluate_two_models_ensembling(
 def evaluate_two_models_merging(
     model_a: torch.nn.Module, model_b: torch.nn.Module, loader, interpolation_steps: int = 21
 ):
-    print("Interpolating and evaluating permuted model")
+    print("Interpolating and evaluating model")
 
     model_a.eval()
     model_b.eval()
@@ -272,7 +272,7 @@ def evaluate_two_models_merging(
 def evaluate_two_models_merging_REPAIR(
     model_a: torch.nn.Module, model_b: torch.nn.Module, loader, repair_loader, interpolation_steps: int = 21
 ):
-    print("Interpolating, REPAIRing, and evaluating permuted model")
+    print("Interpolating, REPAIRing, and evaluating model")
 
     model_a.eval()
     model_b.eval()
