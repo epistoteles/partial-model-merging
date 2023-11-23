@@ -466,18 +466,14 @@ def remove_buffer_flags(model):
 #####################
 
 # flake8: noqa: C901
-def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, loader, strategy: int = 1):
+def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, loader, save_corr_path: str = None):
     """
     Merges the two models using traditional activation matching
     adapted from https://github.com/KellerJordan/REPAIR
     :param reference_model: the reference model (not affected)
     :param model: the model to be permuted
     :param loader: the data loader to use for calculating the activations; usually train_aug_loader
-    :param strategy: which strategy to use:
-                      1. use correlation matrix for matching
-                      2. use covariance matrix for matching
-                      3. use correlation matrix + normalized mean activation of reference model for matching
-                      4. use correlation matrix + normalized mean activation of model for matching
+    :param save_corrs: save the candidate and LAP-selected correlations in each layer under this path
     :return: the permuted model
     """
     sd = model.state_dict()
@@ -495,7 +491,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                     permute_input(perm_map, subnet_model[-3])
                 else:
                     permute_input(perm_map, subnet_model[-2])
-            perm_map = get_layer_perm(subnet_ref, subnet_model, loader)
+            perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
             if isinstance(subnet_model[-2], torch.nn.BatchNorm2d):
                 permute_output(perm_map, subnet_model[-3], subnet_model[-2])
             else:
@@ -504,11 +500,17 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                 permute_input(perm_map, model.classifier)
 
     elif isinstance(model, ResNet18):
+        # we just record the correlations here but don't use them
+        if save_corr_path is not None:
+            for layer in [1, 3, 7, 11, 15]:
+                subnet_ref = subnet(reference_model, layer)
+                subnet_model = subnet(model, layer)
+                _ = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
         # intra-block permutation
         for layer in [2, 4, 6, 8, 10, 12, 14, 16]:
             subnet_ref = subnet(reference_model, layer)
             subnet_model = subnet(model, layer)
-            perm_map = get_layer_perm(subnet_ref, subnet_model, loader)
+            perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
             subnet_model = subnet(model, layer + 1)
             permute_output(perm_map, subnet_model[-1].conv1, subnet_model[-1].bn1)
             permute_input(perm_map, subnet_model[-1].conv2)
@@ -518,7 +520,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             subnet_model = subnet(model, layer)
             if layer >= 9:
                 permute_input(perm_map, [subnet_model[-2].conv1, subnet_model[-2].downsample[0]])
-            perm_map = get_layer_perm(subnet_ref, subnet_model, loader)
+            perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
             if layer == 5:  # special case for first conv
                 permute_output(perm_map, model.conv1, model.bn1)
                 permute_input(perm_map, [subnet_model[-1].conv1, subnet_model[-2].conv1])
@@ -531,11 +533,17 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             permute_output(perm_map, subnet_model[-2].conv2, subnet_model[-2].bn2)
 
     elif isinstance(model, ResNet20):
+        # we just record the correlations here but don't use them
+        if save_corr_path is not None:
+            for layer in [1, 3, 5, 9, 11, 15, 17]:
+                subnet_ref = subnet(reference_model, layer)
+                subnet_model = subnet(model, layer)
+                _ = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
         # intra-block permutation
         for layer in [2, 4, 6, 8, 10, 12, 14, 16, 18]:
             subnet_ref = subnet(reference_model, layer)
             subnet_model = subnet(model, layer)
-            perm_map = get_layer_perm(subnet_ref, subnet_model, loader)
+            perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
             subnet_model = subnet(model, layer + 1)
             permute_output(perm_map, subnet_model[-1].conv1, subnet_model[-1].bn1)
             permute_input(perm_map, subnet_model[-1].conv2)
@@ -545,7 +553,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             subnet_model = subnet(model, layer)
             if layer >= 13:
                 permute_input(perm_map, [subnet_model[-3].conv1, subnet_model[-3].downsample[0]])
-            perm_map = get_layer_perm(subnet_ref, subnet_model, loader)
+            perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
             if layer == 7:  # special case for first conv
                 permute_output(perm_map, model.conv1, model.bn1)
                 permute_input(perm_map, [subnet_model[-1].conv1, subnet_model[-2].conv1, subnet_model[-3].conv1])
@@ -901,30 +909,43 @@ def manipulate_corr_matrix(corr_mtx):  # TODO: check if still used, then delete!
     return corr_mtx
 
 
-def get_layer_perm_from_corr(corr_mtx):
+def get_layer_perm_from_corr(corr_mtx, save_corr_path: str = None, layer: int = None):
     """
     Given a correlation matrix, returns the optimal permutation map that the LAP solver returns.
     :param corr_mtx: a correlation matrix
+    :param save_corr_path: the path under which to save the candidate and LAP-selected correlations
+    :param layer: which layer we are currently evaluating (relevant for the save_corr_path dict)
     :return: the permutation map
     """
     corr_mtx = ensure_numpy(corr_mtx)
     row_ind, col_ind = scipy.optimize.linear_sum_assignment(corr_mtx, maximize=True)
     assert (row_ind == np.arange(len(corr_mtx))).all()
-    perm_map = torch.tensor(col_ind).long()
+    perm_map = torch.LongTensor(col_ind)
+    if save_corr_path is not None:
+        assert save_corr_path.endswith(".safetensors")
+        if os.path.isfile(save_corr_path) and layer != 1:
+            corrs = load_file(save_corr_path)
+        else:
+            corrs = {}
+        corrs[f"layer{layer}.candidate_corrs"] = torch.FloatTensor(corr_mtx)
+        corrs[f"layer{layer}.perm_map"] = perm_map
+        save_file(corrs, filename=save_corr_path)
     return perm_map
 
 
-def get_layer_perm(subnet_a, subnet_b, loader):
+def get_layer_perm(subnet_a, subnet_b, loader, save_corr_path: str = None, layer: int = None):
     """
     Returns the channel permutation map to make the activations of the last layer in subnet_a
     most closely match those in the last layer of subnet_b.
     :param subnet_a: The reference subnet that stays the same
     :param subnet_b: The subnet for which we want the permutation map
     :param loader: The data loader used to collect the activations
+    :param save_corr_path: The path under which to save the candidate and LAP-selected correlations
+    :param layer: which layer we are currently evaluating (relevant for the save_corr_path dict)
     :return: the permutation map
     """
     corr_mtx = smart_get_corr_matrix(subnet_a, subnet_b, loader)
-    return get_layer_perm_from_corr(corr_mtx)
+    return get_layer_perm_from_corr(corr_mtx, save_corr_path, layer)
 
 
 ####################

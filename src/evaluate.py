@@ -143,7 +143,12 @@ def evaluate_two_models(
         )
 
         print("Collecting permuted merging metrics ...")
-        model_b_perm = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader)
+        save_corr_path = os.path.join(
+            get_evaluations_dir(subdir="correlations"), f"{model_name_a}{variant_b}.safetensors"
+        )
+        model_b_perm = permute_model(
+            reference_model=model_a, model=model_b, loader=train_aug_loader, save_corr_path=save_corr_path
+        )
         metrics["merging_train_accs"], metrics["merging_train_losses"] = evaluate_two_models_merging(
             model_a, model_b_perm, train_noaug_loader, interpolation_steps
         )
