@@ -927,8 +927,9 @@ def get_layer_perm_from_corr(corr_mtx, save_corr_path: str = None, layer: int = 
             corrs = load_file(save_corr_path)
         else:
             corrs = {}
-        corrs[f"layer{layer}.candidate_corrs"] = torch.FloatTensor(corr_mtx)
+        corrs[f"layer{layer}.correlations"] = torch.FloatTensor(corr_mtx)
         corrs[f"layer{layer}.perm_map"] = perm_map
+        corrs = dict(sorted(corrs.items(), key=lambda x: int(x[0].split(".")[0].replace("layer", ""))))  # sort dict
         save_file(corrs, filename=save_corr_path)
     return perm_map
 
