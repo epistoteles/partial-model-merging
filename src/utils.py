@@ -954,7 +954,8 @@ def get_layer_perm_from_corr(corr_mtx, save_corr_path: str = None, layer: int | 
         corrs[f"layer{layer}.perm_map"] = perm_map
         corrs = dict(sorted(corrs.items(), key=lambda x: int(x[0].split(".")[0].replace("layer", ""))))  # sort dict
         print(f"Saving corrs of layer {layer} to {save_corr_path}")
-        print(corr_mtx.mean(), corr_mtx.min(), corr_mtx.max())
+        print("Candidates:", corr_mtx.mean())
+        print("Selected:", corr_mtx[row_ind, col_ind].mean())
         save_file(corrs, filename=save_corr_path)
     return perm_map
 
