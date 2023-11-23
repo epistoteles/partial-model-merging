@@ -386,7 +386,7 @@ def subnet(model: torch.nn.Module, num_layers: int, only_return: str = None) -> 
                     case _:
                         raise ValueError("Invalid only_return argument")
                 funcType = type(result[-1].forward)
-                result[-1].forward = funcType(new_forward_func, result[-1], BasicBlock)
+                result[-1].forward = funcType(new_forward_func, result[-1])
             return result
         else:
             index = num_layers // 2
