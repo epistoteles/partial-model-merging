@@ -522,6 +522,10 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                 subnet_ref = subnet(reference_model, layer)
                 subnet_model = subnet(model, layer)
                 _ = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
+            for layer in [7, 11, 15]:
+                subnet_ref = subnet(reference_model, layer, only_return="downsample")
+                subnet_model = subnet(model, layer, only_return="downsample")
+                _ = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=f"{layer}.downsample")
         # intra-block permutation
         for layer in [2, 4, 6, 8, 10, 12, 14, 16]:
             subnet_ref = subnet(reference_model, layer)
@@ -925,7 +929,7 @@ def manipulate_corr_matrix(corr_mtx):  # TODO: check if still used, then delete!
     return corr_mtx
 
 
-def get_layer_perm_from_corr(corr_mtx, save_corr_path: str = None, layer: int = None):
+def get_layer_perm_from_corr(corr_mtx, save_corr_path: str = None, layer: int | str = None):
     """
     Given a correlation matrix, returns the optimal permutation map that the LAP solver returns.
     :param corr_mtx: a correlation matrix
@@ -951,7 +955,7 @@ def get_layer_perm_from_corr(corr_mtx, save_corr_path: str = None, layer: int = 
     return perm_map
 
 
-def get_layer_perm(subnet_a, subnet_b, loader, save_corr_path: str = None, layer: int = None):
+def get_layer_perm(subnet_a, subnet_b, loader, save_corr_path: str = None, layer: int | str = None):
     """
     Returns the channel permutation map to make the activations of the last layer in subnet_a
     most closely match those in the last layer of subnet_b.
