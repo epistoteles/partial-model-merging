@@ -526,6 +526,9 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                 subnet_ref = subnet(reference_model, layer, only_return="downsample")
                 subnet_model = subnet(model, layer, only_return="downsample")
                 _ = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=f"{layer}.downsample")
+                subnet_ref = subnet(reference_model, layer, only_return="residual")
+                subnet_model = subnet(model, layer, only_return="residual")
+                _ = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=f"{layer}.residual")
         # intra-block permutation
         for layer in [2, 4, 6, 8, 10, 12, 14, 16]:
             subnet_ref = subnet(reference_model, layer)
