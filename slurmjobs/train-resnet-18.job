@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --output=./slurmjobs/slurmlogs/%j.out
-#SBATCH --gres=gpu:rtx3060:1
+#SBATCH --gres=gpu:gtx1080:1
 #SBATCH --cpus-per-task=3
 #SBATCH --threads-per-core=1
 #SBATCH --mem-per-gpu=16G
@@ -23,5 +23,5 @@ print(f'Visible GPUs:         {torch.cuda.get_device_name(torch.cuda.current_dev
 print('-'*50)
 "
 
-python src/train.py --dataset SVHN --model ResNet --size 18 --width 4 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant a -bn -wandb -test
-python src/train.py --dataset SVHN --model ResNet --size 18 --width 4 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant b -bn -wandb -test
+python src/train.py --dataset SVHN --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant a -bn -wandb -test
+python src/train.py --dataset SVHN --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant b -bn -wandb -test
