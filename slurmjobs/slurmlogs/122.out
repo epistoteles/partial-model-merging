@@ -1,0 +1,18 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    3
+Visible GPUs:         NVIDIA GeForce RTX 3060
+--------------------------------------------------
+Namespace(dataset='SVHN', model_type='ResNet', size=20, batch_norm=True, 
+width=4.0, epochs=200, lr=0.4, weight_decay=0.0001, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231123_134954-5ap3rjdc
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run visionary-frog-200
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/5ap3rjdc
+slurmstepd-Turing: error: *** JOB 122 ON Turing CANCELLED AT 2023-11-23T13:50:14 ***
