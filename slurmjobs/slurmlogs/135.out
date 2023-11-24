@@ -1,0 +1,663 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    3
+Visible GPUs:         NVIDIA GeForce GTX 1060 6GB
+--------------------------------------------------
+Namespace(dataset='MNIST', model_type='MLP', size=4, batch_norm=False, 
+width=1.0, epochs=100, lr=0.2, weight_decay=0.0, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_171107-tebzjfq3
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run silvery-glitter-207
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/tebzjfq3
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:13
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+📥 Accuracies and losses saved for MNIST-MLP4-1.0x-a
+train_acc    0.9999833333333333
+train_loss   0.00030516509383839244
+test_acc     0.9918
+test_loss    0.032011736370623115
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▇██████████████████████████████████████
+wandb:      test_loss █▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▇██████████████████████████████████████
+wandb:     train_loss █▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9918
+wandb:      test_loss 0.03201
+wandb: train_accuracy 0.99988
+wandb:     train_loss 0.00076
+wandb: 
+wandb: 🚀 View run silvery-glitter-207 at: https://wandb.ai/epistoteles/partial-model-merging/runs/tebzjfq3
+wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_171107-tebzjfq3/logs
+Namespace(dataset='MNIST', model_type='MLP', size=4, batch_norm=False, 
+width=1.0, epochs=100, lr=0.2, weight_decay=0.0, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_171751-jofb2b2k
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run wobbly-sponge-208
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/jofb2b2k
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:13
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+📥 Accuracies and losses saved for MNIST-MLP4-1.0x-b
+train_acc    0.9999833333333333
+train_loss   0.0002891142084990861
+test_acc     0.9908
+test_loss    0.034183270297944546
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.007 MB uploaded (0.000 MB deduped)wandb: | 0.006 MB of 0.008 MB uploaded (0.000 MB deduped)wandb: / 0.008 MB of 0.008 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▇██████████████████████████████████████
+wandb:      test_loss █▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▇██████████████████████████████████████
+wandb:     train_loss █▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9908
+wandb:      test_loss 0.03418
+wandb: train_accuracy 0.99993
+wandb:     train_loss 0.00069
+wandb: 
+wandb: 🚀 View run wobbly-sponge-208 at: https://wandb.ai/epistoteles/partial-model-merging/runs/jofb2b2k
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_171751-jofb2b2k/logs
+Namespace(dataset='MNIST', model_type='MLP', size=5, batch_norm=False, 
+width=1.0, epochs=100, lr=0.2, weight_decay=0.0, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_172432-qqm211h5
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run vocal-violet-209
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/qqm211h5
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:15
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+📥 Accuracies and losses saved for MNIST-MLP5-1.0x-a
+train_acc    0.99995
+train_loss   0.0003483209762028613
+test_acc     0.9907
+test_loss    0.043140660412609576
+wandb: Waiting for W&B process to finish... (success).
+wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▇██████████████████████████████████████
+wandb:      test_loss █▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▆██████████████████████████████████████
+wandb:     train_loss █▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9907
+wandb:      test_loss 0.04314
+wandb: train_accuracy 0.99992
+wandb:     train_loss 0.00065
+wandb: 
+wandb: 🚀 View run vocal-violet-209 at: https://wandb.ai/epistoteles/partial-model-merging/runs/qqm211h5
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_172432-qqm211h5/logs
+Namespace(dataset='MNIST', model_type='MLP', size=5, batch_norm=False, 
+width=1.0, epochs=100, lr=0.2, weight_decay=0.0, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_173122-y1amgscy
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run devoted-leaf-210
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/y1amgscy
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:15
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+📥 Accuracies and losses saved for MNIST-MLP5-1.0x-b
+train_acc    0.9999666666666667
+train_loss   0.00021052219074893703
+test_acc     0.9912
+test_loss    0.042676192708313465
+wandb: Waiting for W&B process to finish... (success).
+wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▇██████████████████████████████████████
+wandb:      test_loss █▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▇██████████████████████████████████████
+wandb:     train_loss █▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9912
+wandb:      test_loss 0.04268
+wandb: train_accuracy 0.99995
+wandb:     train_loss 0.00045
+wandb: 
+wandb: 🚀 View run devoted-leaf-210 at: https://wandb.ai/epistoteles/partial-model-merging/runs/y1amgscy
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_173122-y1amgscy/logs
+Namespace(dataset='MNIST', model_type='MLP', size=6, batch_norm=False, 
+width=1.0, epochs=100, lr=0.2, weight_decay=0.0, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_173808-rn5n71ei
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run grateful-flower-211
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/rn5n71ei
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:18
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+📥 Accuracies and losses saved for MNIST-MLP6-1.0x-a
+train_acc    0.99995
+train_loss   0.0002793933788780123
+test_acc     0.9894
+test_loss    0.04952167570590973
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.008 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.008 MB uploaded (0.000 MB deduped)wandb: / 0.008 MB of 0.008 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▃██████████████████████████████████████
+wandb:      test_loss █▆▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▃██████████████████████████████████████
+wandb:     train_loss ██▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9894
+wandb:      test_loss 0.04952
+wandb: train_accuracy 0.99985
+wandb:     train_loss 0.00084
+wandb: 
+wandb: 🚀 View run grateful-flower-211 at: https://wandb.ai/epistoteles/partial-model-merging/runs/rn5n71ei
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_173808-rn5n71ei/logs
+Namespace(dataset='MNIST', model_type='MLP', size=6, batch_norm=False, 
+width=1.0, epochs=100, lr=0.2, weight_decay=0.0, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_174459-tf9lb56g
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run fragrant-wood-212
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/tf9lb56g
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:15
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+📥 Accuracies and losses saved for MNIST-MLP6-1.0x-b
+train_acc    1.0
+train_loss   0.00015868881385661855
+test_acc     0.9907
+test_loss    0.04856063649058342
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▇██████████████████████████████████████
+wandb:      test_loss █▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▄██████████████████████████████████████
+wandb:     train_loss █▅▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9907
+wandb:      test_loss 0.04856
+wandb: train_accuracy 0.99997
+wandb:     train_loss 0.00027
+wandb: 
+wandb: 🚀 View run fragrant-wood-212 at: https://wandb.ai/epistoteles/partial-model-merging/runs/tf9lb56g
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_174459-tf9lb56g/logs
+Namespace(dataset='MNIST', model_type='MLP', size=7, batch_norm=False, 
+width=1.0, epochs=100, lr=0.2, weight_decay=0.0, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_175143-uz6xp2hi
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run quiet-grass-213
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/uz6xp2hi
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:18
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+📥 Accuracies and losses saved for MNIST-MLP7-1.0x-a
+train_acc    0.99995
+train_loss   0.0002614896112694017
+test_acc     0.9896
+test_loss    0.05597191601991654
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.007 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.008 MB uploaded (0.000 MB deduped)wandb: / 0.008 MB of 0.008 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▂██████████████████████████████████████
+wandb:      test_loss █▇▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▂▇█████████████████████████████████████
+wandb:     train_loss ██▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9896
+wandb:      test_loss 0.05597
+wandb: train_accuracy 0.99988
+wandb:     train_loss 0.00046
+wandb: 
+wandb: 🚀 View run quiet-grass-213 at: https://wandb.ai/epistoteles/partial-model-merging/runs/uz6xp2hi
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_175143-uz6xp2hi/logs
+Namespace(dataset='MNIST', model_type='MLP', size=7, batch_norm=False, 
+width=1.0, epochs=100, lr=0.2, weight_decay=0.0, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_175829-i6venn0j
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run comic-snowflake-214
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/i6venn0j
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:18
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+📥 Accuracies and losses saved for MNIST-MLP7-1.0x-b
+train_acc    0.9999666666666667
+train_loss   0.0002091200521135761
+test_acc     0.9903
+test_loss    0.05462396051734686
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▃██████████████████████████████████████
+wandb:      test_loss █▆▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▂██████████████████████████████████████
+wandb:     train_loss █▇▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9903
+wandb:      test_loss 0.05462
+wandb: train_accuracy 0.9999
+wandb:     train_loss 0.00045
+wandb: 
+wandb: 🚀 View run comic-snowflake-214 at: https://wandb.ai/epistoteles/partial-model-merging/runs/i6venn0j
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_175829-i6venn0j/logs
+Namespace(dataset='MNIST', model_type='MLP', size=8, batch_norm=False, 
+width=1.0, epochs=100, lr=0.2, weight_decay=0.0, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_180517-nkwzjyga
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run lemon-silence-215
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/nkwzjyga
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:20
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+📥 Accuracies and losses saved for MNIST-MLP8-1.0x-a
+train_acc    0.9999666666666667
+train_loss   0.0002119838537510077
+test_acc     0.9895
+test_loss    0.05955350324511528
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▁▇█████████████████████████████████████
+wandb:      test_loss ██▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▁▆█████████████████████████████████████
+wandb:     train_loss ██▃▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9895
+wandb:      test_loss 0.05955
+wandb: train_accuracy 0.99993
+wandb:     train_loss 0.00049
+wandb: 
+wandb: 🚀 View run lemon-silence-215 at: https://wandb.ai/epistoteles/partial-model-merging/runs/nkwzjyga
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_180517-nkwzjyga/logs
+Namespace(dataset='MNIST', model_type='MLP', size=8, batch_norm=False, 
+width=1.0, epochs=100, lr=0.2, weight_decay=0.0, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_181206-xdhbv9hu
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run glad-glade-216
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/xdhbv9hu
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:20
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+📥 Accuracies and losses saved for MNIST-MLP8-1.0x-b
+train_acc    0.9998166666666667
+train_loss   0.001027969351465193
+test_acc     0.9884
+test_loss    0.05640714727342129
+wandb: Waiting for W&B process to finish... (success).
+wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▁▁▃▅███████████████████████████████████
+wandb:      test_loss ███▆▄▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▁▁▂▄▇██████████████████████████████████
+wandb:     train_loss ███▇▅▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9884
+wandb:      test_loss 0.05641
+wandb: train_accuracy 0.99958
+wandb:     train_loss 0.0021
+wandb: 
+wandb: 🚀 View run glad-glade-216 at: https://wandb.ai/epistoteles/partial-model-merging/runs/xdhbv9hu
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_181206-xdhbv9hu/logs
+Namespace(dataset='MNIST', model_type='MLP', size=9, batch_norm=False, 
+width=1.0, epochs=100, lr=0.2, weight_decay=0.0, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_181854-mxdgintt
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run cerulean-sunset-217
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/mxdgintt
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:26
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+📥 Accuracies and losses saved for MNIST-MLP9-1.0x-a
+train_acc    0.09871666666666666
+train_loss   nan
+test_acc     0.098
+test_loss    nan
+wandb: Waiting for W&B process to finish... (success).
+wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▁▄█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:      test_loss ███▁                                    
+wandb: train_accuracy ▁▁▄▄█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:     train_loss ██▃▁                                    
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.098
+wandb:      test_loss nan
+wandb: train_accuracy 0.09872
+wandb:     train_loss nan
+wandb: 
+wandb: 🚀 View run cerulean-sunset-217 at: https://wandb.ai/epistoteles/partial-model-merging/runs/mxdgintt
+wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_181854-mxdgintt/logs
+Namespace(dataset='MNIST', model_type='MLP', size=9, batch_norm=False, 
+width=1.0, epochs=100, lr=0.2, weight_decay=0.0, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_182557-qyeqwv7e
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run super-pyramid-218
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/qyeqwv7e
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:21
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+📥 Accuracies and losses saved for MNIST-MLP9-1.0x-b
+train_acc    0.09871666666666666
+train_loss   nan
+test_acc     0.098
+test_loss    nan
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▁▄▆█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:      test_loss ██▆▃▁                                   
+wandb: train_accuracy ▁▁▂▆█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:     train_loss ██▇▄▁                                   
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.098
+wandb:      test_loss nan
+wandb: train_accuracy 0.09872
+wandb:     train_loss nan
+wandb: 
+wandb: 🚀 View run super-pyramid-218 at: https://wandb.ai/epistoteles/partial-model-merging/runs/qyeqwv7e
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_182557-qyeqwv7e/logs
+Namespace(dataset='MNIST', model_type='MLP', size=10, batch_norm=False, 
+width=1.0, epochs=100, lr=0.2, weight_decay=0.0, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_183248-r8166ozd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run soft-smoke-219
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/r8166ozd
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:25
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+📥 Accuracies and losses saved for MNIST-MLP10-1.0x-a
+train_acc    0.09871666666666666
+train_loss   nan
+test_acc     0.098
+test_loss    nan
+wandb: Waiting for W&B process to finish... (success).
+wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▂▂▂█▁▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:      test_loss ███▁████                                
+wandb: train_accuracy ▂▂▂█▂▄▃▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:     train_loss ▇▇▇▁██▇▇                                
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.098
+wandb:      test_loss nan
+wandb: train_accuracy 0.09872
+wandb:     train_loss nan
+wandb: 
+wandb: 🚀 View run soft-smoke-219 at: https://wandb.ai/epistoteles/partial-model-merging/runs/r8166ozd
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_183248-r8166ozd/logs
+Namespace(dataset='MNIST', model_type='MLP', size=10, batch_norm=False, 
+width=1.0, epochs=100, lr=0.2, weight_decay=0.0, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_183944-2xh4fqi5
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run lunar-firebrand-220
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/2xh4fqi5
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:24
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/utils/data/dataloader.py:560: UserWarning: This DataLoader will create 6 worker processes in total. Our suggested max number of worker in current system is 3, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/torch/nn/modules/container.py:217: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+📥 Accuracies and losses saved for MNIST-MLP10-1.0x-b
+train_acc    0.9999166666666667
+train_loss   0.0005325065603149899
+test_acc     0.9891
+test_loss    0.05933495797216892
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▁▁▂▅███████████████████████████████████
+wandb:      test_loss ████▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▁▁▁▅▇██████████████████████████████████
+wandb:     train_loss ████▄▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9891
+wandb:      test_loss 0.05933
+wandb: train_accuracy 0.9998
+wandb:     train_loss 0.0012
+wandb: 
+wandb: 🚀 View run lunar-firebrand-220 at: https://wandb.ai/epistoteles/partial-model-merging/runs/2xh4fqi5
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_183944-2xh4fqi5/logs

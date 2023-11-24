@@ -1,0 +1,112 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    3
+Visible GPUs:         NVIDIA GeForce GTX 1060 6GB
+--------------------------------------------------
+Namespace(dataset='SVHN', model_type='ResNet', size=18, batch_norm=True, 
+width=1.0, epochs=200, lr=0.4, weight_decay=0.0001, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_141712-c4g57pw0
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run vocal-tree-205
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/c4g57pw0
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1:25:59
+📥 Accuracies and losses saved for SVHN-ResNet18-bn-1.0x-a
+train_acc    0.9999453977094339
+train_loss   0.0005461541678979867
+test_acc     0.9668484941610326
+test_loss    0.1842915453016758
+wandb: Waiting for W&B process to finish... (success).
+wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▄███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▅▆▆▇▇▆▇▇▇▇▇▇▇▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇█▇███████
+wandb:      test_loss █▃▂▂▁▂▂▂▁▁▁▂▁▂▃▁▁▂▁▂▂▂▂▂▂▁▂▂▂▂▂▂▂▂▂▂▂▁▁▁
+wandb: train_accuracy ▁▅▆▆▆▆▆▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇███████████
+wandb:     train_loss █▅▄▃▃▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 199
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.96685
+wandb:      test_loss 0.18429
+wandb: train_accuracy 0.99986
+wandb:     train_loss 0.00091
+wandb: 
+wandb: 🚀 View run vocal-tree-205 at: https://wandb.ai/epistoteles/partial-model-merging/runs/c4g57pw0
+wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_141712-c4g57pw0/logs
+Namespace(dataset='SVHN', model_type='ResNet', size=18, batch_norm=True, 
+width=1.0, epochs=200, lr=0.4, weight_decay=0.0001, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: - Waiting for wandb.init()...wandb: \ Waiting for wandb.init()...wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231124_154354-amh5vla9
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run cerulean-cherry-206
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/amh5vla9
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1:26:26
+📥 Accuracies and losses saved for SVHN-ResNet18-bn-1.0x-b
+train_acc    0.999972698854717
+train_loss   0.0005413162218394211
+test_acc     0.9661186232329441
+test_loss    0.19171039470367962
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▄███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▄▆▆▆▆▆▆▆▇▇▇▆▇▆▆▇▇▇▇▇▇▆▆▇▆▇▇▇▇▇▇▇▇██████
+wandb:      test_loss █▅▂▂▂▂▂▂▂▁▁▁▂▁▂▂▂▂▂▂▂▂▃▃▂▃▂▃▃▃▂▃▂▃▂▂▂▂▂▂
+wandb: train_accuracy ▁▅▆▆▆▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇███████████
+wandb:     train_loss █▅▄▃▃▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 199
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.96612
+wandb:      test_loss 0.19171
+wandb: train_accuracy 0.9999
+wandb:     train_loss 0.00078
+wandb: 
+wandb: 🚀 View run cerulean-cherry-206 at: https://wandb.ai/epistoteles/partial-model-merging/runs/amh5vla9
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231124_154354-amh5vla9/logs
+Exception in thread ChkStopThr:
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.10/threading.py", line 953, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/wandb_run.py", line 278, in check_stop_status
+    self._loop_check_status(
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/wandb_run.py", line 216, in _loop_check_status
+    local_handle = request()
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/interface/interface.py", line 787, in deliver_stop_status
+    return self._deliver_stop_status(status)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/interface/interface_shared.py", line 585, in _deliver_stop_status
+    return self._deliver_record(record)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/interface/interface_shared.py", line 560, in _deliver_record
+    handle = mailbox._deliver_record(record, interface=self)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/lib/mailbox.py", line 455, in _deliver_record
+    interface._publish(record)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/interface/interface_sock.py", line 51, in _publish
+    self._sock_client.send_record_publish(record)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 221, in send_record_publish
+    self.send_server_request(server_req)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 155, in send_server_request
+    self._send_message(msg)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 152, in _send_message
+    self._sendall_with_error_handle(header + data)
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/wandb/sdk/lib/sock_client.py", line 130, in _sendall_with_error_handle
+    sent = self._sock.send(data)
+BrokenPipeError: [Errno 32] Broken pipe
