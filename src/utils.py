@@ -1395,10 +1395,14 @@ def _get_loaders_no_FFCV(dataset: str) -> tuple[DataLoader, DataLoader, DataLoad
         train_noaug_data = torchvision.datasets.MNIST(data_dir, train=True, download=True, transform=noaug_transform)
         test_data = torchvision.datasets.MNIST(data_dir, train=False, download=True, transform=noaug_transform)
 
-    train_aug_loader = DataLoader(train_aug_data, batch_size=1000, num_workers=min(8, os.cpu_count()), shuffle=True)
+    train_aug_loader = DataLoader(
+        train_aug_data, batch_size=1000, num_workers=min(8, len(os.sched_getaffinity(0))), shuffle=True
+    )
 
-    train_noaug_loader = DataLoader(train_noaug_data, batch_size=1000, num_workers=min(8, os.cpu_count()), shuffle=True)
+    train_noaug_loader = DataLoader(
+        train_noaug_data, batch_size=1000, num_workers=min(8, len(os.sched_getaffinity(0))), shuffle=True
+    )
 
-    test_loader = DataLoader(test_data, batch_size=1000, num_workers=min(8, os.cpu_count()), shuffle=True)
+    test_loader = DataLoader(test_data, batch_size=1000, num_workers=min(8, len(os.sched_getaffinity(0))), shuffle=True)
 
     return train_aug_loader, train_noaug_loader, test_loader
