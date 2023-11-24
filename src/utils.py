@@ -1371,11 +1371,6 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader] | tuple[DataLoade
 
 def _get_loaders_no_FFCV(dataset: str) -> tuple[DataLoader, DataLoader, DataLoader]:
     dataset = dataset.upper()
-    # if dataset == "MNIST":
-    #     MEAN = [33.318]
-    #     STD = [78.567]
-    # else:
-    #     raise ValueError(f"Unknown dataset {dataset}")
 
     aug_transform = T.Compose(
         [
