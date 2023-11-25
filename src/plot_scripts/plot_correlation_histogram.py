@@ -7,6 +7,19 @@ import torch
 from src.utils import get_evaluations_dir, get_plots_dir, parse_model_name, load_file
 
 
+def _sd_item_to_key(item):
+    _key = item.replace("layer", "").split(".")
+    _key = [_convert(x) for x in _key]
+    return _key
+
+
+def _convert(x):
+    try:
+        return int(x)
+    except ValueError:
+        return x
+
+
 def plot_model_filters(model_name_a: str, model_name_b: str = None):
     if model_name_b is None:
         model_name_b = f"{model_name_a}-b"
@@ -18,7 +31,7 @@ def plot_model_filters(model_name_a: str, model_name_b: str = None):
     save_corr_path = os.path.join(get_evaluations_dir(subdir="correlations"), f"{model_name_a}{variant_b}.safetensors")
 
     metrics = load_file(save_corr_path)
-    stems = list(dict.fromkeys([key.split(".", -1)[0] for key in metrics.keys()]))
+    stems = list(dict.fromkeys([key.rsplit(".", 1)[0] for key in metrics.keys()]))
 
     corrs = [metrics[stem + ".correlations"] for stem in stems]
     perm_maps = [metrics[stem + ".perm_map"] for stem in stems]
