@@ -1,0 +1,57 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    3
+Visible GPUs:         NVIDIA GeForce RTX 3060
+--------------------------------------------------
+Namespace(dataset='SVHN', model_type='ResNet', size=20, batch_norm=True, 
+width=1.0, epochs=200, lr=0.4, weight_decay=0.0001, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231125_010229-geej6pmy
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run solar-darkness-221
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/geej6pmy
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 1
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 2
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 3
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 4
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 5
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() fAiled: Name or service not known
+slurmstepd-Turing: error: slurm_set_addr: Unable to resolve "localhost"
+slurmstepd-Turing: error: Unable to establish control machine address
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 1
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 2
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 3
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 4
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 5
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() fAiled: Name or service not known
+slurmstepd-Turing: error: slurm_set_addr: Unable to resolve "localhost"
+slurmstepd-Turing: error: Unable to establish control machine address
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 1
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 2
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 3
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 4
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 5
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() fAiled: Name or service not known
+slurmstepd-Turing: error: slurm_set_addr: Unable to resolve "localhost"
+slurmstepd-Turing: error: Unable to establish control machine address
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 1
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 2
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 3
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 4
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 5
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() fAiled: Name or service not known
+slurmstepd-Turing: error: slurm_set_addr: Unable to resolve "localhost"
+slurmstepd-Turing: error: Unable to establish control machine address
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 1
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 2
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 3
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 4
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() failed: Name or service not known: No such file or directory, attempt number 5
+slurmstepd-Turing: error: get_addr_info: getaddrinfo() fAiled: Name or service not known
+slurmstepd-Turing: error: slurm_set_addr: Unable to resolve "localhost"
+slurmstepd-Turing: error: Unable to establish control machine address

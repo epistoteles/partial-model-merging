@@ -1,0 +1,83 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    3
+Visible GPUs:         NVIDIA GeForce RTX 3060
+--------------------------------------------------
+Namespace(dataset='SVHN', model_type='ResNet', size=20, batch_norm=True, 
+width=1.0, epochs=200, lr=0.4, weight_decay=0.0001, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231125_155820-3mtuazkb
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run lively-tree-223
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/3mtuazkb
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:33:38
+📥 Accuracies and losses saved for SVHN-ResNet20-bn-1.0x-a
+train_acc    0.999972698854717
+train_loss   0.0005335665997778493
+test_acc     0.9661186232329441
+test_loss    0.17614996157310628
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▄███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▆▇▇▇▇▇▇▇█▇▇▇▇▇▇▇▇▇▇█▇▇▇▇▇▇█▇███████████
+wandb:      test_loss █▂▂▁▁▂▁▁▂▁▁▁▁▂▁▂▁▂▁▂▁▁▂▂▂▂▂▁▂▂▂▁▂▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▅▅▆▆▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇█▇████████████
+wandb:     train_loss █▅▄▃▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 199
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.96612
+wandb:      test_loss 0.17615
+wandb: train_accuracy 0.99999
+wandb:     train_loss 0.00082
+wandb: 
+wandb: 🚀 View run lively-tree-223 at: https://wandb.ai/epistoteles/partial-model-merging/runs/3mtuazkb
+wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231125_155820-3mtuazkb/logs
+Namespace(dataset='SVHN', model_type='ResNet', size=20, batch_norm=True, 
+width=1.0, epochs=200, lr=0.4, weight_decay=0.0001, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231125_163231-ta91wx0r
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run ethereal-glitter-224
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/ta91wx0r
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:33:29
+📥 Accuracies and losses saved for SVHN-ResNet20-bn-1.0x-b
+train_acc    0.9999590482820754
+train_loss   0.0005759284428456118
+test_acc     0.9658881376767056
+test_loss    0.17481535328207193
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.007 MB uploaded (0.000 MB deduped)wandb: | 0.007 MB of 0.007 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▄███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇█▇█▇▇█▇██████████
+wandb:      test_loss █▂▁▁▁▁▂▂▁▂▁▁▁▁▁▁▁▂▁▂▂▁▁▁▁▁▂▂▂▂▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▅▆▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇█████████████
+wandb:     train_loss █▄▃▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 199
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.96589
+wandb:      test_loss 0.17482
+wandb: train_accuracy 0.99993
+wandb:     train_loss 0.00089
+wandb: 
+wandb: 🚀 View run ethereal-glitter-224 at: https://wandb.ai/epistoteles/partial-model-merging/runs/ta91wx0r
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231125_163231-ta91wx0r/logs
