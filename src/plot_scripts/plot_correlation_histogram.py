@@ -32,6 +32,7 @@ def plot_model_filters(model_name_a: str, model_name_b: str = None):
 
     metrics = load_file(save_corr_path)
     stems = list(dict.fromkeys([key.rsplit(".", 1)[0] for key in metrics.keys()]))
+    stems = sorted(stems, key=_sd_item_to_key)
 
     corrs = [metrics[stem + ".correlations"] for stem in stems]
     perm_maps = [metrics[stem + ".perm_map"] for stem in stems]
