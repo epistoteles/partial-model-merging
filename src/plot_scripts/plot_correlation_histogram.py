@@ -22,7 +22,7 @@ def plot_model_filters(model_name_a: str, model_name_b: str = None):
 
     corrs = [metrics[stem + ".correlations"] for stem in stems]
     perm_maps = [metrics[stem + ".perm_map"] for stem in stems]
-    chosen_corrs = [c[torch.range(0, len(p) - 1).long(), p] for c, p in zip(corrs, perm_maps)]
+    chosen_corrs = [c[torch.arange(0, len(p)).long(), p] for c, p in zip(corrs, perm_maps)]
 
     fig, axes = plt.subplots(1, len(chosen_corrs), figsize=(1.2 * len(chosen_corrs), 6))
     fig.suptitle(
@@ -47,5 +47,5 @@ def plot_model_filters(model_name_a: str, model_name_b: str = None):
     print(f"📊 Plot saved for {model_name_a}, {model_name_b}")
 
 
-for model_name in ["SVHN-VGG11-bn-1x"]:
+for model_name in ["SVHN-VGG11-bn-1x", "SVHN-ResNet18-bn-1.0x", "SVHN-ResNet18-bn-4.0x", "CIFAR10-ResNet18-bn-4.0x"]:
     plot_model_filters(model_name)
