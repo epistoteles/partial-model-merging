@@ -361,14 +361,24 @@ def subnet(model: torch.nn.Module, num_layers: int, only_return: str = None) -> 
     :return: torch.nn.Module
     """
     assert isinstance(num_layers, int) and 0 < num_layers <= model.num_layers
-    if isinstance(model, VGG) or isinstance(model, MLP):
+    if isinstance(model, MLP):
+        result = torch.nn.Sequential()
+        for layer in model.classifier:
+            result.append(layer)
+            if num_layers == 0:
+                if isinstance(layer, torch.nn.ReLU):
+                    break
+            if isinstance(layer, torch.nn.Linear):
+                num_layers -= 1
+        return result
+    elif isinstance(model, VGG):
         result = torch.nn.Sequential()
         for layer in model.features:
             result.append(layer)
             if num_layers == 0:
                 if isinstance(layer, torch.nn.ReLU):
                     break
-            if isinstance(layer, torch.nn.Conv2d) or isinstance(layer, torch.nn.Linear):
+            if isinstance(layer, torch.nn.Conv2d):
                 num_layers -= 1
         return result
     elif isinstance(model, ResNet18) or isinstance(model, ResNet20):
