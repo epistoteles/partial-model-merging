@@ -23,17 +23,13 @@ print(f'Visible GPUs:         {torch.cuda.get_device_name(torch.cuda.current_dev
 print('-'*50)
 "
 
-python src/train.py --dataset MNIST --model MLP --size 3 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant a -wandb -test
-python src/train.py --dataset MNIST --model MLP --size 3 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant b -wandb -test
-python src/train.py --dataset MNIST --model MLP --size 11 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant a -wandb -test
-python src/train.py --dataset MNIST --model MLP --size 11 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant b -wandb -test
-python src/train.py --dataset MNIST --model MLP --size 12 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant a -wandb -test
-python src/train.py --dataset MNIST --model MLP --size 12 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant b -wandb -test
-python src/train.py --dataset MNIST --model MLP --size 13 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant a -wandb -test
-python src/train.py --dataset MNIST --model MLP --size 13 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant b -wandb -test
-python src/train.py --dataset MNIST --model MLP --size 14 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant a -wandb -test
-python src/train.py --dataset MNIST --model MLP --size 14 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant b -wandb -test
-python src/train.py --dataset MNIST --model MLP --size 15 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant a -wandb -test
-python src/train.py --dataset MNIST --model MLP --size 15 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant b -wandb -test
-python src/train.py --dataset MNIST --model MLP --size 16 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant a -wandb -test
-python src/train.py --dataset MNIST --model MLP --size 16 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant b -wandb -test
+src/train.py --dataset MNIST --model MLP --size 3 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant a -wandb -test
+src/train.py --dataset MNIST --model MLP --size 3 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant b -wandb -test
+
+for w in 2 4 8; do
+  for s in {3..10}; do
+    for v in a b; do
+      python src/train.py --dataset MNIST --model MLP --size $s --width $w --lr 0.2 --weight_decay 0 --epochs 100 --variant $v -wandb -test
+    done
+  done
+done

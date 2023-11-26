@@ -361,6 +361,7 @@ def subnet(model: torch.nn.Module, num_layers: int, only_return: str = None) -> 
     :return: torch.nn.Module
     """
     assert isinstance(num_layers, int) and 0 < num_layers <= model.num_layers
+
     if isinstance(model, MLP):
         result = torch.nn.Sequential()
         for layer in model.classifier:
@@ -371,6 +372,7 @@ def subnet(model: torch.nn.Module, num_layers: int, only_return: str = None) -> 
             if isinstance(layer, torch.nn.Linear):
                 num_layers -= 1
         return result
+
     elif isinstance(model, VGG):
         result = torch.nn.Sequential()
         for layer in model.features:
@@ -381,6 +383,7 @@ def subnet(model: torch.nn.Module, num_layers: int, only_return: str = None) -> 
             if isinstance(layer, torch.nn.Conv2d):
                 num_layers -= 1
         return result
+
     elif isinstance(model, ResNet18) or isinstance(model, ResNet20):
         blocks = get_blocks(model)
         if num_layers % 2 == 1:
@@ -403,6 +406,7 @@ def subnet(model: torch.nn.Module, num_layers: int, only_return: str = None) -> 
             result = blocks[:index]
             result.append(torch.nn.Sequential(blocks[index].conv1, blocks[index].bn1, torch.nn.ReLU()))
             return result
+
     else:
         raise NotImplementedError(f"Cannot create subnet of type {type(model)}")
 
@@ -618,7 +622,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
 
 # modifies the weight matrices of a convolution and batchnorm
 # layer given a permutation of the output channels
-def permute_output(perm_map, conv, bn):
+def permute_output(perm_map, conv, bn=None):
     """
     TODO: write docs
     adapted from https://github.com/KellerJordan/REPAIR
