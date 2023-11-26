@@ -43,7 +43,6 @@ def plot_model_filters(model_name_a: str, model_name_b: str = None):
         f"Histogram of correlations selected by LAP solver, per conv. layer,\n"
         f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width, model {variant_a} + {variant_b}",
     )
-    plt.xlabel("Test")
 
     for i in range(len(chosen_corrs)):
         axes[i].axhline(y=0, color="black", linewidth=1)
