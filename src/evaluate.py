@@ -82,10 +82,7 @@ def evaluate_single_model(model_name: str):
 
 
 @track_emissions()
-def only_save_correlations(
-    model_name_a: str,
-    model_name_b: str = None,
-) -> None:
+def only_save_correlations(model_name_a: str, model_name_b: str = None) -> None:
     """
     Permutes model b and saves the correlations and perm_maps, then does nothing.
     :param model_name_a: the name of the first (reference) model checkpoint
