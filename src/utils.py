@@ -522,7 +522,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             permute_output(perm_map, subnet_model[-2])
             permute_input(perm_map, model.classifier[-2])
 
-    if isinstance(model, VGG):
+    elif isinstance(model, VGG):
         for layer in range(1, model.num_layers + 1):
             subnet_ref = subnet(reference_model, layer)
             subnet_model = subnet(model, layer)
