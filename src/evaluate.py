@@ -104,6 +104,7 @@ def only_save_correlations(model_name_a: str, model_name_b: str = None) -> None:
     model_b = load_model(model_name_b).cuda()
     train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
     _ = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader, save_corr_path=save_corr_path)
+    print("📥 Correlations and perm_maps saved as .safetensors")
 
 
 @track_emissions()

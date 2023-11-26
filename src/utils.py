@@ -361,14 +361,14 @@ def subnet(model: torch.nn.Module, num_layers: int, only_return: str = None) -> 
     :return: torch.nn.Module
     """
     assert isinstance(num_layers, int) and 0 < num_layers <= model.num_layers
-    if isinstance(model, VGG):
+    if isinstance(model, VGG) or isinstance(model, MLP):
         result = torch.nn.Sequential()
         for layer in model.features:
             result.append(layer)
             if num_layers == 0:
                 if isinstance(layer, torch.nn.ReLU):
                     break
-            if isinstance(layer, torch.nn.Conv2d):
+            if isinstance(layer, torch.nn.Conv2d) or isinstance(layer, torch.nn.Linear):
                 num_layers -= 1
         return result
     elif isinstance(model, ResNet18) or isinstance(model, ResNet20):
@@ -497,6 +497,17 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
     model.load_state_dict(sd)
     model.cuda().eval()
     reference_model.cuda().eval()
+
+    if isinstance(model, MLP):
+        for layer in range(1, model.num_layers + 1):
+            subnet_ref = subnet(reference_model, layer)
+            subnet_model = subnet(model, layer)
+            if layer >= 2:
+                permute_input(perm_map, subnet_model[-2])
+            perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
+            permute_output(perm_map, subnet_model[-2])
+            if layer == model.num_layers:
+                permute_input(perm_map, model.classifier)
 
     if isinstance(model, VGG):
         for layer in range(1, model.num_layers + 1):
