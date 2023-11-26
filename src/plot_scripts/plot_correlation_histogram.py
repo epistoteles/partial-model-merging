@@ -20,7 +20,7 @@ def _convert(x):
         return x
 
 
-def plot_model_filters(model_name_a: str, model_name_b: str = None):
+def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
     if model_name_b is None:
         model_name_b = f"{model_name_a}-b"
         model_name_a = f"{model_name_a}-a"
@@ -58,7 +58,3 @@ def plot_model_filters(model_name_a: str, model_name_b: str = None):
     plots_dir = get_plots_dir(subdir=Path(__file__).stem)
     plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a[:-2]}.png"), dpi=600)
     print(f"📊 Plot saved for {model_name_a}, {model_name_b}")
-
-
-for model_name in ["SVHN-VGG11-bn-1x", "SVHN-ResNet18-bn-1.0x", "SVHN-ResNet18-bn-4.0x", "CIFAR10-ResNet18-bn-4.0x"]:
-    plot_model_filters(model_name)
