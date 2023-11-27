@@ -23,10 +23,7 @@ print(f'Visible GPUs:         {torch.cuda.get_device_name(torch.cuda.current_dev
 print('-'*50)
 "
 
-src/train.py --dataset MNIST --model MLP --size 3 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant a -wandb -test
-src/train.py --dataset MNIST --model MLP --size 3 --width 1 --lr 0.2 --weight_decay 0 --epochs 100 --variant b -wandb -test
-
-for w in 2 4 8; do
+for w in 1 2 4 8; do
   for s in {3..10}; do
     for v in a b; do
       python src/train.py --dataset MNIST --model MLP --size $s --width $w --lr 0.2 --weight_decay 0 --epochs 100 --variant $v -wandb -test

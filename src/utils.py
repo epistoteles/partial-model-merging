@@ -520,7 +520,8 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
                 permute_input(perm_map, subnet_model[-2])
             perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
             permute_output(perm_map, subnet_model[-2])
-            permute_input(perm_map, model.classifier[-2])
+            if layer == model.num_layers:
+                permute_input(perm_map, model.classifier[-2])
 
     elif isinstance(model, VGG):
         for layer in range(1, model.num_layers + 1):
