@@ -284,7 +284,6 @@ def expand_model(
 ):
     """
     Returns a functionally equivalent but wider model. The appended weights and biases are all zero.
-    TODO: Also implement this for ResNet, not just VGG
     :param model: the original model
     :param expansion_factor: the factor by which to expand/widen the model (must be >1);
                              alternatively you can provide a list or FloatTensor of length model.num_layers, which
@@ -325,7 +324,9 @@ def expand_model(
     elif isinstance(model, ResNet20):
         model_expanded = ResNet20(width=model.width * expansion_factor, num_classes=model.num_classes)
     elif isinstance(model, MLP):
-        model_expanded = MLP(width=model.width * expansion_factor, num_classes=model.num_classes)
+        model_expanded = MLP(
+            size=model.size, width=model.width * expansion_factor, bn=model.bn, num_classes=model.num_classes
+        )
     else:
         raise ValueError("Unknown model type")
 
