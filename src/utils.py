@@ -361,7 +361,7 @@ def subnet(
     :param num_layers: the first n_layers will be sliced
     :param only_return: for ResNets: after a block, only return the "residual" or "downsample" output (i.e. don't add)
                         do *not* use this for permuting, as it returns a copy of the model
-    :param with_relu: add ReLU layer at end if True, otherwise the subnet ends with linear/conv layer  TODO: implement for more than just MLP
+    :param with_relu: add ReLU layer at end if True, otherwise the subnet ends with linear/conv layer  TODO: implement for ResNet
     :return: torch.nn.Module
     """
     assert isinstance(num_layers, int) and 0 < num_layers <= model.num_layers
@@ -389,6 +389,9 @@ def subnet(
                     break
             if isinstance(layer, torch.nn.Conv2d):
                 num_layers -= 1
+        if not with_relu:
+            if isinstance(result[-1], torch.nn.ReLU):
+                return result[:-1]
         return result
 
     elif isinstance(model, ResNet18 | ResNet20):
@@ -893,6 +896,8 @@ def get_is_buffer_from_subnet(net: torch.nn.Sequential) -> torch.BoolTensor:
         is_buffer = net[-1].bn2.is_buffer
     elif isinstance(net[-1], torch.nn.Sequential):  # it's half a ResNet block
         is_buffer = net[-1][1].is_buffer
+    elif isinstance(net[-1], torch.nn.Linear | torch.nn.BatchNorm1d):  # it's an MLP without a final ReLU
+        is_buffer = net[-1].is_buffer
     elif isinstance(net[-2], torch.nn.Linear | torch.nn.BatchNorm1d):  # it's an MLP
         is_buffer = net[-2].is_buffer
     elif isinstance(net[-1], torch.nn.Conv2d | torch.nn.BatchNorm2d):  # from here: it's a VGG
