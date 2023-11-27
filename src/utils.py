@@ -527,17 +527,18 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             subnet_ref = subnet(reference_model, layer)
             subnet_model = subnet(model, layer, with_relu=False)  # TODO: remove with_relu flag, just for testing!
             if layer >= 2:
-                if isinstance(subnet_model[-2], torch.nn.BatchNorm1d | torch.nn.BatchNorm2d):
-                    permute_input(perm_map, subnet_model[-3])
-                else:
-                    permute_input(perm_map, subnet_model[-2])
+                permute_input(perm_map, get_last_layer_from_subnet(subnet_model, "conv/linear"))
             perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
-            if isinstance(subnet_model[-2], torch.nn.BatchNorm1d | torch.nn.BatchNorm2d):
-                permute_output(perm_map, subnet_model[-3], subnet_model[-2])
-            else:
-                permute_output(perm_map, subnet_model[-2])
+            permute_output(
+                perm_map,
+                get_last_layer_from_subnet(subnet_model, "conv/linear"),
+                get_last_layer_from_subnet(subnet_model, "bn"),
+            )
             if layer == model.num_layers:
-                permute_input(perm_map, model.classifier[-2])
+                if isinstance(model, MLP):
+                    permute_input(perm_map, model.classifier[-2])
+                else:  # VGG
+                    permute_input(perm_map, model.classifier)
 
     elif isinstance(model, ResNet18):
         # we just record the correlations here but don't use them
@@ -621,20 +622,25 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
 
 # modifies the weight matrices of a convolution and batchnorm
 # layer given a permutation of the output channels
-def permute_output(perm_map, conv, bn=None):
+def permute_output(perm_map, layer, bn=None):
     """
     TODO: write docs
     adapted from https://github.com/KellerJordan/REPAIR
     :param perm_map:
-    :param conv:
+    :param layer:
     :param bn:
     :return:
     """
-    pre_weights = [conv.weight]
-    if conv.bias is not None:
-        pre_weights.append(conv.bias)
-    if conv.is_buffer is not None:
-        pre_weights.append(conv.is_buffer)
+    assert isinstance(layer, torch.nn.Conv2d | torch.nn.Linear), "layer is not Conv2d or Linear"
+    assert bn is None or isinstance(
+        bn, torch.nn.BatchNorm1d | torch.nn.BatchNorm2d
+    ), "bn layer is not BatchNorm1d or BatchNorm2d"
+
+    pre_weights = [layer.weight]
+    if layer.bias is not None:
+        pre_weights.append(layer.bias)
+    if layer.is_buffer is not None:
+        pre_weights.append(layer.is_buffer)
     if bn is not None:
         pre_weights.extend(
             [
@@ -652,16 +658,16 @@ def permute_output(perm_map, conv, bn=None):
 
 # modifies the weight matrix of a layer for a given permutation of the input channels
 # works for both conv2d and linear
-def permute_input(perm_map, after_convs):
+def permute_input(perm_map, after_layers):
     """
     TODO: write docs
     :param perm_map:
-    :param layer:
+    :param after_layers:
     :return:
     """
-    if not isinstance(after_convs, list):
-        after_convs = [after_convs]
-    post_weights = [c.weight for c in after_convs]
+    if not isinstance(after_layers, list):
+        after_layers = [after_layers]
+    post_weights = [c.weight for c in after_layers]
     for w in post_weights:
         w.data = w[:, perm_map]
 
@@ -896,20 +902,59 @@ def get_is_buffer_from_subnet(net: torch.nn.Sequential) -> torch.BoolTensor:
         is_buffer = net[-1].bn2.is_buffer
     elif isinstance(net[-1], torch.nn.Sequential):  # it's half a ResNet block
         is_buffer = net[-1][1].is_buffer
-    elif isinstance(net[-1], torch.nn.Linear | torch.nn.BatchNorm1d):  # it's an MLP without a final ReLU
+    elif isinstance(
+        net[-1], torch.nn.Linear | torch.nn.Conv2d | torch.nn.BatchNorm1d | torch.nn.BatchNorm2d
+    ):  # it's an MLP/VGG without a final ReLU
         is_buffer = net[-1].is_buffer
-    elif isinstance(net[-2], torch.nn.Linear | torch.nn.BatchNorm1d):  # it's an MLP
+    elif isinstance(
+        net[-2], torch.nn.Linear | torch.nn.Conv2d | torch.nn.BatchNorm1d | torch.nn.BatchNorm2d
+    ):  # it's an MLP/VGG with final ReLU
         is_buffer = net[-2].is_buffer
-    elif isinstance(net[-1], torch.nn.Conv2d | torch.nn.BatchNorm2d):  # from here: it's a VGG
-        is_buffer = net[-1].is_buffer
-    elif isinstance(net[-2], torch.nn.Conv2d | torch.nn.BatchNorm2d):
-        is_buffer = net[-2].is_buffer
-    elif isinstance(net[-3], torch.nn.Conv2d | torch.nn.BatchNorm2d):
-        is_buffer = net[-3].is_buffer
     else:
         raise ValueError(f"Unknown subnet makeup, last module has type {type(net[-1])}")
     assert isinstance(is_buffer, torch.BoolTensor | torch.cuda.BoolTensor)
     return is_buffer
+
+
+def get_last_layer_from_subnet(net: torch.nn.Sequential, layer: str):
+    """
+    Given any subnet made with subnet(), returns the last relevant layer of kind layer (or None if it doesn't exist).
+    :param net: the subnet
+    :param layer: the kind of layer you're looking for; one of "conv/linear", "bn"
+    :return: the layer
+    """
+    assert layer in ["conv/linear", "bn"], f"Layer parameter must be either 'conv/linear' or 'bn'; actual: {layer}"
+
+    if isinstance(net[-1], BasicBlock):  # it's a ResNet block
+        raise NotImplementedError
+    elif isinstance(net[-1], torch.nn.Sequential):  # it's half a ResNet block
+        raise NotImplementedError
+    elif isinstance(net[-1], torch.nn.Linear | torch.nn.Conv2d):  # it's an MLP/VGG without a final ReLU
+        if layer == "conv/linear":
+            return net[-1]
+        if layer == "bn":
+            return None
+    elif isinstance(net[-1], torch.nn.BatchNorm1d | torch.nn.BatchNorm2d):  # it's an MLP without a final ReLU
+        if layer == "conv/linear":
+            return net[-2]
+        if layer == "bn":
+            return net[-1]
+    elif isinstance(net[-1], torch.nn.ReLU) and isinstance(
+        net[-2], torch.nn.Linear | torch.nn.Conv2d
+    ):  # it's an MLP/VGG with a final ReLU
+        if layer == "conv/linear":
+            return net[-2]
+        if layer == "bn":
+            return None
+    elif isinstance(net[-1], torch.nn.ReLU) and isinstance(
+        net[-2], torch.nn.BatchNorm1d | torch.nn.BatchNorm2d
+    ):  # it's an MLP with a final ReLU
+        if layer == "conv/linear":
+            return net[-3]
+        if layer == "bn":
+            return net[-2]
+    else:
+        raise ValueError(f"Unknown subnet makeup, last module has type {type(net[-1])}")
 
 
 def print_corr_matrix(corr_mtx):
