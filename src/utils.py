@@ -525,7 +525,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
     if isinstance(model, MLP | VGG):
         for layer in range(1, model.num_layers + 1):
             subnet_ref = subnet(reference_model, layer)
-            subnet_model = subnet(model, layer)
+            subnet_model = subnet(model, layer, with_relu=False)
             if layer >= 2:
                 permute_input(perm_map, get_last_layer_from_subnet(subnet_model, "conv/linear"))
             perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
