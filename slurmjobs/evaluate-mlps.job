@@ -32,3 +32,13 @@ for w in [1,2,4,8]:
     evaluate_two_models(model_name, expansions=[1.1, 1.2, 1.5]); \
     plot_acc_and_loss_curves(model_name); \
 "
+
+python -c "\
+from src.evaluate import *; \
+from src.plot_scripts.plot_acc_and_loss_curves import *; \
+for w in [1,2,4,8]:
+  for s in range(1,11):
+    model_name = f'MNIST-MLP{s}-bn-{w}.0x'; \
+    evaluate_two_models(model_name, expansions=[1.1, 1.2, 1.5]); \
+    plot_acc_and_loss_curves(model_name); \
+"
