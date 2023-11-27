@@ -350,7 +350,9 @@ def expand_model(
     return model_expanded
 
 
-def subnet(model: torch.nn.Module, num_layers: int, only_return: str = None) -> torch.nn.Sequential:
+def subnet(
+    model: torch.nn.Module, num_layers: int, only_return: str = None, with_relu: bool = True
+) -> torch.nn.Sequential:
     """
     Returns a subnet from layer 1 to layer n_layers (only counting conv layers in the feature extractor; no classifier).
     The returned subnet will include following bn and relu layers before the next conv, but no pooling layers.
@@ -359,6 +361,7 @@ def subnet(model: torch.nn.Module, num_layers: int, only_return: str = None) -> 
     :param num_layers: the first n_layers will be sliced
     :param only_return: for ResNets: after a block, only return the "residual" or "downsample" output (i.e. don't add)
                         do *not* use this for permuting, as it returns a copy of the model
+    :param with_relu: add ReLU layer at end if True, otherwise the subnet ends with linear/conv layer  TODO: implement for more than just MLP
     :return: torch.nn.Module
     """
     assert isinstance(num_layers, int) and 0 < num_layers <= model.num_layers
@@ -372,6 +375,9 @@ def subnet(model: torch.nn.Module, num_layers: int, only_return: str = None) -> 
                     break
             if isinstance(layer, torch.nn.Linear):
                 num_layers -= 1
+        if not with_relu:
+            if isinstance(result[-1], torch.nn.ReLU):
+                return result[:-1]
         return result
 
     elif isinstance(model, VGG):
@@ -516,7 +522,7 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
     if isinstance(model, MLP | VGG):
         for layer in range(1, model.num_layers + 1):
             subnet_ref = subnet(reference_model, layer)
-            subnet_model = subnet(model, layer)
+            subnet_model = subnet(model, layer, with_relu=False)  # TODO: remove with_relu flag, just for testing!
             if layer >= 2:
                 if isinstance(subnet_model[-2], torch.nn.BatchNorm1d | torch.nn.BatchNorm2d):
                     permute_input(perm_map, subnet_model[-3])
