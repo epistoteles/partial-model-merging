@@ -1004,6 +1004,7 @@ class REPAIRTracker(torch.nn.Module):
 
     def __init__(self, layer):
         super().__init__()
+        self.layer = layer
         if isinstance(layer, torch.nn.Conv2d):
             self.h = h = layer.out_channels
             self.bn = torch.nn.BatchNorm2d(h)
@@ -1012,7 +1013,6 @@ class REPAIRTracker(torch.nn.Module):
             self.bn = torch.nn.BatchNorm1d(h)
         else:
             raise ValueError("Unknown layer type")
-        self.layer = layer
         self.rescale = False
 
     def set_stats(self, goal_mean, goal_var):
@@ -1099,7 +1099,7 @@ def fuse_linear_bn(linear: torch.nn.Linear, bn: torch.nn.BatchNorm1d):
     w_linear = linear.weight.clone()
     bn_std = (bn.eps + bn.running_var).sqrt()
     gamma = bn.weight / bn_std
-    fused.weight.data = w_linear * gamma.reshape(-1, 1, 1, 1)
+    fused.weight.data = w_linear * gamma.reshape(-1, 1)
 
     # setting bias
     b_linear = linear.bias if linear.bias is not None else torch.zeros_like(bn.bias)
@@ -1126,8 +1126,8 @@ def fuse_tracked_model(model):
         feats = model_fused.classifier[:-2]
         for i, layer in enumerate(model.classifier[:-2]):
             if isinstance(layer, REPAIRTracker):
-                conv = fuse_linear_bn(layer.layer, layer.bn)
-                feats[i].load_state_dict(conv.state_dict())
+                linear = fuse_linear_bn(layer.layer, layer.bn)
+                feats[i].load_state_dict(linear.state_dict())
         model_fused.classifier[-2:].load_state_dict(model.classifier[-2:].state_dict())
     return model_fused
 
@@ -1225,8 +1225,8 @@ def partial_repair(model, parent_model_a, parent_model_b, loader, alpha: float =
         if not isinstance(m_a, REPAIRTracker):
             continue
         # get buffer flags
-        buffer_a = m_a.conv.is_buffer
-        buffer_b = m_b.conv.is_buffer
+        buffer_a = m_a.layer.is_buffer
+        buffer_b = m_b.layer.is_buffer
         mask = buffer_a | buffer_b
         # get goal statistics -- interpolate the mean and std of parent networks
         mu_a = m_a.bn.running_mean
