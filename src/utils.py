@@ -883,11 +883,11 @@ def get_is_buffer_from_subnet(net: torch.nn.Sequential) -> torch.BoolTensor:
     :param net: the subnet
     :return: the is_buffer torch.BoolTensor
     """
-    if isinstance(net[-1], BasicBlock):  # it's a ResNet
+    if isinstance(net[-1], BasicBlock):  # it's a ResNet block
         is_buffer = net[-1].bn2.is_buffer
     elif isinstance(net[-1], torch.nn.Sequential):  # it's half a ResNet block
         is_buffer = net[-1][1].is_buffer
-    elif isinstance(net[-2], torch.nn.Linear):  # it's an MLP
+    elif isinstance(net[-2], torch.nn.Linear | torch.nn.BatchNorm1d):  # it's an MLP
         is_buffer = net[-2].is_buffer
     elif isinstance(net[-1], torch.nn.Conv2d | torch.nn.BatchNorm2d):  # from here: it's a VGG
         is_buffer = net[-1].is_buffer
