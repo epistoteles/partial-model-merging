@@ -999,15 +999,20 @@ def get_layer_perm(subnet_a, subnet_b, loader, save_corr_path: str = None, layer
 
 class REPAIRTracker(torch.nn.Module):
     """
-    A wrapper class for tracking (and later resetting) conv activations with REPAIR
-    TODO: Implement for ResNet
+    A wrapper class for tracking (and later resetting) linear or conv activations with REPAIR
     """
 
-    def __init__(self, conv):
+    def __init__(self, layer):
         super().__init__()
-        self.h = h = conv.out_channels
-        self.conv = conv
-        self.bn = torch.nn.BatchNorm2d(h)
+        if isinstance(layer, torch.nn.Conv2d):
+            self.h = h = layer.out_channels
+            self.bn = torch.nn.BatchNorm2d(h)
+        elif isinstance(layer, torch.nn.Linear):
+            self.h = h = layer.out_features
+            self.bn = torch.nn.BatchNorm1d(h)
+        else:
+            raise ValueError("Unknown layer type")
+        self.layer = layer
         self.rescale = False
 
     def set_stats(self, goal_mean, goal_var):
@@ -1016,7 +1021,7 @@ class REPAIRTracker(torch.nn.Module):
         self.bn.weight.data = goal_std
 
     def forward(self, x):
-        x = self.conv(x)
+        x = self.layer(x)
         if self.rescale:
             x = self.bn(x)
         else:
@@ -1027,15 +1032,19 @@ class REPAIRTracker(torch.nn.Module):
 def make_tracked_model(model):
     """
     Converts a regular model (e.g. VGG) into a tracked model (for rescaling the activations).
-    # TODO: Implement for ResNet
     :param model: the input model
     :return: the (functionally equivalent) tracked model
     """
     tracked_model = model_like(model).cuda()
     tracked_model.load_state_dict(model.state_dict())
-    feats = tracked_model.features
+    if isinstance(model, VGG | ResNet18 | ResNet20):
+        feats = tracked_model.features
+    elif isinstance(model, MLP):
+        feats = tracked_model.classifier
+    else:
+        raise ValueError("Unknown model type")
     for i, layer in enumerate(feats):
-        if isinstance(layer, torch.nn.Conv2d):
+        if isinstance(layer, torch.nn.Conv2d | torch.nn.Linear):
             feats[i] = REPAIRTracker(layer)
     return tracked_model.cuda().eval()
 
@@ -1071,26 +1080,62 @@ def fuse_conv_bn(conv: torch.nn.Conv2d, bn: torch.nn.BatchNorm2d):
     return fused
 
 
+def fuse_linear_bn(linear: torch.nn.Linear, bn: torch.nn.BatchNorm1d):
+    """
+    Fuses the linear and tracking batch norm layer into a single linear layer with appropriate
+    parameters that exhibits the same activation pattern.
+    :param linear: the linear layer
+    :param bn: the batch norm layer
+    :return: the new linear layer
+    """
+    fused = torch.nn.Linear(
+        linear.in_features,
+        linear.out_features,
+        bias=True,
+    )
+    fused.is_buffer = linear.is_buffer
+
+    # setting weights
+    w_linear = linear.weight.clone()
+    bn_std = (bn.eps + bn.running_var).sqrt()
+    gamma = bn.weight / bn_std
+    fused.weight.data = w_linear * gamma.reshape(-1, 1, 1, 1)
+
+    # setting bias
+    b_linear = linear.bias if linear.bias is not None else torch.zeros_like(bn.bias)
+    beta = bn.bias + gamma * (-bn.running_mean + b_linear)
+    fused.bias.data = beta
+    return fused
+
+
 def fuse_tracked_model(model):
     """
     Fuses all REPAIRTracker layers in a tracked model.
-    # TODO: implement for ResNet
     :param model: the tracked model
     :return: the fused (regular) model
     """
     model_fused = model_like(model).cuda()
-    feats = model_fused.features
-    for i, layer in enumerate(model.features):
-        if isinstance(layer, REPAIRTracker):
-            conv = fuse_conv_bn(layer.conv, layer.bn)
-            feats[i].load_state_dict(conv.state_dict())
-    model_fused.classifier.load_state_dict(model.classifier.state_dict())
+    if isinstance(model, VGG | ResNet18 | ResNet20):
+        feats = model_fused.features
+        for i, layer in enumerate(model.features):
+            if isinstance(layer, REPAIRTracker):
+                conv = fuse_conv_bn(layer.layer, layer.bn)
+                feats[i].load_state_dict(conv.state_dict())
+        model_fused.classifier.load_state_dict(model.classifier.state_dict())
+    elif isinstance(model, MLP):
+        feats = model_fused.classifier[:-2]
+        for i, layer in enumerate(model.classifier[:-2]):
+            if isinstance(layer, REPAIRTracker):
+                conv = fuse_linear_bn(layer.layer, layer.bn)
+                feats[i].load_state_dict(conv.state_dict())
+        model_fused.classifier[-2:].load_state_dict(model.classifier[-2:].state_dict())
     return model_fused
 
 
 def reset_bn_stats(model: torch.nn.Module, loader, epochs: int = 1) -> None:
     """
     Recalculates and overwrites the batch norm statistics in all BatchNorm2d layers of the model.
+    adapted from https://github.com/KellerJordan/REPAIR
     :param model: the model which to modify
     :param loader: the loader for calculating the batch norm stats; typically train_aug_loader
     :param epochs: for how many epochs to collect the batch norm stats; more is better (only if augmentations are used)
@@ -1098,7 +1143,7 @@ def reset_bn_stats(model: torch.nn.Module, loader, epochs: int = 1) -> None:
     """
     # resetting stats to baseline first as below is necessary for stability
     for m in model.modules():
-        if isinstance(m, torch.nn.BatchNorm2d):
+        if isinstance(m, torch.nn.BatchNorm1d | torch.nn.BatchNorm2d):
             m.momentum = None  # use simple average
             m.reset_running_stats()
 
@@ -1113,7 +1158,6 @@ def reset_bn_stats(model: torch.nn.Module, loader, epochs: int = 1) -> None:
 def repair(model, parent_model_a, parent_model_b, loader, alpha: float = 0.5):
     """
     REPAIRs a (merged) model
-    TODO: implement for ResNet
     adapted from https://github.com/KellerJordan/REPAIR
     :param model: the merged model before REPAIR
     :param parent_model_a: one of the parent models
@@ -1158,8 +1202,7 @@ def repair(model, parent_model_a, parent_model_b, loader, alpha: float = 0.5):
 
 def partial_repair(model, parent_model_a, parent_model_b, loader, alpha: float = 0.5):
     """
-    REPAIRs a (merged) model
-    TODO: implement for ResNet
+    REPAIRs a (merged) model only in the overlapping part
     adapted from https://github.com/KellerJordan/REPAIR
     :param model: the merged model before REPAIR
     :param parent_model_a: one of the parent models
