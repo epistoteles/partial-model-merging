@@ -385,7 +385,7 @@ def subnet(model: torch.nn.Module, num_layers: int, only_return: str = None) -> 
                 num_layers -= 1
         return result
 
-    elif isinstance(model, ResNet18) or isinstance(model, ResNet20):
+    elif isinstance(model, ResNet18 | ResNet20):
         blocks = get_blocks(model)
         if num_layers % 2 == 1:
             index = (num_layers + 1) // 2
@@ -513,33 +513,22 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
     model.cuda().eval()
     reference_model.cuda().eval()
 
-    if isinstance(model, MLP):
+    if isinstance(model, MLP | VGG):
         for layer in range(1, model.num_layers + 1):
             subnet_ref = subnet(reference_model, layer)
             subnet_model = subnet(model, layer)
             if layer >= 2:
-                permute_input(perm_map, subnet_model[-2])
-            perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
-            permute_output(perm_map, subnet_model[-2])
-            if layer == model.num_layers:
-                permute_input(perm_map, model.classifier[-2])
-
-    elif isinstance(model, VGG):
-        for layer in range(1, model.num_layers + 1):
-            subnet_ref = subnet(reference_model, layer)
-            subnet_model = subnet(model, layer)
-            if layer >= 2:
-                if isinstance(subnet_model[-2], torch.nn.BatchNorm2d):
+                if isinstance(subnet_model[-2], torch.nn.BatchNorm1d | torch.nn.BatchNorm2d):
                     permute_input(perm_map, subnet_model[-3])
                 else:
                     permute_input(perm_map, subnet_model[-2])
             perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
-            if isinstance(subnet_model[-2], torch.nn.BatchNorm2d):
+            if isinstance(subnet_model[-2], torch.nn.BatchNorm1d | torch.nn.BatchNorm2d):
                 permute_output(perm_map, subnet_model[-3], subnet_model[-2])
             else:
                 permute_output(perm_map, subnet_model[-2])
             if layer == model.num_layers:
-                permute_input(perm_map, model.classifier)
+                permute_input(perm_map, model.classifier[-2])
 
     elif isinstance(model, ResNet18):
         # we just record the correlations here but don't use them
@@ -898,17 +887,17 @@ def get_is_buffer_from_subnet(net: torch.nn.Sequential) -> torch.BoolTensor:
         is_buffer = net[-1].bn2.is_buffer
     elif isinstance(net[-1], torch.nn.Sequential):  # it's half a ResNet block
         is_buffer = net[-1][1].is_buffer
-    elif isinstance(net[-2], torch.nn.Linear):  # it's a MLP
+    elif isinstance(net[-2], torch.nn.Linear):  # it's an MLP
         is_buffer = net[-2].is_buffer
-    elif isinstance(net[-1], torch.nn.Conv2d) or isinstance(net[-1], torch.nn.BatchNorm2d):  # from here: it's a VGG
+    elif isinstance(net[-1], torch.nn.Conv2d | torch.nn.BatchNorm2d):  # from here: it's a VGG
         is_buffer = net[-1].is_buffer
-    elif isinstance(net[-2], torch.nn.Conv2d) or isinstance(net[-1], torch.nn.BatchNorm2d):
+    elif isinstance(net[-2], torch.nn.Conv2d | torch.nn.BatchNorm2d):
         is_buffer = net[-2].is_buffer
-    elif isinstance(net[-3], torch.nn.Conv2d) or isinstance(net[-1], torch.nn.BatchNorm2d):
+    elif isinstance(net[-3], torch.nn.Conv2d | torch.nn.BatchNorm2d):
         is_buffer = net[-3].is_buffer
     else:
         raise ValueError(f"Unknown subnet makeup, last module has type {type(net[-1])}")
-    assert isinstance(is_buffer, torch.BoolTensor) or isinstance(is_buffer, torch.cuda.BoolTensor)
+    assert isinstance(is_buffer, torch.BoolTensor | torch.cuda.BoolTensor)
     return is_buffer
 
 
