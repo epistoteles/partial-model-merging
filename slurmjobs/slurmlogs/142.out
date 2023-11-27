@@ -1,0 +1,13 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    3
+Visible GPUs:         NVIDIA GeForce RTX 3060
+--------------------------------------------------
+  File "<string>", line 1
+    from src.evaluate import *; from src.plot_scripts.plot_acc_and_loss_curves import *; for w in [1,2,4,8]:
+                                                                                         ^^^
+SyntaxError: invalid syntax
+  File "<string>", line 1
+    from src.evaluate import *; from src.plot_scripts.plot_acc_and_loss_curves import *; for w in [1,2,4,8]:
+                                                                                         ^^^
+SyntaxError: invalid syntax

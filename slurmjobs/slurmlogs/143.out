@@ -1,0 +1,21 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    3
+Visible GPUs:         NVIDIA GeForce RTX 3060
+--------------------------------------------------
+Evaluating MNIST-MLP1-1.0x-a, MNIST-MLP1-1.0x-b
+steps: 21; expansions: [1.1, 1.2, 1.5]
+Traceback (most recent call last):
+  File "/home/korbinian/Documents/partial-model-merging/eval_mlps.py", line 7, in <module>
+    evaluate_two_models(model_name, expansions=[1.1, 1.2, 1.5])
+  File "/home/korbinian/Documents/partial-model-merging/venv/lib/python3.10/site-packages/codecarbon/emissions_tracker.py", line 791, in wrapped_fn
+    fn_result = fn(*args, **kwargs)
+  File "/home/korbinian/Documents/partial-model-merging/src/evaluate.py", line 145, in evaluate_two_models
+    model_a = load_model(model_name_a).cuda()
+  File "/home/korbinian/Documents/partial-model-merging/src/utils.py", line 221, in load_model
+    model = model_like(filename)
+  File "/home/korbinian/Documents/partial-model-merging/src/utils.py", line 276, in model_like
+    new_model = MLP(size=size, width=width, bn=batch_norm, num_classes=num_classes)
+  File "/home/korbinian/Documents/partial-model-merging/src/models/MLP.py", line 39, in __init__
+    nn.Linear(28 * 28, round(512 * self.width[0].item())),
+IndexError: index 0 is out of bounds for dimension 0 with size 0
