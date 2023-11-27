@@ -24,8 +24,8 @@ class MLP(nn.Module):
         if type(width) is int:
             width = float(width)
         if type(width) is float:
-            width = [width] * size
-        assert (type(width) is list or type(width) is torch.Tensor) and len(width) == size
+            width = [width] * (size - 1)
+        assert (type(width) is list or type(width) is torch.Tensor) and len(width) == size - 1
 
         self.size = size
         self.num_layers = size - 1  # the number of permutable (= hidden) layers
@@ -38,20 +38,20 @@ class MLP(nn.Module):
             *[nn.BatchNorm1d(round(512 * self.width[0].item())), nn.ReLU()] if bn else [nn.ReLU()],
         )
 
-        for _ in range(self.size - 2):
+        for i in range(1, self.size - 1):
             self.classifier.extend(
                 nn.Sequential(
-                    nn.Linear(round(512 * self.width[0].item()), round(512 * self.width[1].item())),
-                    *[nn.BatchNorm1d(round(512 * self.width[1].item())), nn.ReLU()] if bn else [nn.ReLU()],
+                    nn.Linear(round(512 * self.width[i - 1].item()), round(512 * self.width[i].item())),
+                    *[nn.BatchNorm1d(round(512 * self.width[i].item())), nn.ReLU()] if bn else [nn.ReLU()],
                 )
             )
 
         self.classifier.extend(
-            nn.Sequential(nn.Linear(round(512 * self.width[2].item()), num_classes), nn.LogSoftmax())
+            nn.Sequential(nn.Linear(round(512 * self.width[-1].item()), num_classes), nn.LogSoftmax())
         )
 
         for layer in self.classifier[:-2]:
-            if isinstance(layer, nn.Linear):
+            if isinstance(layer, nn.Linear) or isinstance(layer, nn.BatchNorm1d):
                 layer.is_buffer = nn.Parameter(torch.zeros_like(layer.bias).bool(), requires_grad=False)
 
     def forward(self, x):
