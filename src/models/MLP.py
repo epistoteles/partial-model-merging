@@ -25,7 +25,9 @@ class MLP(nn.Module):
             width = float(width)
         if type(width) is float:
             width = [width] * (size - 1)
-        assert (type(width) is list or type(width) is torch.Tensor) and len(width) == size - 1
+        assert (type(width) is list or type(width) is torch.Tensor) and len(
+            width
+        ) == size - 1, f"Width list length ({len(width)}) does not match number of hidden layers ({size-1})"
 
         self.size = size
         self.num_layers = size - 1  # the number of permutable (= hidden) layers
