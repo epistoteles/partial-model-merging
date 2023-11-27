@@ -132,3 +132,237 @@ wandb: Run `wandb offline` to turn off syncing.
 wandb: Syncing run dainty-dust-346
 wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
 wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/h7dv6brk
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:21
+📥 Accuracies and losses saved for MNIST-MLP4-0.5x-b
+train_acc    0.9999333333333333
+train_loss   0.0005912995739587738
+test_acc     0.9906
+test_loss    0.040889574028551576
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▇██████████████████████████████████████
+wandb:      test_loss █▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▇██████████████████████████████████████
+wandb:     train_loss █▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9906
+wandb:      test_loss 0.04089
+wandb: train_accuracy 0.99978
+wandb:     train_loss 0.00149
+wandb: 
+wandb: 🚀 View run dainty-dust-346 at: https://wandb.ai/epistoteles/partial-model-merging/runs/h7dv6brk
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231127_155530-h7dv6brk/logs
+Namespace(dataset='MNIST', model_type='MLP', size=5, batch_norm=False, 
+width=0.5, epochs=100, lr=0.2, weight_decay=0.0, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: - Waiting for wandb.init()...wandb: \ Waiting for wandb.init()...wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231127_160226-0m59us7c
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run pretty-snowball-348
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/0m59us7c
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:17
+📥 Accuracies and losses saved for MNIST-MLP5-0.5x-a
+train_acc    0.9998666666666667
+train_loss   0.0010458352427425174
+test_acc     0.9891
+test_loss    0.04814699366688728
+wandb: Waiting for W&B process to finish... (success).
+wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▇██████████████████████████████████████
+wandb:      test_loss █▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▅██████████████████████████████████████
+wandb:     train_loss █▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9891
+wandb:      test_loss 0.04815
+wandb: train_accuracy 0.99952
+wandb:     train_loss 0.00238
+wandb: 
+wandb: 🚀 View run pretty-snowball-348 at: https://wandb.ai/epistoteles/partial-model-merging/runs/0m59us7c
+wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231127_160226-0m59us7c/logs
+Namespace(dataset='MNIST', model_type='MLP', size=5, batch_norm=False, 
+width=0.5, epochs=100, lr=0.2, weight_decay=0.0, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231127_160911-bmqwbdfz
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run lucky-firebrand-350
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/bmqwbdfz
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:17
+📥 Accuracies and losses saved for MNIST-MLP5-0.5x-b
+train_acc    0.9999333333333333
+train_loss   0.0004404553532367572
+test_acc     0.9907
+test_loss    0.045798392966389656
+wandb: Waiting for W&B process to finish... (success).
+wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▇██████████████████████████████████████
+wandb:      test_loss █▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▆██████████████████████████████████████
+wandb:     train_loss █▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9907
+wandb:      test_loss 0.0458
+wandb: train_accuracy 0.99992
+wandb:     train_loss 0.00084
+wandb: 
+wandb: 🚀 View run lucky-firebrand-350 at: https://wandb.ai/epistoteles/partial-model-merging/runs/bmqwbdfz
+wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231127_160911-bmqwbdfz/logs
+Namespace(dataset='MNIST', model_type='MLP', size=6, batch_norm=False, 
+width=0.5, epochs=100, lr=0.2, weight_decay=0.0, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231127_161600-87r3lpmr
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run comic-feather-352
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/87r3lpmr
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:18
+📥 Accuracies and losses saved for MNIST-MLP6-0.5x-a
+train_acc    0.99995
+train_loss   0.0003802464763187648
+test_acc     0.9893
+test_loss    0.05576274283230305
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▇██████████████████████████████████████
+wandb:      test_loss █▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▄██████████████████████████████████████
+wandb:     train_loss █▅▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9893
+wandb:      test_loss 0.05576
+wandb: train_accuracy 0.99992
+wandb:     train_loss 0.00077
+wandb: 
+wandb: 🚀 View run comic-feather-352 at: https://wandb.ai/epistoteles/partial-model-merging/runs/87r3lpmr
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231127_161600-87r3lpmr/logs
+Namespace(dataset='MNIST', model_type='MLP', size=6, batch_norm=False, 
+width=0.5, epochs=100, lr=0.2, weight_decay=0.0, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231127_162248-k8oi1e9c
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run super-disco-354
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/k8oi1e9c
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:17
+📥 Accuracies and losses saved for MNIST-MLP6-0.5x-b
+train_acc    0.9990333333333333
+train_loss   0.004292011365760118
+test_acc     0.9876
+test_loss    0.04610069319605827
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: / 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▂▇█████████████████████████████████████
+wandb:      test_loss █▇▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▂▇█████████████████████████████████████
+wandb:     train_loss ██▃▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9876
+wandb:      test_loss 0.0461
+wandb: train_accuracy 0.9974
+wandb:     train_loss 0.00915
+wandb: 
+wandb: 🚀 View run super-disco-354 at: https://wandb.ai/epistoteles/partial-model-merging/runs/k8oi1e9c
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231127_162248-k8oi1e9c/logs
+Namespace(dataset='MNIST', model_type='MLP', size=7, batch_norm=False, 
+width=0.5, epochs=100, lr=0.2, weight_decay=0.0, variant='a', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231127_162934-dtzzt8g2
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run chocolate-glitter-356
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/dtzzt8g2
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:06:18
+📥 Accuracies and losses saved for MNIST-MLP7-0.5x-a
+train_acc    0.99995
+train_loss   0.0003474768333641502
+test_acc     0.9892
+test_loss    0.06132734715938568
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.002 MB of 0.002 MB uploaded (0.000 MB deduped)wandb: \ 0.002 MB of 0.007 MB uploaded (0.000 MB deduped)wandb: | 0.002 MB of 0.007 MB uploaded (0.000 MB deduped)wandb: / 0.007 MB of 0.007 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:          epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  learning_rate ▂▅███▇▇▇▇▇▇▆▆▆▆▆▅▅▅▅▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▁▁▁
+wandb:  test_accuracy ▁▂██████████████████████████████████████
+wandb:      test_loss █▇▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train_accuracy ▁▁██████████████████████████████████████
+wandb:     train_loss ██▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:          epoch 99
+wandb:  learning_rate 0.0
+wandb:  test_accuracy 0.9892
+wandb:      test_loss 0.06133
+wandb: train_accuracy 0.99985
+wandb:     train_loss 0.00095
+wandb: 
+wandb: 🚀 View run chocolate-glitter-356 at: https://wandb.ai/epistoteles/partial-model-merging/runs/dtzzt8g2
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231127_162934-dtzzt8g2/logs
+Namespace(dataset='MNIST', model_type='MLP', size=7, batch_norm=False, 
+width=0.5, epochs=100, lr=0.2, weight_decay=0.0, variant='b', wandb=True, 
+test=True, checkpoint_midway=False)
+wandb: Currently logged in as: epistoteles. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.16.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.3
+wandb: Run data is saved locally in /home/korbinian/Documents/partial-model-merging/wandb/run-20231127_163623-u3kwqzpz
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run serene-bird-358
+wandb: ⭐️ View project at https://wandb.ai/epistoteles/partial-model-merging
+wandb: 🚀 View run at https://wandb.ai/epistoteles/partial-model-merging/runs/u3kwqzpz
