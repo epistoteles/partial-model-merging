@@ -1040,7 +1040,7 @@ def make_tracked_model(model):
     if isinstance(model, VGG | ResNet18 | ResNet20):
         feats = tracked_model.features
     elif isinstance(model, MLP):
-        feats = tracked_model.classifier
+        feats = tracked_model.classifier[:-2]
     else:
         raise ValueError("Unknown model type")
     for i, layer in enumerate(feats):
