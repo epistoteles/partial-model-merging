@@ -49,7 +49,7 @@ class MLP(nn.Module):
             )
 
         self.classifier.extend(
-            nn.Sequential(nn.Linear(round(512 * self.width[-1].item()), num_classes), nn.LogSoftmax())
+            nn.Sequential(nn.Linear(round(512 * self.width[-1].item()), num_classes), nn.LogSoftmax(dim=1))
         )
 
         for layer in self.classifier[:-2]:
