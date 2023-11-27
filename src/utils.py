@@ -1046,6 +1046,8 @@ def make_tracked_model(model):
     for i, layer in enumerate(feats):
         if isinstance(layer, torch.nn.Conv2d | torch.nn.Linear):
             feats[i] = REPAIRTracker(layer)
+    if isinstance(model, MLP):
+        tracked_model.classifier = feats.extend(tracked_model.classifier[-2:])
     return tracked_model.cuda().eval()
 
 
