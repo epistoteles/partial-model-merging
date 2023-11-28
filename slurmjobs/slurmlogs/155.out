@@ -1,0 +1,6 @@
+-------------------SBATCH STATS-------------------
+Total CPU cores:      6
+Visible CPU cores:    3
+Visible GPUs:         NVIDIA GeForce GTX 1060 6GB
+--------------------------------------------------
+slurmstepd-Turing: error: *** JOB 155 ON Turing CANCELLED AT 2023-11-28T14:29:13 ***
