@@ -228,12 +228,12 @@ def evaluate_two_models(
             )
 
             save_evaluation_checkpoint(metrics, filepath)
-            print(f"📥 Metrics saved for {model_name_a}{variant_b} as .csv and .safetensors")
 
     return metrics
 
 
 def save_evaluation_checkpoint(metrics, filepath):
+    print(metrics)
     save_file(metrics, filename=filepath.replace(".csv", ".safetensors"))
     np.savetxt(
         filepath,
