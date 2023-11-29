@@ -9,9 +9,10 @@ data/
 *.beton
 *.tar.gz
 
-# don't sync checkpoints
+# don't sync checkpoints and eval tensors
 checkpoints/
 *.pt
+evaluations/two_models/*.safetensors
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
