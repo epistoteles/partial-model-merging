@@ -241,12 +241,12 @@ def evaluate_two_models(
 def save_evaluation_checkpoint(metrics, filepath):
     print(metrics)
     save_file(metrics, filename=filepath.replace(".csv", ".safetensors"))
-    np.savetxt(
-        filepath,
-        np.asarray([list(metrics.keys()), *list(zip(*[ensure_numpy(x) for x in metrics.values()]))]),
-        delimiter=",",
-        fmt="%s",
-    )
+    # np.savetxt(
+    #     filepath,
+    #     np.asarray([list(metrics.keys()), *list(zip(*[ensure_numpy(x) for x in metrics.values()]))]),
+    #     delimiter=",",
+    #     fmt="%s",
+    # )
     print("📥 Metrics checkpointed as .csv and .safetensors")
 
 
