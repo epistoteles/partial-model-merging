@@ -1,4 +1,4 @@
-from copy import deepcopy
+from copy import deepcopy, copy
 
 import git
 import os
@@ -181,10 +181,11 @@ def ensure_numpy(x):
 
 def normalize(x):
     """
-    Normalizes a tensor or numpy array between 0 and 1
+    Returns a normalized (between 0 and 1) copy of a tensor or numpy array
     :param x: the tensor or numpy array
     :return: the normalized tensor or numpy array
     """
+    x = deepcopy(x)
     x -= x.min()
     x /= x.max()
     return x

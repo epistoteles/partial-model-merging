@@ -40,8 +40,8 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
 
     fig, axes = plt.subplots(1, len(chosen_corrs), figsize=(1.2 * len(chosen_corrs), 6))
     fig.suptitle(
-        f"Histogram of correlations selected by LAP solver, per conv. layer,\n"
-        f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width, model {variant_a} + {variant_b}",
+        f"Histogram of correlations selected by LAP solver, per  layer,\n"
+        f"{dataset_a}, {model_type_a}{size_a}, {bn_a}, {width_a}×width, model {variant_a} + {variant_b}",
     )
 
     for i in range(len(chosen_corrs)):
