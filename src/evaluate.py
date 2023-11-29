@@ -140,14 +140,14 @@ def evaluate_two_models(
     assert width_a == width_b  # not strictly necessary, but always the case in our experiments
 
     evaluations_dir = get_evaluations_dir(subdir="two_models")
-    filepath = os.path.join(evaluations_dir, f"{model_name_a}{variant_b}.csv")
+    filepath = os.path.join(evaluations_dir, f"{model_name_a}{variant_b}.safetensors")
 
     model_a = load_model(model_name_a).cuda()
     model_b = load_model(model_name_b).cuda()
     train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
 
-    if os.path.exists(filepath.replace(".csv", ".safetensors")):
-        metrics = load_file(filepath.replace(".csv", ".safetensors"))
+    if os.path.exists(filepath):
+        metrics = load_file(filepath)
         print(f"📤 Loaded saved metrics for {model_name_a}{variant_b} from .safetensors")
         print(metrics["alphas"], "post-load")  # DEBUG
     else:
@@ -196,6 +196,7 @@ def evaluate_two_models(
 
         print(metrics["alphas"], "pre-save")  # DEBUG
         save_evaluation_checkpoint(metrics, filepath)
+        metrics = load_file(filepath)  # necessary because of a safetensors bug
         print(metrics["alphas"], "post-save")  # DEBUG
 
     for k in expansions:
@@ -233,20 +234,20 @@ def evaluate_two_models(
 
             print(metrics["alphas"], f"k-step pre-save; {k=}")  # DEBUG
             save_evaluation_checkpoint(metrics, filepath)
+            metrics = load_file(filepath)  # necessary because of a safetensors bug
             print(metrics["alphas"], f"k-step post-save; {k=}")  # DEBUG
 
     return metrics
 
 
 def save_evaluation_checkpoint(metrics, filepath):
-    print(metrics)
-    save_file(metrics, filename=filepath.replace(".csv", ".safetensors"))
-    # np.savetxt(
-    #     filepath,
-    #     np.asarray([list(metrics.keys()), *list(zip(*[ensure_numpy(x) for x in metrics.values()]))]),
-    #     delimiter=",",
-    #     fmt="%s",
-    # )
+    save_file(metrics, filename=filepath)
+    np.savetxt(
+        filepath.replace(".safetensors", ".csv"),
+        np.asarray([list(metrics.keys()), *list(zip(*[ensure_numpy(x) for x in metrics.values()]))]),
+        delimiter=",",
+        fmt="%s",
+    )
     print("📥 Metrics checkpointed as .csv and .safetensors")
 
 
