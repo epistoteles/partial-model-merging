@@ -123,7 +123,7 @@ def evaluate_two_models(
     :return: TODO
     """
     if expansions is None:
-        expansions = [1.1, 1.5, 1.8, 2.0]
+        expansions = [1.1, 1.5]
     if model_name_b is None:
         model_name_b = f"{model_name_a}-b"
         model_name_a = f"{model_name_a}-a"
@@ -149,7 +149,6 @@ def evaluate_two_models(
     if os.path.exists(filepath):
         metrics = load_file(filepath)
         print(f"📤 Loaded saved metrics for {model_name_a}{variant_b} from .safetensors")
-        print(metrics["alphas"], "post-load")  # DEBUG
     else:
         metrics = {"alphas": torch.linspace(0.0, 1.0, interpolation_steps)}
 
@@ -194,13 +193,10 @@ def evaluate_two_models(
             model_a, model_b_perm, test_loader, train_aug_loader, interpolation_steps
         )
 
-        print(metrics["alphas"], "pre-save")  # DEBUG
         save_evaluation_checkpoint(metrics, filepath)
         metrics = load_file(filepath)  # necessary because of a safetensors bug
-        print(metrics["alphas"], "post-save")  # DEBUG
 
     for k in expansions:
-        print(metrics["alphas"], f"k-step; {k=}")  # DEBUG
         if f"partial_merging_REPAIR_{k}_test_accs" not in metrics.keys():
             print(f"Collecting partial merging metrics ({k}) ...")
             model_a = load_model(model_name_a).cuda()
@@ -232,10 +228,8 @@ def evaluate_two_models(
                 model_a, model_b_perm, test_loader, train_aug_loader, interpolation_steps
             )
 
-            print(metrics["alphas"], f"k-step pre-save; {k=}")  # DEBUG
             save_evaluation_checkpoint(metrics, filepath)
             metrics = load_file(filepath)  # necessary because of a safetensors bug
-            print(metrics["alphas"], f"k-step post-save; {k=}")  # DEBUG
 
     return metrics
 

@@ -89,9 +89,7 @@ def main():
                 metrics["test_loss"] = test_loss
             wandb.log(metrics)
 
-    model_name = (
-        f"{args.dataset}-{args.model_type}{args.size}-{'bn-' if args.batch_norm else ''}{args.width}x-{args.variant}"
-    )
+    model_name = f"{args.dataset}-{args.model_type}{args.size}-{'bn-' if args.batch_norm else ''}{int(args.width) if args.width%1 == 0 else args.width}x-{args.variant}"
     save_model(model, model_name)
 
     evaluate_single_model(model_name)
