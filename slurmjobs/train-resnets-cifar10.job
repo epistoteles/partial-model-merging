@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=3
 #SBATCH --threads-per-core=1
 #SBATCH --mem-per-gpu=16G
-#SBATCH --job-name=train-resnets-cifar100-1x
+#SBATCH --job-name=train-resnets-cifar10
 
 export CUDA_DEVICE_ORDER="PCI_BUS_ID"
 export CUDA_VISIBLE_DEVICES=$(echo $SLURM_JOB_GPUS | cut -d "," -f1)
@@ -23,5 +23,8 @@ print(f'Visible GPUs:         {torch.cuda.get_device_name(torch.cuda.current_dev
 print('-'*50)
 "
 
-python src/train.py --dataset CIFAR100 --model ResNet --size 18 --width 1 --variant a -bn -wandb -test
-python src/train.py --dataset CIFAR100 --model ResNet --size 18 --width 1 --variant b -bn -wandb -test
+python src/train.py --dataset CIFAR100 --model ResNet --size 18 --width 2 --variant a -bn -wandb -test
+python src/train.py --dataset CIFAR100 --model ResNet --size 18 --width 2 --variant b -bn -wandb -test
+
+python src/train.py --dataset CIFAR100 --model ResNet --size 18 --width 8 --variant a -bn -wandb -test
+python src/train.py --dataset CIFAR100 --model ResNet --size 18 --width 8 --variant b -bn -wandb -test
