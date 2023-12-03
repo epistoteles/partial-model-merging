@@ -58,7 +58,7 @@ sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), dashes=
 sns.lineplot(x=torch.linspace(0, 100, 11), y=[100] * 11, dashes=(2, 2), color="grey")
 
 for idx, (width, color) in enumerate(zip(widths, ["red", "orange", "yellow", "green"])):
-    sns.lineplot(x=torch.linspace(0, 100, 11), y=barrier_reduction_relative[idx][0], label=width, color=color)
+    sns.lineplot(x=torch.linspace(0, 100, 11), y=barrier_reduction_relative[idx][0] * 100, label=width, color=color)
 
 plots_dir = get_plots_dir(subdir=Path(__file__).stem)
 plt.savefig(
