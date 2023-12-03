@@ -73,9 +73,41 @@ plots_dir = get_plots_dir(subdir=Path(__file__).stem)
 plt.savefig(
     os.path.join(
         plots_dir,
-        "AUC_VGG11.png",
+        "AUC_VGG11_buffer.png",
     ),
     dpi=600,
 )
 plt.close()
-print("📊 AUC VGG11 plot saved")
+print("📊 AUC VGG11 (w.r.t. buffer) plot saved")
+
+
+plt.figure(figsize=(7, 7))
+plt.xlabel("added buffer (%)")
+plt.ylabel("accuracy barrier reduction (%)")
+plt.xticks(torch.linspace(0, 100, 11))
+
+# AUC diagonal
+sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), color="grey")
+
+# 100% horizontal line
+sns.lineplot(x=torch.linspace(0, 100, 11), y=[100] * 11, color="grey")
+
+for idx, (width, color) in enumerate(zip(widths, ["orangered", "orange", "mediumturquoise", "mediumvioletred"])):
+    sns.lineplot(x=torch.linspace(0, 100, 11), y=barrier_reduction_relative[idx][0] * 100, label=width, color=color)
+    sns.lineplot(
+        x=torch.linspace(0, 100, 11), y=barrier_reduction_relative_REPAIR[idx][0] * 100, dashes=(2, 2), color=color
+    )
+
+# just for the REPAIR label
+sns.lineplot(x=[0, 0], y=[0, 0], dashes=(2, 2), label="with REPAIR", color="grey")
+
+plots_dir = get_plots_dir(subdir=Path(__file__).stem)
+plt.savefig(
+    os.path.join(
+        plots_dir,
+        "AUC_VGG11_params.png",
+    ),
+    dpi=600,
+)
+plt.close()
+print("📊 AUC VGG11 (w.r.t. parameters) plot saved")

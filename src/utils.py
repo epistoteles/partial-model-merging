@@ -604,13 +604,16 @@ def get_num_layers(model):
         raise NotImplementedError()  # TODO
 
 
-def get_num_params(model):
+def get_num_params(model, ignore_zeros=False):
     """
     Returns the total number of parameters in a model
     :param model: the model
     :return: the total number of parameters
     """
-    return sum([v.numel() for k, v in model.state_dict().items() if "is_buffer" not in k])
+    if not ignore_zeros:
+        return sum([v.numel() for k, v in model.state_dict().items() if "is_buffer" not in k])
+    else:
+        return sum([v.count_nonzero().item() for k, v in model.state_dict().items() if "is_buffer" not in k])
 
 
 def remove_buffer_flags(model):
