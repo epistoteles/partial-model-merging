@@ -203,7 +203,6 @@ def model_table(dataset: str, architecture: str, bn: bool):
             for size in sizes
         ]
         eval_exists = [os.path.exists(eval_name) for eval_name in eval_names]
-        table.add_row("", *[Text("eval" if x else "no eval", style="green" if x else "red") for x in eval_exists])
         eval_steps = [
             get_evaluated_overlaps(name, as_string=True) if exists else ""
             for (name, exists) in zip(eval_names, eval_exists)
