@@ -209,10 +209,29 @@ def model_table(dataset: str, architecture: str, bn: bool):
         ]
         table.add_row("", *[Text(x if x else "no eval", style="green" if x else "red") for x in eval_steps])
         accs = [get_metrics(name) if exists else "" for (name, exists) in zip(eval_names, eval_exists)]
-        table.add_row("", *[Text(f"endpoints: {x['acc_endpoint_avg']:.4f}" if x else "", style="white") for x in accs])
-        table.add_row("", *[Text(f"merging: {x['acc_merging']:.4f}" if x else "", style="white") for x in accs])
         table.add_row(
-            "", *[Text(f"merging + REP: {x['acc_merging_REPAIR']:.4f}" if x else "", style="white") for x in accs]
+            "",
+            *[
+                Text(f"endpoints: {x['acc_endpoint_avg']:.4f}/{x['loss_endpoint_avg']:.4f}" if x else "", style="white")
+                for x in accs
+            ],
+        )
+        table.add_row(
+            "",
+            *[
+                Text(f"merging: {x['acc_merging']:.4f}/{x['loss_merging']:.4f}" if x else "", style="white")
+                for x in accs
+            ],
+        )
+        table.add_row(
+            "",
+            *[
+                Text(
+                    f"merging + REP: {x['acc_merging_REPAIR']:.4f}/{x['loss_merging_REPAIR']:.4f}" if x else "",
+                    style="white",
+                )
+                for x in accs
+            ],
         )
         table.add_section()
     console = Console()
@@ -253,8 +272,13 @@ def get_metrics(evaluation_filename: str):
         result["acc_endpoint_b"] = metrics["merging_test_accs"][-1].item()
         result["acc_endpoint_avg"] = (result["acc_endpoint_a"] + result["acc_endpoint_b"]) / 2
         result["acc_merging"] = metrics["merging_test_accs"][10].item()
+        result["loss_endpoint_a"] = metrics["merging_test_losses"][0].item()
+        result["loss_endpoint_b"] = metrics["merging_test_losses"][-1].item()
+        result["loss_endpoint_avg"] = (result["loss_endpoint_a"] + result["loss_endpoint_b"]) / 2
+        result["loss_merging"] = metrics["merging_test_losses"][10].item()
     if "merging_REPAIR_test_accs" in keys:
         result["acc_merging_REPAIR"] = metrics["merging_REPAIR_test_accs"][10].item()
+        result["loss_merging_REPAIR"] = metrics["merging_REPAIR_test_losses"][10].item()
     return result
 
 
