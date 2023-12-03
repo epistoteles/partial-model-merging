@@ -253,8 +253,8 @@ def get_metrics(evaluation_filename: str):
         result["acc_endpoint_b"] = metrics["merging_test_accs"][-1].item()
         result["acc_endpoint_avg"] = (result["acc_endpoint_a"] + result["acc_endpoint_b"]) / 2
         result["acc_merging"] = metrics["merging_test_accs"][10].item()
-    if "merging_REPAIR_train_accs" in keys:
-        result["acc_merging_REPAIR"] = metrics["merging_REPAIR_train_accs"][10].item()
+    if "merging_REPAIR_test_accs" in keys:
+        result["acc_merging_REPAIR"] = metrics["merging_REPAIR_test_accs"][10].item()
     return result
 
 
