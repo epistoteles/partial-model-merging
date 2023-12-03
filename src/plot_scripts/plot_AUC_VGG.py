@@ -46,7 +46,7 @@ barrier_reduction_absolute = accs_partial_merging - accs_partial_merging[:, :, 0
 barrier_reduction_relative = barrier_reduction_absolute / full_barrier_absolute.unsqueeze(-1)
 
 full_barrier_absolute_REPAIR = accs_endpoint - accs_partial_merging_REPAIR[:, 0, 0:1]
-barrier_reduction_absolute_REPAIR = accs_partial_merging_REPAIR - accs_partial_merging_REPAIR[:, :, 0:1]
+barrier_reduction_absolute_REPAIR = accs_partial_merging_REPAIR - accs_partial_merging[:, :, 0:1]
 barrier_reduction_relative_REPAIR = barrier_reduction_absolute_REPAIR / full_barrier_absolute_REPAIR.unsqueeze(-1)
 
 
@@ -54,9 +54,6 @@ plt.figure(figsize=(7, 7))
 plt.xlabel("added buffer (%)")
 plt.ylabel("accuracy barrier reduction (%)")
 plt.xticks(torch.linspace(0, 100, 11))
-
-# just for the label
-sns.lineplot(x=[0, 0], y=[0, 0], dashes=(2, 2), label="with REPAIR", color="grey")
 
 # AUC diagonal
 sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), color="grey")
@@ -69,6 +66,9 @@ for idx, (width, color) in enumerate(zip(widths, ["orangered", "orange", "medium
     sns.lineplot(
         x=torch.linspace(0, 100, 11), y=barrier_reduction_relative_REPAIR[idx][0] * 100, dashes=(2, 2), color=color
     )
+
+# just for the REPAIR label
+sns.lineplot(x=[0, 0], y=[0, 0], dashes=(2, 2), label="with REPAIR", color="grey")
 
 plots_dir = get_plots_dir(subdir=Path(__file__).stem)
 plt.savefig(
