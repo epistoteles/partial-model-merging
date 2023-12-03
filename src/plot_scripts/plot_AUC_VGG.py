@@ -51,7 +51,7 @@ plt.xlabel("added buffer (%)")
 plt.ylabel("acc barrier reduction (%)")
 
 for idx, (width, color) in enumerate(zip(widths, ["red", "orange", "yellow", "green"])):
-    sns.lineplot(x=torch.linspace(10, 100, 10), y=barrier_reduction_relative[idx][0][1:], label=width, color=color)
+    sns.lineplot(x=torch.linspace(0, 100, 11), y=barrier_reduction_relative[idx][0], label=width, color=color)
 
 plots_dir = get_plots_dir(subdir=Path(__file__).stem)
 plt.savefig(
