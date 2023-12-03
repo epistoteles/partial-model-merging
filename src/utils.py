@@ -209,8 +209,8 @@ def model_table(dataset: str, architecture: str, bn: bool):
         ]
         table.add_row("", *[Text(x if x else "no eval", style="green" if x else "red") for x in eval_steps])
         accs = [get_metrics(name, as_string=True) if exists else "" for (name, exists) in zip(eval_names, eval_exists)]
-        table.add_row("", *[Text(f"endpoints: {x['acc_endpoint_avg']}" if x else "", style="white") for x in accs])
-        table.add_row("", *[Text(f"merging: {x['acc_merging']}" if x else "", style="white") for x in accs])
+        table.add_row("", *[Text(f"endpoints: {x['acc_endpoint_avg']:3f}" if x else "", style="white") for x in accs])
+        table.add_row("", *[Text(f"merging: {x['acc_merging']:3f}" if x else "", style="white") for x in accs])
         table.add_section()
     console = Console()
     console.print(table)
