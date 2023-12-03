@@ -212,14 +212,16 @@ def model_table(dataset: str, architecture: str, bn: bool):
         table.add_row(
             "",
             *[
-                Text(f"endpoints: {x['acc_endpoint_avg']:.4f}/{x['loss_endpoint_avg']:.4f}" if x else "", style="white")
+                Text(
+                    f"endpoints: {x['acc_endpoint_avg']:.4f} / {x['loss_endpoint_avg']:.4f}" if x else "", style="white"
+                )
                 for x in accs
             ],
         )
         table.add_row(
             "",
             *[
-                Text(f"merging: {x['acc_merging']:.4f}/{x['loss_merging']:.4f}" if x else "", style="white")
+                Text(f"merging: {x['acc_merging']:.4f} / {x['loss_merging']:.4f}" if x else "", style="white")
                 for x in accs
             ],
         )
@@ -227,7 +229,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"merging + REP: {x['acc_merging_REPAIR']:.4f}/{x['loss_merging_REPAIR']:.4f}" if x else "",
+                    f"merging + REP: {x['acc_merging_REPAIR']:.4f} / {x['loss_merging_REPAIR']:.4f}" if x else "",
                     style="white",
                 )
                 for x in accs
