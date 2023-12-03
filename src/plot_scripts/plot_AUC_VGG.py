@@ -60,6 +60,11 @@ sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), color="
 # 100% horizontal line
 sns.lineplot(x=torch.linspace(0, 100, 11), y=[100] * 11, color="grey")
 
+param_increase = (
+    torch.Tensor([1, 1.1897, 1.3587, 1.5107, 1.6398, 1.74, 1.8396, 1.9093, 1.960, 1.9899, 1.9999]) - 1
+) * 100
+sns.lineplot(x=torch.linspace(0, 100, 11), y=param_increase, color="black", label="parameter increase (%)")
+
 for idx, (width, color) in enumerate(zip(widths, ["orangered", "orange", "mediumturquoise", "mediumvioletred"])):
     sns.lineplot(x=torch.linspace(0, 100, 11), y=barrier_reduction_relative[idx][0] * 100, label=width, color=color)
     sns.lineplot(
@@ -92,14 +97,9 @@ sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), color="
 # 100% horizontal line
 sns.lineplot(x=torch.linspace(0, 100, 11), y=[100] * 11, color="grey")
 
-param_increase = torch.Tensor([1, 1.1897, 1.3587, 1.5107, 1.6398, 1.74, 1.8396, 1.9093, 1.960, 1.9899, 1.9999]) * 100
-sns.lineplot(x=torch.linspace(0, 100, 11), y=param_increase, color="black", label="parameter increase (%)")
-
 for idx, (width, color) in enumerate(zip(widths, ["orangered", "orange", "mediumturquoise", "mediumvioletred"])):
-    sns.lineplot(x=torch.linspace(0, 100, 11), y=barrier_reduction_relative[idx][0] * 100, label=width, color=color)
-    sns.lineplot(
-        x=torch.linspace(0, 100, 11), y=barrier_reduction_relative_REPAIR[idx][0] * 100, dashes=(2, 2), color=color
-    )
+    sns.lineplot(x=param_increase, y=barrier_reduction_relative[idx][0] * 100, label=width, color=color)
+    sns.lineplot(x=param_increase, y=barrier_reduction_relative_REPAIR[idx][0] * 100, dashes=(2, 2), color=color)
 
 # just for the REPAIR label
 sns.lineplot(x=[0, 0], y=[0, 0], dashes=(2, 2), label="with REPAIR", color="grey")
