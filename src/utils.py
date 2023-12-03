@@ -208,7 +208,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             get_evaluated_overlaps(name, as_string=True) if exists else ""
             for (name, exists) in zip(eval_names, eval_exists)
         ]
-        table.add_row("", *[Text(x, style="green") for x in eval_steps])
+        table.add_row("", *[Text(x if x else "no eval", style="green" if x else "red") for x in eval_steps])
         table.add_section()
     console = Console()
     console.print(table)
