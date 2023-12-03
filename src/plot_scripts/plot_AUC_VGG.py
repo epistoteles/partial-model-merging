@@ -95,7 +95,7 @@ print("📊 AUC VGG11 (w.r.t. buffer) plot saved")
 plt.figure(figsize=(7, 7))
 plt.xlabel("added non-zero parameter count (%)")
 plt.ylabel("accuracy barrier reduction (%)")
-plt.xticks(torch.linspace(0, 100, 11))
+plt.xticks(param_increase)
 
 # AUC diagonal
 sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), color="grey")
