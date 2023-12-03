@@ -53,6 +53,7 @@ plt.figure(figsize=(6, 6))
 plt.xlabel("added layer width (%)")
 plt.ylabel("accuracy barrier reduction (%)")
 plt.xticks(torch.linspace(0, 100, 11))
+plt.title("Accuracy barrier reduction w.r.t. added buffer\nCIFAR10, VGG11, bn=True")
 
 # AUC diagonal
 sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), color="grey")
@@ -63,7 +64,7 @@ sns.lineplot(x=torch.linspace(0, 100, 11), y=[100] * 11, color="grey")
 param_increase = (
     torch.Tensor([1, 1.1897, 1.3587, 1.5107, 1.6398, 1.74, 1.8396, 1.9093, 1.960, 1.9899, 1.9999]) - 1
 ) * 100
-sns.lineplot(x=torch.linspace(0, 100, 11), y=param_increase, color="black", label="parameter increase (%)")
+# sns.lineplot(x=torch.linspace(0, 100, 11), y=param_increase, color="black", label="parameter increase (%)")
 
 for idx, (width, color) in enumerate(zip(widths, ["orangered", "orange", "mediumturquoise", "mediumvioletred"])):
     sns.lineplot(
@@ -72,7 +73,7 @@ for idx, (width, color) in enumerate(zip(widths, ["orangered", "orange", "medium
         label=width,
         color=color,
         marker="o",
-        markersize=3,
+        markersize=4,
     )
     sns.lineplot(
         x=torch.linspace(0, 100, 11),
@@ -80,7 +81,7 @@ for idx, (width, color) in enumerate(zip(widths, ["orangered", "orange", "medium
         dashes=(2, 2),
         color=color,
         marker="o",
-        markersize=3,
+        markersize=4,
     )
 
 # just for the REPAIR label
@@ -102,6 +103,8 @@ plt.figure(figsize=(6, 6))
 plt.xlabel("added non-zero parameter count (%)")
 plt.ylabel("accuracy barrier reduction (%)")
 plt.xticks(torch.linspace(0, 100, 11))
+plt.title("Accuracy barrier reduction w.r.t. added parameters\nCIFAR10, VGG11, bn=True")
+
 
 # AUC diagonal
 sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), color="grey")
