@@ -208,7 +208,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             for (name, exists) in zip(eval_names, eval_exists)
         ]
         table.add_row("", *[Text(x if x else "no eval", style="green" if x else "red") for x in eval_steps])
-        accs = [get_metrics(name, as_string=True) if exists else "" for (name, exists) in zip(eval_names, eval_exists)]
+        accs = [get_metrics(name) if exists else "" for (name, exists) in zip(eval_names, eval_exists)]
         table.add_row("", *[Text(f"endpoints: {x['acc_endpoint_avg']:3f}" if x else "", style="white") for x in accs])
         table.add_row("", *[Text(f"merging: {x['acc_merging']:3f}" if x else "", style="white") for x in accs])
         table.add_section()
@@ -236,7 +236,7 @@ def get_evaluated_overlaps(evaluation_filename: str, as_string: bool = False):
         return result
 
 
-def get_metrics(evaluation_filename: str, as_string: bool = False):
+def get_metrics(evaluation_filename: str):
     """
     Given an eval .safetensors path, returns the already evaluated overlaps
     :param evaluation_filename: the safetensors path
@@ -250,9 +250,6 @@ def get_metrics(evaluation_filename: str, as_string: bool = False):
         result["acc_endpoint_b"] = metrics["merging_test_accs"][-1].item()
         result["acc_endpoint_avg"] = (result["acc_endpoint_a"] + result["acc_endpoint_b"]) / 2
         result["acc_merging"] = metrics["merging_test_accs"][10].item()
-    if as_string:
-        for k, v in result.items():
-            result[k] = str(v)
     return result
 
 
