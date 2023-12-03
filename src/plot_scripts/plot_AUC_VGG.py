@@ -56,7 +56,7 @@ plt.ylabel("accuracy barrier reduction (%)")
 plt.xticks(torch.linspace(0, 100, 11))
 
 # just for the label
-sns.lineplot(x=0, y=0, dashes=(2, 2), label="with REPAIR", color="grey")
+sns.lineplot(x=[0, 0], y=[0, 0], dashes=(2, 2), label="with REPAIR", color="grey")
 
 # AUC diagonal
 sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), color="grey")
