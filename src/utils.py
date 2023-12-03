@@ -206,7 +206,8 @@ def model_table(dataset: str, architecture: str, bn: bool):
         x = [Text("eval" if x else "no eval", style="green" if x else "red") for x in x]
         table.add_row("", *x)
         table.add_section()
-    rich.print(table)
+    console = rich.Console()
+    console.print(table)
 
 
 ###########################
