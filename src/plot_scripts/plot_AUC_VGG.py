@@ -49,7 +49,7 @@ barrier_reduction_absolute_REPAIR = accs_partial_merging_REPAIR - accs_partial_m
 barrier_reduction_relative_REPAIR = barrier_reduction_absolute_REPAIR / full_barrier_absolute.unsqueeze(-1)
 
 
-plt.figure(figsize=(7, 7))
+plt.figure(figsize=(6, 6))
 plt.xlabel("added layer width (%)")
 plt.ylabel("accuracy barrier reduction (%)")
 plt.xticks(torch.linspace(0, 100, 11))
@@ -92,7 +92,7 @@ plt.close()
 print("📊 AUC VGG11 (w.r.t. buffer) plot saved")
 
 
-plt.figure(figsize=(7, 7))
+plt.figure(figsize=(6, 6))
 plt.xlabel("added non-zero parameter count (%)")
 plt.ylabel("accuracy barrier reduction (%)")
 plt.xticks(torch.linspace(0, 100, 11))
@@ -105,10 +105,15 @@ sns.lineplot(x=torch.linspace(0, 100, 11), y=[100] * 11, color="grey")
 
 for idx, (width, color) in enumerate(zip(widths, ["orangered", "orange", "mediumturquoise", "mediumvioletred"])):
     sns.lineplot(
-        x=param_increase, y=barrier_reduction_relative[idx][0] * 100, label=width, color=color, marker="o", s=10
+        x=param_increase, y=barrier_reduction_relative[idx][0] * 100, label=width, color=color, marker="o", markersize=4
     )
     sns.lineplot(
-        x=param_increase, y=barrier_reduction_relative_REPAIR[idx][0] * 100, dashes=(2, 2), color=color, marker="o", s=5
+        x=param_increase,
+        y=barrier_reduction_relative_REPAIR[idx][0] * 100,
+        dashes=(2, 2),
+        color=color,
+        marker="o",
+        markersize=5,
     )
 
 # just for the REPAIR label
