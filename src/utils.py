@@ -205,7 +205,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
         eval_exists = [os.path.exists(eval_name) for eval_name in eval_names]
         table.add_row("", *[Text("eval" if x else "no eval", style="green" if x else "red") for x in eval_exists])
         eval_steps = [
-            Text(", ".join(get_evaluated_overlaps(name)), style="green") if exists else ""
+            Text(get_evaluated_overlaps(name, as_string=True), style="green") if exists else ""
             for (name, exists) in zip(eval_names, eval_exists)
         ]
         table.add_row("", *[Text(x, style="green") for x in eval_steps])
@@ -214,7 +214,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
     console.print(table)
 
 
-def get_evaluated_overlaps(evaluation_filename):
+def get_evaluated_overlaps(evaluation_filename: str, as_string: bool = False):
     """
     Given an eval .safetensors path, returns the already evaluated overlaps
     :param evaluation_filename: the safetensors path
@@ -228,7 +228,10 @@ def get_evaluated_overlaps(evaluation_filename):
     for k in [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]:
         if f"partial_merging_{k}_test_accs" in keys:
             result += [k]
-    return result
+    if as_string:
+        return ", ".join([str(x) for x in result])
+    else:
+        return result
 
 
 ###########################
