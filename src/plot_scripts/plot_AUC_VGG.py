@@ -46,9 +46,16 @@ barrier_reduction_absolute = accs_partial_merging - accs_partial_merging[:, :, 0
 barrier_reduction_relative = barrier_reduction_absolute / full_barrier_absolute.unsqueeze(-1)
 
 
-plt.figure(figsize=(12, 12))
+plt.figure(figsize=(7, 7))
 plt.xlabel("added buffer (%)")
 plt.ylabel("acc barrier reduction (%)")
+plt.xticks(torch.linspace(0, 100, 11))
+
+# AUC diagonal
+sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), dashes=(2, 2), color="grey")
+
+# 100% horizontal line
+sns.lineplot(x=torch.linspace(0, 100, 11), y=[100] * 11, dashes=(2, 2), color="grey")
 
 for idx, (width, color) in enumerate(zip(widths, ["red", "orange", "yellow", "green"])):
     sns.lineplot(x=torch.linspace(0, 100, 11), y=barrier_reduction_relative[idx][0], label=width, color=color)
