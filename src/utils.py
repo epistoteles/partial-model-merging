@@ -248,7 +248,7 @@ def get_metrics(evaluation_filename: str, as_string: bool = False):
     if "merging_test_accs" in keys:
         result["acc_endpoint_a"] = metrics["merging_test_accs"][0].item()
         result["acc_endpoint_b"] = metrics["merging_test_accs"][-1].item()
-        result["acc_endpoint_avg"] = ((result["acc_endpoint_a"] + result["acc_endpoint_b"]) / 2).item()
+        result["acc_endpoint_avg"] = (result["acc_endpoint_a"] + result["acc_endpoint_b"]) / 2
         result["acc_merging"] = metrics["merging_test_accs"][10].item()
     if as_string:
         for k, v in result.items():
