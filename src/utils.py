@@ -190,22 +190,22 @@ def model_table(dataset: str, architecture: str, bn: bool):
         "width", *[f"{architecture}{size}" for size in sizes], title=f"{architecture}s trained on {dataset}, {bn=}"
     )
     for width in widths:
-        x = [
+        variants = [
             Text(",".join([model[5] for model in models if model[4] == width and model[2] == size]), style="violet")
             for size in sizes
         ]
-        table.add_row(str(width), *x)
-        x = [
-            os.path.exists(
-                os.path.join(
-                    eval_dir,
-                    f"{dataset}-{architecture}{size}-{'bn-' if bn else ''}{int(width) if width%1 == 0 else width}x-ab.safetensors",
-                )
+        table.add_row(str(width), *variants)
+        eval_names = [
+            os.path.join(
+                eval_dir,
+                f"{dataset}-{architecture}{size}-{'bn-' if bn else ''}{int(width) if width % 1 == 0 else width}x-ab.safetensors",
             )
             for size in sizes
         ]
-        x = [Text("eval" if x else "no eval", style="green" if x else "red") for x in x]
-        table.add_row("", *x)
+        eval_exists = [os.path.exists(eval_name) for eval_name in eval_names]
+        table.add_row("", *[Text("eval" if x else "no eval", style="green" if x else "red") for x in eval_exists])
+        eval_steps = [name[:10] if exists else "" for (name, exists) in zip(eval_names, eval_exists)]
+        table.add_row("", *[Text(x, style="green") for x in eval_steps])
         table.add_section()
     console = Console()
     console.print(table)
