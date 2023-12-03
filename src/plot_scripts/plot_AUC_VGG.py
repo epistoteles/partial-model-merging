@@ -67,14 +67,14 @@ sns.lineplot(x=torch.linspace(0, 100, 11), y=param_increase, color="black", labe
 
 for idx, (width, color) in enumerate(zip(widths, ["orangered", "orange", "mediumturquoise", "mediumvioletred"])):
     sns.lineplot(
-        x=torch.linspace(0, 100, 11), y=barrier_reduction_relative[idx][0] * 100, label=width, color=color, markers=True
+        x=torch.linspace(0, 100, 11), y=barrier_reduction_relative[idx][0] * 100, label=width, color=color, markers="o"
     )
     sns.lineplot(
         x=torch.linspace(0, 100, 11),
         y=barrier_reduction_relative_REPAIR[idx][0] * 100,
         dashes=(2, 2),
         color=color,
-        markers=True,
+        markers="o",
     )
 
 # just for the REPAIR label
@@ -104,9 +104,9 @@ sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), color="
 sns.lineplot(x=torch.linspace(0, 100, 11), y=[100] * 11, color="grey")
 
 for idx, (width, color) in enumerate(zip(widths, ["orangered", "orange", "mediumturquoise", "mediumvioletred"])):
-    sns.lineplot(x=param_increase, y=barrier_reduction_relative[idx][0] * 100, label=width, color=color, markers=True)
+    sns.lineplot(x=param_increase, y=barrier_reduction_relative[idx][0] * 100, label=width, color=color, markers="o")
     sns.lineplot(
-        x=param_increase, y=barrier_reduction_relative_REPAIR[idx][0] * 100, dashes=(2, 2), color=color, markers=True
+        x=param_increase, y=barrier_reduction_relative_REPAIR[idx][0] * 100, dashes=(2, 2), color=color, markers="o"
     )
 
 # just for the REPAIR label
