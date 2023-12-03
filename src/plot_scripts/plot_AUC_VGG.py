@@ -65,9 +65,7 @@ sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), color="
 sns.lineplot(x=torch.linspace(0, 100, 11), y=[100] * 11, color="grey")
 
 for idx, (width, color) in enumerate(zip(widths, ["orangered", "orange", "mediumturquoise", "mediumvioletred"])):
-    sns.lineplot(
-        x=torch.linspace(0, 100, 11), y=barrier_reduction_relative_REPAIR[idx][0] * 100, label=width, color=color
-    )
+    sns.lineplot(x=torch.linspace(0, 100, 11), y=barrier_reduction_relative[idx][0] * 100, label=width, color=color)
     sns.lineplot(
         x=torch.linspace(0, 100, 11), y=barrier_reduction_relative_REPAIR[idx][0] * 100, dashes=(2, 2), color=color
     )
