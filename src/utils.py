@@ -14,6 +14,9 @@ from image import DrawImage
 import numpy as np
 import scipy
 
+from rich.table import Column, Table
+from rich.text import Text
+
 import torch
 import torchvision
 import torchvision.transforms as T
@@ -160,6 +163,49 @@ def parse_model_name(model_name, as_dict=False):
         }
     else:
         return dataset, model_type, size, batch_norm, width, variant
+
+
+###########################
+#   overview functions    #
+###########################
+
+
+def model_table(dataset: str, architecture: str, bn: bool):
+    """
+    Prints an overview table of trained and evaluated models
+    :param dataset: the dataset (that was trained on)
+    :param architecture: the architecture (MLP, VGG, ResNet)
+    :param bn: whether bn was used or not
+    :return:
+    """
+    model_names = get_all_model_names()
+    eval_dir = get_evaluations_dir("two_models")
+    matches = lambda x: x[0] == dataset and x[1] == architecture and x[3] == bn
+    models = [x for x in [parse_model_name(x) for x in model_names] if matches(x)]
+    sizes = sorted(list({x[2] for x in models}))
+    widths = sorted(list({x[4] for x in models}))
+    table = Table(
+        "width", *[f"{architecture}{size}" for size in sizes], title=f"{architecture}s trained on {dataset}, {bn=}"
+    )
+    for width in widths:
+        x = [
+            Text(",".join([model[5] for model in models if model[4] == width and model[2] == size]), style="violet")
+            for size in sizes
+        ]
+        table.add_row(str(width), *x)
+        x = [
+            os.path.exists(
+                os.path.join(
+                    eval_dir,
+                    f"{dataset}-{architecture}{size}-{'bn-' if bn else ''}{int(width) if width%1 == 0 else width}x-ab.safetensors",
+                )
+            )
+            for size in sizes
+        ]
+        x = [Text("eval" if x else "no eval", style="green" if x else "red") for x in x]
+        table.add_row("", *x)
+        table.add_section()
+    print(table)
 
 
 ###########################
