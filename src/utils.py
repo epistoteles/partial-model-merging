@@ -208,11 +208,9 @@ def model_table(dataset: str, architecture: str, bn: bool):
             for (name, exists) in zip(eval_names, eval_exists)
         ]
         table.add_row("", *[Text(x if x else "no eval", style="green" if x else "red") for x in eval_steps])
-        endpoint_accs = [
-            get_metrics(name, as_string=True)["acc_endpoint_avg"] if exists else ""
-            for (name, exists) in zip(eval_names, eval_exists)
-        ]
-        table.add_row("", *[Text(x if x else "", style="green") for x in endpoint_accs])
+        accs = [get_metrics(name, as_string=True) if exists else "" for (name, exists) in zip(eval_names, eval_exists)]
+        table.add_row("", *[Text(f"endpoints: {x['acc_endpoint_avg']}" if x else "", style="white") for x in accs])
+        table.add_row("", *[Text(f"merging: {x['acc_merging']}" if x else "", style="white") for x in accs])
         table.add_section()
     console = Console()
     console.print(table)
@@ -248,10 +246,10 @@ def get_metrics(evaluation_filename: str, as_string: bool = False):
     keys = metrics.keys()
     result = {}
     if "merging_test_accs" in keys:
-        result["acc_endpoint_a"] = metrics["merging_test_accs"][0]
-        result["acc_endpoint_b"] = metrics["merging_test_accs"][-1]
-        result["acc_endpoint_avg"] = (result["acc_endpoint_a"] + result["acc_endpoint_b"]) / 2
-        result["acc_merging"] = metrics["merging_test_accs"][10]
+        result["acc_endpoint_a"] = metrics["merging_test_accs"][0].item()
+        result["acc_endpoint_b"] = metrics["merging_test_accs"][-1].item()
+        result["acc_endpoint_avg"] = ((result["acc_endpoint_a"] + result["acc_endpoint_b"]) / 2).item()
+        result["acc_merging"] = metrics["merging_test_accs"][10].item()
     if as_string:
         for k, v in result.items():
             result[k] = str(v)
