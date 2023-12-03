@@ -23,4 +23,4 @@ def plot_reduction(dataset: str, architecture: str, bn: bool):
             acc_b = metrics["merging_test_accs"][-1].item()
             acc_avg = (acc_a + acc_b) / 2
             endpoint_accuracies[j, i] = acc_avg
-    print(endpoint_accuracies)
+    return endpoint_accuracies
