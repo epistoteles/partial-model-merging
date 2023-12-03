@@ -45,9 +45,8 @@ full_barrier_absolute = accs_endpoint - accs_partial_merging[:, 0, 0:1]
 barrier_reduction_absolute = accs_partial_merging - accs_partial_merging[:, :, 0:1]
 barrier_reduction_relative = barrier_reduction_absolute / full_barrier_absolute.unsqueeze(-1)
 
-full_barrier_absolute_REPAIR = accs_endpoint - accs_partial_merging_REPAIR[:, 0, 0:1]
 barrier_reduction_absolute_REPAIR = accs_partial_merging_REPAIR - accs_partial_merging[:, :, 0:1]
-barrier_reduction_relative_REPAIR = barrier_reduction_absolute_REPAIR / full_barrier_absolute_REPAIR.unsqueeze(-1)
+barrier_reduction_relative_REPAIR = barrier_reduction_absolute_REPAIR / full_barrier_absolute.unsqueeze(-1)
 
 
 plt.figure(figsize=(7, 7))
