@@ -16,6 +16,7 @@ import scipy
 
 from rich.table import Column, Table
 from rich.text import Text
+import rich
 
 import torch
 import torchvision
@@ -205,7 +206,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
         x = [Text("eval" if x else "no eval", style="green" if x else "red") for x in x]
         table.add_row("", *x)
         table.add_section()
-    print(table)
+    rich.print(table)
 
 
 ###########################
