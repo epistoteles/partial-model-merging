@@ -50,7 +50,7 @@ barrier_reduction_relative_REPAIR = barrier_reduction_absolute_REPAIR / full_bar
 
 
 plt.figure(figsize=(7, 7))
-plt.xlabel("added buffer (%)")
+plt.xlabel("added layer width (%)")
 plt.ylabel("accuracy barrier reduction (%)")
 plt.xticks(torch.linspace(0, 100, 11))
 
@@ -87,7 +87,7 @@ print("📊 AUC VGG11 (w.r.t. buffer) plot saved")
 
 
 plt.figure(figsize=(7, 7))
-plt.xlabel("added buffer (%)")
+plt.xlabel("added non-zero parameter count (%)")
 plt.ylabel("accuracy barrier reduction (%)")
 plt.xticks(torch.linspace(0, 100, 11))
 
