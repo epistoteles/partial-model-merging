@@ -16,7 +16,7 @@ bn = True
 
 metrics = ["acc", "loss"]
 sizes = [11]
-widths = [1]
+widths = [1, 1, 1]
 expansions = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
 endpoint = torch.zeros(len(metrics), len(widths), len(sizes))
 ensembling = torch.zeros(len(metrics), len(widths), len(sizes))
