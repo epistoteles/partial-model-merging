@@ -36,8 +36,7 @@ sns.lineplot(
     x=expansions,
     y=increase_vgg11,
     label="VGG11",
-    color="black",
-    dashes=(3, 1, 1, 1),
+    color="grey",
     marker="o",
     markersize=4,
 )
