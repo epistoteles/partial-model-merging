@@ -71,7 +71,9 @@ for m, metric in enumerate(["accuracy", "loss"]):
             plt.xlabel("added layer width (%)" if wrt == "width" else "added parameters (%)")
             plt.ylabel(f"{metric} barrier reduction (%)")
             plt.xticks(torch.linspace(0, 100, 11))
-            plt.title(f"Accuracy barrier reduction w.r.t. added {wrt}\nCIFAR10, VGG11, bn=True")
+            plt.title(
+                f"{metric.title()} barrier reduction w.r.t. added {xaxis}\nCIFAR10, {'VGG11' if wrt =='width' else '1×width'}, bn=True"
+            )
 
             # AUC diagonal
             sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), color="grey")
