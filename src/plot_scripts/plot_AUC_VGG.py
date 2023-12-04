@@ -43,13 +43,17 @@ for i, size in enumerate(sizes):
                 accs_partial_merging[j, i, idx + 1] = metrics[f"partial_merging_{k}_test_accs"][10]
                 accs_partial_merging_REPAIR[j, i, idx + 1] = metrics[f"partial_merging_REPAIR_{k}_test_accs"][10]
 
-full_barrier_absolute = accs_endpoint - accs_partial_merging[:, 0, 0:1]
+full_barrier_absolute = accs_endpoint.unsqueeze(-1) - accs_partial_merging[:, 0, 0:1]
 barrier_reduction_absolute = accs_partial_merging - accs_partial_merging[:, :, 0:1]
-barrier_reduction_relative = barrier_reduction_absolute / full_barrier_absolute.unsqueeze(-1)
+barrier_reduction_relative = barrier_reduction_absolute / full_barrier_absolute
 
 barrier_reduction_absolute_REPAIR = accs_partial_merging_REPAIR - accs_partial_merging[:, :, 0:1]
-barrier_reduction_relative_REPAIR = barrier_reduction_absolute_REPAIR / full_barrier_absolute.unsqueeze(-1)
+barrier_reduction_relative_REPAIR = barrier_reduction_absolute_REPAIR / full_barrier_absolute
 
+
+######################
+# plot w.r.t. buffer #
+######################
 
 plt.figure(figsize=(6, 6))
 plt.xlabel("added layer width (%)")
@@ -101,6 +105,10 @@ plt.close()
 print("📊 AUC VGG11 (w.r.t. buffer) plot saved")
 
 
+######################
+# plot w.r.t. params #
+######################
+
 plt.figure(figsize=(6, 6))
 plt.xlabel("added non-zero parameter count (%)")
 plt.ylabel("accuracy barrier reduction (%)")
@@ -140,3 +148,52 @@ plt.savefig(
 )
 plt.close()
 print("📊 AUC VGG11 (w.r.t. parameters) plot saved")
+
+
+#####################
+# plot w.r.t. depth #
+#####################
+
+plt.figure(figsize=(6, 6))
+plt.xlabel("added layer width (%)")
+plt.ylabel("accuracy barrier reduction (%)")
+plt.xticks(torch.linspace(0, 100, 11))
+plt.title("Accuracy barrier reduction w.r.t. added buffer\nCIFAR10, width=1x, bn=True")
+
+# AUC diagonal
+sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), color="grey")
+
+# 100% horizontal line
+sns.lineplot(x=torch.linspace(0, 100, 11), y=[100] * 11, color="grey")
+
+for idx, (width, color) in enumerate(zip(widths, ["orangered", "orange", "mediumturquoise", "mediumvioletred"])):
+    sns.lineplot(
+        x=torch.linspace(0, 100, 11),
+        y=barrier_reduction_relative[idx][0] * 100,
+        label=width,
+        color=color,
+        marker="o",
+        markersize=4,
+    )
+    sns.lineplot(
+        x=torch.linspace(0, 100, 11),
+        y=barrier_reduction_relative_REPAIR[idx][0] * 100,
+        dashes=(2, 2),
+        color=color,
+        marker="o",
+        markersize=4,
+    )
+
+# just for the REPAIR label
+sns.lineplot(x=[0, 0], y=[0, 0], dashes=(2, 2), label="with REPAIR", color="grey")
+
+plots_dir = get_plots_dir(subdir=Path(__file__).stem)
+plt.savefig(
+    os.path.join(
+        plots_dir,
+        "AUC_VGG11_buffer.png",
+    ),
+    dpi=600,
+)
+plt.close()
+print("📊 AUC VGG11 (w.r.t. buffer) plot saved")
