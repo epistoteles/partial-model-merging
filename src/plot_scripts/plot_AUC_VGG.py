@@ -117,9 +117,9 @@ for m, metric in enumerate(["accuracy", "loss"]):
             plt.savefig(
                 os.path.join(
                     plots_dir,
-                    f"{metric}_AUC_{architecture}_{wrt}_{xaxis}.png",
+                    f"{metric}_AUC_{dataset}_{architecture}_{wrt}_{xaxis}.png",
                 ),
                 dpi=600,
             )
             plt.close()
-            print(f"📊 {metric} AUC {architecture} (w.r.t. {wrt} + {xaxis}) plot saved")
+            print(f"📊 {metric} AUC {dataset} {architecture} (w.r.t. {wrt} + {xaxis}) plot saved")
