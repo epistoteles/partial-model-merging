@@ -68,7 +68,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
         for wrt in ["width", "depth"]:
 
             plt.figure(figsize=(6, 6))
-            plt.xlabel("added layer width (%)" if wrt == "width" else "added parameters (%)")
+            plt.xlabel("added layer width (%)" if xaxis == "buffer" else "added parameters (%)")
             plt.ylabel(f"{metric} barrier reduction (%)")
             plt.xticks(torch.linspace(0, 100, 11))
             plt.title(
@@ -85,15 +85,16 @@ for m, metric in enumerate(["accuracy", "loss"]):
                 torch.Tensor([1, 1.1897, 1.3587, 1.5107, 1.6398, 1.74, 1.8396, 1.9093, 1.960, 1.9899, 1.9999]) - 1
             ) * 100
 
-            for idx, (width, color) in enumerate(
-                zip(widths, ["orangered", "orange", "mediumturquoise", "mediumvioletred"])
+            widths_sizes = widths if wrt == "width" else sizes
+            for idx, (width_size, color) in enumerate(
+                zip(widths_sizes, ["orangered", "orange", "mediumturquoise", "mediumvioletred"])
             ):
                 sns.lineplot(
                     x=torch.linspace(0, 100, 11) if xaxis == "buffer" else param_increase,
                     y=barrier_reduction_relative[m][idx][0] * 100
                     if wrt == "width"
                     else barrier_reduction_relative[m][2][idx] * 100,
-                    label=width,
+                    label=f"{width_size}×width" if wrt == "width" else f"VGG{width_size}",
                     color=color,
                     marker="o",
                     markersize=4,
