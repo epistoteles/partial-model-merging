@@ -14,7 +14,7 @@ dataset = "CIFAR10"
 architecture = "VGG"
 bn = True
 
-sizes = [11]
+sizes = [11, 13, 16, 19]
 widths = [0.25, 0.5, 1, 2]
 expansions = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
 accs_endpoint = torch.zeros(len(widths), len(sizes))
@@ -25,21 +25,23 @@ accs_partial_merging_REPAIR = torch.zeros(len(widths), len(sizes), len(expansion
 for i, size in enumerate(sizes):
     for j, width in enumerate(widths):
         dir = get_evaluations_dir(subdir="two_models")
-        metrics = load_file(f"{dir}/{dataset}-{architecture}{size}-{'bn-' if bn else ''}{width}x-ab.safetensors")
-        acc_a = metrics["ensembling_test_accs"][0].item()
-        acc_b = metrics["ensembling_test_accs"][-1].item()
-        acc_avg = (acc_a + acc_b) / 2
-        acc_ensembling = metrics["ensembling_test_accs"][10].item()
+        filename = f"{dir}/{dataset}-{architecture}{size}-{'bn-' if bn else ''}{width}x-ab.safetensors"
+        if os.path.exists(filename):
+            metrics = load_file(filename)
+            acc_a = metrics["ensembling_test_accs"][0].item()
+            acc_b = metrics["ensembling_test_accs"][-1].item()
+            acc_avg = (acc_a + acc_b) / 2
+            acc_ensembling = metrics["ensembling_test_accs"][10].item()
 
-        accs_endpoint[j, i] = acc_avg
-        accs_ensembling[j, i] = acc_ensembling
+            accs_endpoint[j, i] = acc_avg
+            accs_ensembling[j, i] = acc_ensembling
 
-        accs_partial_merging[j, i, 0] = metrics["merging_test_accs"][10]
-        accs_partial_merging_REPAIR[j, i, 0] = metrics["merging_REPAIR_test_accs"][10]
+            accs_partial_merging[j, i, 0] = metrics["merging_test_accs"][10]
+            accs_partial_merging_REPAIR[j, i, 0] = metrics["merging_REPAIR_test_accs"][10]
 
-        for idx, k in enumerate(expansions[1:]):
-            accs_partial_merging[j, i, idx + 1] = metrics[f"partial_merging_{k}_test_accs"][10]
-            accs_partial_merging_REPAIR[j, i, idx + 1] = metrics[f"partial_merging_REPAIR_{k}_test_accs"][10]
+            for idx, k in enumerate(expansions[1:]):
+                accs_partial_merging[j, i, idx + 1] = metrics[f"partial_merging_{k}_test_accs"][10]
+                accs_partial_merging_REPAIR[j, i, idx + 1] = metrics[f"partial_merging_REPAIR_{k}_test_accs"][10]
 
 full_barrier_absolute = accs_endpoint - accs_partial_merging[:, 0, 0:1]
 barrier_reduction_absolute = accs_partial_merging - accs_partial_merging[:, :, 0:1]
