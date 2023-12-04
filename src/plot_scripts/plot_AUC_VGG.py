@@ -10,12 +10,12 @@ from safetensors.torch import load_file
 from src.utils import get_plots_dir, get_evaluations_dir
 
 
-dataset = "CIFAR10"
-architecture = "VGG"
+dataset = "MNIST"
+architecture = "MLP"
 bn = True
 
 metrics = ["acc", "loss"]
-sizes = [11, 13, 16, 19]
+sizes = [3, 4, 5, 6, 7, 8, 9, 10]  # [11, 13, 16, 19]
 widths = [0.25, 0.5, 1, 2]
 expansions = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
 endpoint = torch.zeros(len(metrics), len(widths), len(sizes))
@@ -72,7 +72,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
             plt.ylabel(f"{metric} barrier reduction (%)")
             plt.xticks(torch.linspace(0, 100, 11))
             plt.title(
-                f"{metric.title()} barrier reduction w.r.t. added {xaxis}\nCIFAR10, {'VGG11' if wrt =='width' else '1×width'}, bn=True"
+                f"{metric.title()} barrier reduction w.r.t. added {xaxis}\n{dataset}, {'VGG11' if wrt =='width' else '1×width'}, bn={bn}"
             )
 
             # AUC diagonal
@@ -94,7 +94,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
                     y=barrier_reduction_relative[m][idx][0] * 100
                     if wrt == "width"
                     else barrier_reduction_relative[m][2][idx] * 100,
-                    label=f"{width_size}×width" if wrt == "width" else f"VGG{width_size}",
+                    label=f"{width_size}×width" if wrt == "width" else f"{architecture}{width_size}",
                     color=color,
                     marker="o",
                     markersize=4,
@@ -117,9 +117,9 @@ for m, metric in enumerate(["accuracy", "loss"]):
             plt.savefig(
                 os.path.join(
                     plots_dir,
-                    f"{metric}_AUC_VGG_{wrt}_{xaxis}.png",
+                    f"{metric}_AUC_{architecture}_{wrt}_{xaxis}.png",
                 ),
                 dpi=600,
             )
             plt.close()
-            print(f"📊 {metric} AUC VGG (w.r.t. {wrt} + {xaxis}) plot saved")
+            print(f"📊 {metric} AUC {architecture} (w.r.t. {wrt} + {xaxis}) plot saved")
