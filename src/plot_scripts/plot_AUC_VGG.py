@@ -15,21 +15,9 @@ architecture = "MLP"
 bn = True
 
 metrics = ["acc", "loss"]
-sizes = [3, 4, 5, 6, 7, 8, 9, 10]  # [11, 13, 16, 19]
+sizes = [5, 6, 7, 8]  # [11, 13, 16, 19]
 widths = [0.25, 0.5, 1, 2]
-expansions = [
-    1.0,
-    1.1,
-    1.1,
-    1.1,
-    1.1,
-    1.5,
-    1.5,
-    1.5,
-    1.5,
-    1.5,
-    1.5,
-]  # [1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
+expansions = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
 endpoint = torch.zeros(len(metrics), len(widths), len(sizes))
 ensembling = torch.zeros(len(metrics), len(widths), len(sizes))
 partial_merging = torch.zeros(len(metrics), len(widths), len(sizes), len(expansions))
