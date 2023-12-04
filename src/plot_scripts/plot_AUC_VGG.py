@@ -43,7 +43,7 @@ for i, size in enumerate(sizes):
                 accs_partial_merging[j, i, idx + 1] = metrics[f"partial_merging_{k}_test_accs"][10]
                 accs_partial_merging_REPAIR[j, i, idx + 1] = metrics[f"partial_merging_REPAIR_{k}_test_accs"][10]
 
-full_barrier_absolute = accs_endpoint.unsqueeze(-1) - accs_partial_merging[:, 0, 0:1]
+full_barrier_absolute = accs_endpoint.unsqueeze(-1) - accs_partial_merging[:, :, 0:1]
 barrier_reduction_absolute = accs_partial_merging - accs_partial_merging[:, :, 0:1]
 barrier_reduction_relative = barrier_reduction_absolute / full_barrier_absolute
 
@@ -166,18 +166,18 @@ sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), color="
 # 100% horizontal line
 sns.lineplot(x=torch.linspace(0, 100, 11), y=[100] * 11, color="grey")
 
-for idx, (width, color) in enumerate(zip(widths, ["orangered", "orange", "mediumturquoise", "mediumvioletred"])):
+for idx, (size, color) in enumerate(zip(sizes, ["orangered", "orange", "mediumturquoise", "mediumvioletred"])):
     sns.lineplot(
         x=torch.linspace(0, 100, 11),
-        y=barrier_reduction_relative[idx][0] * 100,
-        label=width,
+        y=barrier_reduction_relative[2][idx] * 100,
+        label=f"VGG{size}",
         color=color,
         marker="o",
         markersize=4,
     )
     sns.lineplot(
         x=torch.linspace(0, 100, 11),
-        y=barrier_reduction_relative_REPAIR[idx][0] * 100,
+        y=barrier_reduction_relative_REPAIR[2][idx] * 100,
         dashes=(2, 2),
         color=color,
         marker="o",
@@ -191,9 +191,9 @@ plots_dir = get_plots_dir(subdir=Path(__file__).stem)
 plt.savefig(
     os.path.join(
         plots_dir,
-        "AUC_VGG11_buffer.png",
+        "AUC_VGG_1x_sizes.png",
     ),
     dpi=600,
 )
 plt.close()
-print("📊 AUC VGG11 (w.r.t. buffer) plot saved")
+print("📊 AUC VGG11 (w.r.t. sizes) plot saved")
