@@ -10,12 +10,12 @@ from safetensors.torch import load_file
 from src.utils import get_plots_dir, get_evaluations_dir
 
 
-dataset = "MNIST"
-architecture = "MLP"
+dataset = "CIFAR10"
+architecture = "VGG"
 bn = True
 
 metrics = ["acc", "loss"]
-sizes = [5, 5, 5, 5]  # [11, 13, 16, 19]
+sizes = [11, 13, 16, 19]
 widths = [0.25, 0.5, 1, 2]
 expansions = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
 endpoint = torch.zeros(len(metrics), len(widths), len(sizes))
@@ -72,7 +72,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
             plt.ylabel(f"{metric} barrier reduction (%)")
             plt.xticks(torch.linspace(0, 100, 11))
             plt.title(
-                f"{metric.title()} barrier reduction w.r.t. added {xaxis}\n{dataset}, {'VGG11' if wrt =='width' else '1×width'}, bn={bn}"
+                f"{metric.title()} barrier reduction w.r.t. added {xaxis}\n{dataset}, {architecture+('11' if architecture == 'VGG' else '5') if wrt =='width' else '1×width'}, bn={bn}"
             )
 
             # AUC diagonal
