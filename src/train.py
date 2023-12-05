@@ -32,7 +32,6 @@ def main():
             size=args.size, width=args.width, bn=args.batch_norm, num_classes=get_num_classes(args.dataset)
         ).cuda()
     elif args.model_type == "ResNet":
-        print("ResNet created")
         if not args.batch_norm:
             raise ValueError("ResNet must have batch norm layers (-bn/--batch_norm)")
         if args.size == 18:
