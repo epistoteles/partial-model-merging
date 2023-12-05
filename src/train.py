@@ -7,6 +7,8 @@ from torch.cuda.amp import GradScaler, autocast
 from torch.nn import CrossEntropyLoss
 from torch.optim import SGD, lr_scheduler
 
+from safetensors.torch import load_file
+
 from models.VGG import VGG
 from models.ResNet import ResNet18, ResNet20
 from models.MLP import MLP
@@ -30,6 +32,7 @@ def main():
             size=args.size, width=args.width, bn=args.batch_norm, num_classes=get_num_classes(args.dataset)
         ).cuda()
     elif args.model_type == "ResNet":
+        print("ResNet created")
         if not args.batch_norm:
             raise ValueError("ResNet must have batch norm layers (-bn/--batch_norm)")
         if args.size == 18:
@@ -45,6 +48,12 @@ def main():
         ).cuda()
     else:
         raise ValueError(f"Unknown model type {args.model_type}")
+
+    if args.pretrained is not None:
+        pretrained_sd = load_file(args.pretrained)
+        model.load_state_dict(pretrained_sd)
+        print(f"Pretrained weights loaded from {args.pretrained}")
+
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=args.weight_decay)
 
     # this lr schedule will start and end with a lr of 0, which should have no effect on the weights,
@@ -109,6 +118,8 @@ parser.add_argument("--epochs", type=int, default=100)
 parser.add_argument("--lr", type=float, default=0.08)
 parser.add_argument("--weight_decay", type=float, default=0.0005)
 parser.add_argument("-v", "--variant", type=str, default="a")
+
+parser.add_argument("-p", "--pretrained", type=str, help="the path of a pretrained model to use as initialization")
 
 parser.add_argument("-wandb", action="store_true")
 parser.add_argument(
