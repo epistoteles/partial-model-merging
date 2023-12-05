@@ -10,8 +10,8 @@ from safetensors.torch import load_file
 from src.utils import get_plots_dir, get_evaluations_dir
 
 
-plt.figure(figsize=(6, 6))
-plt.xlabel("added layer width (%)")
+plt.figure(figsize=(4.5, 4.5))
+plt.xlabel("added buffers in both endpoint (%)")
 plt.ylabel("added parameter count (%)")
 plt.xticks(torch.linspace(0, 100, 11))
 plt.yticks(torch.linspace(0, 100, 6))
