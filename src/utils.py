@@ -1508,6 +1508,11 @@ def _download_dataset(dataset) -> tuple[torch.utils.data.Dataset, torch.utils.da
     if dataset == "CIFAR10":
         train_dset = torchvision.datasets.CIFAR10(data_dir, train=True, download=True)
         test_dset = torchvision.datasets.CIFAR10(data_dir, train=False, download=True)
+    elif dataset in ["CIFAR100A", "CIFAR100B"]:
+        train_dset = torchvision.datasets.CIFAR10(data_dir, train=True, download=True)
+        test_dset = torchvision.datasets.CIFAR10(data_dir, train=False, download=True)
+        indices = index_sampler(train_dset.targets, dataset[-1])
+        train_dset = torch.utils.data.Subset(train_dset, indices)
     elif dataset == "CIFAR100":
         train_dset = torchvision.datasets.CIFAR100(data_dir, train=True, download=True)
         test_dset = torchvision.datasets.CIFAR100(data_dir, train=False, download=True)
@@ -1537,6 +1542,35 @@ def _get_beton_path(dataset) -> tuple[str, str]:
         _convert_dataset_to_beton(train_dset, train_beton_path)
         _convert_dataset_to_beton(test_dset, test_beton_path)
     return train_beton_path, test_beton_path
+
+
+def index_sampler(labels: list[int], split: str):
+    """
+    Given a list of dataset labels (CIFAR10 or CIFAR100), creates a list of indices that are used
+    in disjoint split "a" or "b", where "a" has 80% labels 0-4/0-49 and 20% labels 5-9/50-99 or
+    vice versa for "b".
+    :param labels: the list of labels
+    :param split: "a" or "b"
+    :return: the list of indices in the selected split
+    """
+    split = split.lower()
+    assert split in ["a", "b"], "split must be 'a' or 'b'"
+
+    num_classes = len(set(labels))
+    class_indices = {i: [] for i in range(num_classes)}
+    for idx, label in enumerate(labels):
+        class_indices[label].append(idx)
+
+    subset_A_indices = {k: v[:400] if k < 50 else v[400:] for k, v in class_indices.items()}
+    subset_B_indices = {k: v[400:] if k < 50 else v[:400] for k, v in class_indices.items()}
+
+    if split == "a":
+        indices = [item for sublist in subset_A_indices.values() for item in sublist]
+    elif split == "b":
+        indices = [item for sublist in subset_B_indices.values() for item in sublist]
+
+    random.shuffle(indices)
+    return indices
 
 
 def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader] | tuple[DataLoader, DataLoader, DataLoader]:
