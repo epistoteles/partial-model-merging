@@ -133,7 +133,6 @@ def evaluate_two_models(
     dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
     dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
 
-    assert dataset_a == dataset_b
     assert model_type_a == model_type_b
     assert size_a == size_b
     assert batch_norm_a == batch_norm_b
@@ -329,7 +328,6 @@ def experiment_a(model_name_a: str, model_name_b: str):
     dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
     dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
 
-    assert dataset_a == dataset_b
     assert model_type_a == model_type_b
     assert size_a == size_b
     assert batch_norm_a == batch_norm_b
