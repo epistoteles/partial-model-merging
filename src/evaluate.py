@@ -158,6 +158,7 @@ def evaluate_two_models(
         metrics["ensembling_test_accs"], metrics["ensembling_test_losses"] = evaluate_two_models_ensembling(
             model_a, model_b, test_loader, interpolation_steps
         )
+        print(f"Midpoint test acc: {metrics['ensembling_test_accs'][10]}")
 
         print("Collecting naive merging metrics ...")
         metrics["naive_train_accs"], metrics["naive_train_losses"] = evaluate_two_models_merging(
@@ -166,6 +167,7 @@ def evaluate_two_models(
         metrics["naive_test_accs"], metrics["naive_test_losses"] = evaluate_two_models_merging(
             model_a, model_b, test_loader, interpolation_steps
         )
+        print(f"Midpoint test acc: {metrics['naive_test_accs'][10]}")
 
         print("Collecting permuted merging metrics ...")
         save_corr_path = os.path.join(
@@ -180,6 +182,7 @@ def evaluate_two_models(
         metrics["merging_test_accs"], metrics["merging_test_losses"] = evaluate_two_models_merging(
             model_a, model_b_perm, test_loader, interpolation_steps
         )
+        print(f"Midpoint test acc: {metrics['merging_test_accs'][10]}")
 
         print("Collecting permuted merging + REPAIR metrics ...")
         (
@@ -191,6 +194,7 @@ def evaluate_two_models(
         metrics["merging_REPAIR_test_accs"], metrics["merging_REPAIR_test_losses"] = evaluate_two_models_merging_REPAIR(
             model_a, model_b_perm, test_loader, train_aug_loader, interpolation_steps
         )
+        print(f"Midpoint test acc: {metrics['merging_REPAIR_test_accs'][10]}")
 
         save_evaluation_checkpoint(metrics, filepath)
         metrics = load_file(filepath)  # necessary because of a safetensors bug
@@ -212,6 +216,7 @@ def evaluate_two_models(
                 metrics[f"partial_merging_{k}_test_accs"],
                 metrics[f"partial_merging_{k}_test_losses"],
             ) = evaluate_two_models_merging(model_a, model_b_perm, test_loader, interpolation_steps)
+            print(f"Midpoint test acc: {metrics[f'partial_merging_{k}_test_accs'][10]}")
 
             print(f"Collecting partial merging + REPAIR metrics ({k}) ...")
             (
@@ -226,6 +231,7 @@ def evaluate_two_models(
             ) = evaluate_two_models_merging_REPAIR(
                 model_a, model_b_perm, test_loader, train_aug_loader, interpolation_steps
             )
+            print(f"Midpoint test acc: {metrics[f'partial_merging_REPAIR_{k}_test_accs'][10]}")
 
             save_evaluation_checkpoint(metrics, filepath)
             metrics = load_file(filepath)  # necessary because of a safetensors bug
