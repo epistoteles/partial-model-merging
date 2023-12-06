@@ -1510,8 +1510,8 @@ def _download_dataset(dataset) -> tuple[torch.utils.data.Dataset, torch.utils.da
         train_dset = torchvision.datasets.CIFAR10(data_dir, train=True, download=True)
         test_dset = torchvision.datasets.CIFAR10(data_dir, train=False, download=True)
     elif dataset in ["CIFAR100A", "CIFAR100B"]:
-        train_dset = torchvision.datasets.CIFAR10(data_dir, train=True, download=True)
-        test_dset = torchvision.datasets.CIFAR10(data_dir, train=False, download=True)
+        train_dset = torchvision.datasets.CIFAR100(data_dir, train=True, download=True)
+        test_dset = torchvision.datasets.CIFAR100(data_dir, train=False, download=True)
         indices = index_sampler(train_dset.targets, dataset[-1])
         train_dset = torch.utils.data.Subset(train_dset, indices)
     elif dataset == "CIFAR100":
