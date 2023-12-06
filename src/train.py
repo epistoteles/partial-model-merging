@@ -105,7 +105,11 @@ def main():
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    "-d", "--dataset", type=str, choices=["CIFAR10", "CIFAR100", "SVHN", "ImageNet", "MNIST"], default="CIFAR10"
+    "-d",
+    "--dataset",
+    type=str,
+    choices=["CIFAR10", "CIFAR100", "CIFAR100A", "CIFAR100B", "SVHN", "ImageNet", "MNIST"],
+    default="CIFAR10",
 )
 parser.add_argument("-m", "--model_type", type=str, choices=["VGG", "ResNet", "MLP"], default="VGG")
 parser.add_argument("-s", "--size", type=int, default=11)

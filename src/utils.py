@@ -1587,7 +1587,7 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader] | tuple[DataLoade
         STD = [51.5865, 50.847, 51.255]  # too low, but kept as is for reproducibility
         # MEAN = [125.30691805, 122.95039414, 113.86538318]  # correct values
         # STD = [62.99321928, 62.08870764, 66.70489964]      # correct values
-    elif dataset == "CIFAR100":
+    elif dataset in ["CIFAR100", "CIFAR100A", "CIFAR100B"]:
         MEAN = [129.30416561, 124.0699627, 112.43405006]
         STD = [68.1702429, 65.39180804, 70.41837019]
     elif dataset == "SVHN":
