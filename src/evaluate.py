@@ -381,7 +381,7 @@ def experiment_b(model_name_a: str, model_name_b: str = None):
 
         for i in range(num_layers):
             for exp_idx, exp in enumerate(all_expansions):
-                print(f"Only ensembling layer {i+1} of {num_layers} with factor {exp}")
+                print(f"Only expanding layer {i+1} of {num_layers} with factor {exp}")
                 expansions = torch.ones(model_a.num_layers)
                 expansions[i] = exp
                 model_a_exp = expand_model(model_a, expansions).cuda()
@@ -410,6 +410,8 @@ def experiment_b(model_name_a: str, model_name_b: str = None):
                 metrics["only_expand_layer_i_REPAIR_test_losses"][exp_idx][i] = test_loss_REPAIR
 
                 metrics["only_expand_layer_i_num_params"][exp_idx][i] = num_params
+
+                breakpoint()
 
                 print(f"Layer {i}, expansion {exp}: {test_acc=}, {test_acc_REPAIR=}")
                 save_evaluation_checkpoint(metrics, filepath)

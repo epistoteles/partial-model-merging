@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:rtx3060:1
 #SBATCH --cpus-per-task=3
 #SBATCH --threads-per-core=1
-#SBATCH --mem-per-gpu=16G
+#SBATCH --mem-per-gpu=32G
 #SBATCH --job-name=overnight
 
 export CUDA_DEVICE_ORDER="PCI_BUS_ID"
