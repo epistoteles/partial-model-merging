@@ -474,6 +474,22 @@ def expand_model(
     return model_expanded
 
 
+def truncate_model(
+    model: torch.nn.Module, expansion_factor: int | float | list[float] | torch.FloatTensor, truncate: str = "right"
+):
+    """
+    The opposite of expand_model. Only keeps 1/expansion_factor of the neurons. The resulting model is only
+    functionally equivalent if the truncated neurons were all zeros.
+    :param model: the original model
+    :param expansion_factor: the factor by which the model was originally expanded;
+                             alternatively you can provide a list or FloatTensor of length model.num_layers, which
+                             truncates each layer of the model by a different factor (at least one must be >1)
+    :param append: whether to truncate the weights to the right or the left of the tensor
+    :return: the truncated model
+    """
+    pass
+
+
 def subnet(
     model: torch.nn.Module, num_layers: int, only_return: str = None, with_relu: bool = True
 ) -> torch.nn.Sequential:

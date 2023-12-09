@@ -330,10 +330,14 @@ def evaluate_two_models_merging_REPAIR(
     return torch.FloatTensor(accs), torch.FloatTensor(losses)
 
 
-def experiment_a(model_name_a: str, model_name_b: str):
+def experiment_b(model_name_a: str, model_name_b: str):
     """
     Conducts leave-one-out experiments with full merging vs. ensembling and saves the results
     """
+    if model_name_b is None:
+        model_name_b = f"{model_name_a}-b"
+        model_name_a = f"{model_name_a}-a"
+
     dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
     dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
 
@@ -342,11 +346,11 @@ def experiment_a(model_name_a: str, model_name_b: str):
     assert batch_norm_a == batch_norm_b
     assert width_a == width_b  # not strictly necessary, but always the case in our experiments
 
-    evaluations_dir = get_evaluations_dir(subdir="experiment_a")
-    filepath = os.path.join(evaluations_dir, f"experiment-a-{model_name_a}{variant_b}.csv")
+    evaluations_dir = get_evaluations_dir(subdir="experiment_b")
+    filepath = os.path.join(evaluations_dir, f"experiment-b-{model_name_a}{variant_b}.safetensors")
 
-    if os.path.exists(filepath.replace(".csv", ".safetensors")):
-        metrics = load_file(filepath.replace(".csv", ".safetensors"))
+    if os.path.exists(filepath):
+        metrics = load_file(filepath)
         print(f"📤 Loaded saved leave-one-out metrics for {model_name_a}{variant_b} from .safetensors")
     else:
         model_a = load_model(model_name_a).cuda()
@@ -357,131 +361,117 @@ def experiment_a(model_name_a: str, model_name_b: str):
         num_layers = model_a.num_layers
         default_num_params = get_num_params(model_a)
 
-        metrics = {"layers": torch.arange(1, num_layers + 1)}
+        metrics = {}
 
-        duo_metrics = evaluate_two_models(model_name_a, model_name_b)
-        midway_index = ((duo_metrics["alphas"] == 0.5).nonzero(as_tuple=True)[0]).item()
+        all_expansions = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
 
-        for metric, split in product(["accs", "losses"], ["train", "test"]):
-            full_ensembling = duo_metrics[f"ensembling_{split}_{metric}"][midway_index].item()
-            metrics[f"full_ensembling_{split}_{metric}"] = torch.Tensor([full_ensembling]).repeat(num_layers)
-            full_merging = duo_metrics[f"merging_{split}_{metric}"][midway_index].item()
-            metrics[f"full_merging_{split}_{metric}"] = torch.Tensor([full_merging]).repeat(num_layers)
-            full_merging_REPAIR = duo_metrics[f"merging_REPAIR_{split}_{metric}"][midway_index].item()
-            metrics[f"full_merging_REPAIR_{split}_{metric}"] = torch.Tensor([full_merging_REPAIR]).repeat(num_layers)
+        metrics["default_num_params"] = torch.zeros(len(all_expansions), num_layers) * default_num_params
 
-        metrics["default_num_params"] = torch.Tensor([default_num_params]).repeat(num_layers)
+        metrics["only_expand_layer_i_train_accs"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_train_losses"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_test_accs"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_test_losses"] = torch.zeros(len(all_expansions), num_layers)
 
-        # only ensembling layer i
+        metrics["only_expand_layer_i_REPAIR_train_accs"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_REPAIR_train_losses"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_REPAIR_test_accs"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_REPAIR_test_losses"] = torch.zeros(len(all_expansions), num_layers)
 
-        train_accs = []
-        train_losses = []
-        test_accs = []
-        test_losses = []
+        metrics["only_expand_layer_i_num_params"] = torch.zeros(len(all_expansions), model_a.num_layers)
 
-        train_accs_REPAIR = []
-        train_losses_REPAIR = []
-        test_accs_REPAIR = []
-        test_losses_REPAIR = []
+        for i in range(num_layers):
+            for exp_idx, exp in enumerate(all_expansions):
+                print(f"Only ensembling layer {i+1} of {num_layers} with factor {exp}")
+                expansions = torch.ones(model_a.num_layers)
+                expansions[i] = exp
+                model_a_exp = expand_model(model_a, expansions).cuda()
+                model_b_exp = expand_model(model_b, expansions).cuda()
+                model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader).cuda()
+                train_acc, train_loss = evaluate_two_models_merging(
+                    model_a_exp, model_b_exp_perm, train_noaug_loader, 1
+                )
+                test_acc, test_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, test_loader, 1)
+                train_acc_REPAIR, train_loss_REPAIR = evaluate_two_models_merging_REPAIR(
+                    model_a_exp, model_b_exp_perm, train_noaug_loader, train_aug_loader, 1
+                )
+                test_acc_REPAIR, test_loss_REPAIR = evaluate_two_models_merging_REPAIR(
+                    model_a_exp, model_b_exp_perm, test_loader, train_aug_loader, 1
+                )
+                num_params = get_num_params(smart_interpolate_models(model_a_exp, model_b_exp_perm), ignore_zeros=True)
 
-        nums_params = []
+                metrics["only_expand_layer_i_train_accs"][exp_idx][i] = train_acc
+                metrics["only_expand_layer_i_train_losses"][exp_idx][i] = train_loss
+                metrics["only_expand_layer_i_test_accs"][exp_idx][i] = test_acc
+                metrics["only_expand_layer_i_test_losses"][exp_idx][i] = test_loss
 
-        for i in range(model_a.num_layers):
-            print(f"Only ensembling layer {i+1} of {num_layers}")
-            expansions = torch.ones(model_a.num_layers)
-            expansions[i] = 2.0
-            model_a_exp = expand_model(model_a, expansions).cuda()
-            model_b_exp = expand_model(model_b, expansions).cuda()
-            model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader).cuda()
-            train_acc, train_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, train_noaug_loader, 1)
-            test_acc, test_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, test_loader, 1)
-            train_acc_REPAIR, train_loss_REPAIR = evaluate_two_models_merging_REPAIR(
-                model_a_exp, model_b_exp_perm, train_noaug_loader, train_aug_loader, 1
-            )
-            test_acc_REPAIR, test_loss_REPAIR = evaluate_two_models_merging_REPAIR(
-                model_a_exp, model_b_exp_perm, test_loader, train_aug_loader, 1
-            )
-            num_params = get_num_params(model_a_exp)
+                metrics["only_expand_layer_i_REPAIR_train_accs"][exp_idx][i] = train_acc_REPAIR
+                metrics["only_expand_layer_i_REPAIR_train_losses"][exp_idx][i] = train_loss_REPAIR
+                metrics["only_expand_layer_i_REPAIR_test_accs"][exp_idx][i] = test_acc_REPAIR
+                metrics["only_expand_layer_i_REPAIR_test_losses"][exp_idx][i] = test_loss_REPAIR
 
-            train_accs.append(train_acc.item())
-            train_losses.append(train_loss.item())
-            test_accs.append(test_acc.item())
-            test_losses.append(test_loss.item())
+                metrics["only_expand_layer_i_num_params"][exp_idx][i] = num_params
 
-            train_accs_REPAIR.append(train_acc_REPAIR.item())
-            train_losses_REPAIR.append(train_loss_REPAIR.item())
-            test_accs_REPAIR.append(test_acc_REPAIR.item())
-            test_losses_REPAIR.append(test_loss_REPAIR.item())
-
-            nums_params.append(num_params)
-
-        metrics["only_ensemble_i_train_accs"] = torch.FloatTensor(train_accs)
-        metrics["only_ensemble_i_train_losses"] = torch.FloatTensor(train_losses)
-        metrics["only_ensemble_i_test_accs"] = torch.FloatTensor(test_accs)
-        metrics["only_ensemble_i_test_losses"] = torch.FloatTensor(test_losses)
-
-        metrics["only_ensemble_i_REPAIR_train_accs"] = torch.FloatTensor(train_accs_REPAIR)
-        metrics["only_ensemble_i_REPAIR_train_losses"] = torch.FloatTensor(train_losses_REPAIR)
-        metrics["only_ensemble_i_REPAIR_test_accs"] = torch.FloatTensor(test_accs_REPAIR)
-        metrics["only_ensemble_i_REPAIR_test_losses"] = torch.FloatTensor(test_losses_REPAIR)
-
-        metrics["only_ensemble_i_num_params"] = torch.FloatTensor(nums_params)
+                print(f"Layer {i}, expansion {exp}: {test_acc=}, {test_acc_REPAIR=}")
+                save_evaluation_checkpoint(metrics, filepath)
+                metrics = load_file(filepath)  # necessary because of a safetensors bug
+                print(f"📥 Saved expand-just-one for {model_name_a}{variant_b} as .csv and .safetensors")
 
         # only merging layer i
-        train_accs = []
-        train_losses = []
-        test_accs = []
-        test_losses = []
-
-        train_accs_REPAIR = []
-        train_losses_REPAIR = []
-        test_accs_REPAIR = []
-        test_losses_REPAIR = []
-
-        nums_params = []
-
-        for i in range(model_a.num_layers):
-            print(f"Only merging layer {i+1} of {num_layers}")
-            expansions = torch.ones(model_a.num_layers) * 2
-            expansions[i] = 1.0
-            model_a_exp = expand_model(model_a, expansions).cuda()
-            model_b_exp = expand_model(model_b, expansions).cuda()
-            model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader).cuda()
-            train_acc, train_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, train_noaug_loader, 1)
-            test_acc, test_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, test_loader, 1)
-            train_acc_REPAIR, train_loss_REPAIR = evaluate_two_models_merging_REPAIR(
-                model_a_exp, model_b_exp_perm, train_noaug_loader, train_aug_loader, 1
-            )
-            test_acc_REPAIR, test_loss_REPAIR = evaluate_two_models_merging_REPAIR(
-                model_a_exp, model_b_exp_perm, test_loader, train_aug_loader, 1
-            )
-            num_params = get_num_params(model_a_exp)
-
-            train_accs.append(train_acc.item())
-            train_losses.append(train_loss.item())
-            test_accs.append(test_acc.item())
-            test_losses.append(test_loss.item())
-
-            train_accs_REPAIR.append(train_acc_REPAIR.item())
-            train_losses_REPAIR.append(train_loss_REPAIR.item())
-            test_accs_REPAIR.append(test_acc_REPAIR.item())
-            test_losses_REPAIR.append(test_loss_REPAIR.item())
-
-            nums_params.append(num_params)
-
-        metrics["only_merge_i_train_accs"] = torch.FloatTensor(train_accs)
-        metrics["only_merge_i_train_losses"] = torch.FloatTensor(train_losses)
-        metrics["only_merge_i_test_accs"] = torch.FloatTensor(test_accs)
-        metrics["only_merge_i_test_losses"] = torch.FloatTensor(test_losses)
-
-        metrics["only_merge_i_REPAIR_train_accs"] = torch.FloatTensor(train_accs_REPAIR)
-        metrics["only_merge_i_REPAIR_train_losses"] = torch.FloatTensor(train_losses_REPAIR)
-        metrics["only_merge_i_REPAIR_test_accs"] = torch.FloatTensor(test_accs_REPAIR)
-        metrics["only_merge_i_REPAIR_test_losses"] = torch.FloatTensor(test_losses_REPAIR)
-
-        metrics["only_merge_i_num_params"] = torch.FloatTensor(nums_params)
-
-        save_evaluation_checkpoint(metrics, filepath)
-        print(f"📥 Saved leave-ont-out for {model_name_a}{variant_b} as .csv and .safetensors")
+        # train_accs = []
+        # train_losses = []
+        # test_accs = []
+        # test_losses = []
+        #
+        # train_accs_REPAIR = []
+        # train_losses_REPAIR = []
+        # test_accs_REPAIR = []
+        # test_losses_REPAIR = []
+        #
+        # nums_params = []
+        #
+        # for i in range(model_a.num_layers):
+        #     print(f"Only merging layer {i+1} of {num_layers}")
+        #     expansions = torch.ones(model_a.num_layers) * 2
+        #     expansions[i] = 1.0
+        #     model_a_exp = expand_model(model_a, expansions).cuda()
+        #     model_b_exp = expand_model(model_b, expansions).cuda()
+        #     model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader).cuda()
+        #     train_acc, train_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, train_noaug_loader, 1)
+        #     test_acc, test_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, test_loader, 1)
+        #     train_acc_REPAIR, train_loss_REPAIR = evaluate_two_models_merging_REPAIR(
+        #         model_a_exp, model_b_exp_perm, train_noaug_loader, train_aug_loader, 1
+        #     )
+        #     test_acc_REPAIR, test_loss_REPAIR = evaluate_two_models_merging_REPAIR(
+        #         model_a_exp, model_b_exp_perm, test_loader, train_aug_loader, 1
+        #     )
+        #     num_params = get_num_params(model_a_exp)
+        #
+        #     train_accs.append(train_acc.item())
+        #     train_losses.append(train_loss.item())
+        #     test_accs.append(test_acc.item())
+        #     test_losses.append(test_loss.item())
+        #
+        #     train_accs_REPAIR.append(train_acc_REPAIR.item())
+        #     train_losses_REPAIR.append(train_loss_REPAIR.item())
+        #     test_accs_REPAIR.append(test_acc_REPAIR.item())
+        #     test_losses_REPAIR.append(test_loss_REPAIR.item())
+        #
+        #     nums_params.append(num_params)
+        #
+        # metrics["only_merge_i_train_accs"] = torch.FloatTensor(train_accs)
+        # metrics["only_merge_i_train_losses"] = torch.FloatTensor(train_losses)
+        # metrics["only_merge_i_test_accs"] = torch.FloatTensor(test_accs)
+        # metrics["only_merge_i_test_losses"] = torch.FloatTensor(test_losses)
+        #
+        # metrics["only_merge_i_REPAIR_train_accs"] = torch.FloatTensor(train_accs_REPAIR)
+        # metrics["only_merge_i_REPAIR_train_losses"] = torch.FloatTensor(train_losses_REPAIR)
+        # metrics["only_merge_i_REPAIR_test_accs"] = torch.FloatTensor(test_accs_REPAIR)
+        # metrics["only_merge_i_REPAIR_test_losses"] = torch.FloatTensor(test_losses_REPAIR)
+        #
+        # metrics["only_merge_i_num_params"] = torch.FloatTensor(nums_params)
+        #
+        # save_evaluation_checkpoint(metrics, filepath)
+        # metrics = load_file(filepath)  # necessary because of a safetensors bug
+        # print(f"📥 Saved leave-ont-out for {model_name_a}{variant_b} as .csv and .safetensors")
 
     return metrics
