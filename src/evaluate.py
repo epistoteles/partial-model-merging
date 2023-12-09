@@ -242,15 +242,16 @@ def evaluate_two_models(
     return metrics
 
 
-def save_evaluation_checkpoint(metrics, filepath):
+def save_evaluation_checkpoint(metrics, filepath, csv: bool = True):
     save_file(metrics, filename=filepath)
-    np.savetxt(
-        filepath.replace(".safetensors", ".csv"),
-        np.asarray([list(metrics.keys()), *list(zip(*[ensure_numpy(x) for x in metrics.values()]))]),
-        delimiter=",",
-        fmt="%s",
-    )
-    print("📥 Metrics checkpointed as .csv and .safetensors")
+    if csv:
+        np.savetxt(
+            filepath.replace(".safetensors", ".csv"),
+            np.asarray([list(metrics.keys()), *list(zip(*[ensure_numpy(x) for x in metrics.values()]))]),
+            delimiter=",",
+            fmt="%s",
+        )
+    print(f"📥 Metrics checkpointed as {'.csv and ' if csv else ''}.safetensors")
 
 
 def evaluate_two_models_ensembling(
@@ -411,12 +412,9 @@ def experiment_b(model_name_a: str, model_name_b: str = None):
 
                 metrics["only_expand_layer_i_num_params"][exp_idx][i] = num_params
 
-                breakpoint()
-
                 print(f"Layer {i}, expansion {exp}: {test_acc=}, {test_acc_REPAIR=}")
-                save_evaluation_checkpoint(metrics, filepath)
+                save_evaluation_checkpoint(metrics, filepath, csv=False)
                 metrics = load_file(filepath)  # necessary because of a safetensors bug
-                print(f"📥 Saved expand-just-one for {model_name_a}{variant_b} as .csv and .safetensors")
 
         # only merging layer i
         # train_accs = []
