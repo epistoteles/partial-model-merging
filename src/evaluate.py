@@ -330,7 +330,7 @@ def evaluate_two_models_merging_REPAIR(
     return torch.FloatTensor(accs), torch.FloatTensor(losses)
 
 
-def experiment_b(model_name_a: str, model_name_b: str):
+def experiment_b(model_name_a: str, model_name_b: str = None):
     """
     Conducts leave-one-out experiments with full merging vs. ensembling and saves the results
     """
