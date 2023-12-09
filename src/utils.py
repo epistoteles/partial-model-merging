@@ -253,7 +253,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             *[
                 Text(
                     f"relative: {(x['acc_merging_REPAIR']-x['acc_merging@1.2_REPAIR'])/(x['acc_endpoint_avg']-x['acc_merging_REPAIR']):.4f} / {(x['loss_merging_REPAIR']-x['loss_merging@1.2_REPAIR'])/(x['loss_endpoint_avg']-x['loss_merging_REPAIR']):.4f}"
-                    if "acc_merging@1.2_REPAIR" in x.keys()
+                    if "acc_merging@1.2_REPAIR" in x
                     else "",
                     style="white",
                 )
