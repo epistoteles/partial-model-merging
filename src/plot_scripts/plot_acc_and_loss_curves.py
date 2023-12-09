@@ -53,6 +53,8 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
                 f"{model_name_a}{variant_b}/{Path(__file__).stem}_{model_name_a}{variant_b}_{split}_{metric}_1.png",
             ),
             dpi=600,
+            bbox_inches="tight",
+            pad_inches=0,
         )
 
         expansions = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
@@ -72,6 +74,8 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
                 f"{model_name_a}{variant_b}/{Path(__file__).stem}_{model_name_a}{variant_b}_{split}_{metric}_2.png",
             ),
             dpi=600,
+            bbox_inches="tight",
+            pad_inches=0,
         )
 
         if f"merging_REPAIR_{split}_{metric}" in metrics.keys():
