@@ -253,7 +253,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             *[
                 Text(
                     f"relative: {(x['acc_merging_REPAIR']-x['acc_merging@1.2_REPAIR'])/(x['acc_endpoint_avg']-x['acc_merging_REPAIR']):.4f} / {(x['loss_merging_REPAIR']-x['loss_merging@1.2_REPAIR'])/(x['loss_endpoint_avg']-x['loss_merging_REPAIR']):.4f}"
-                    if x
+                    if "acc_merging@1.2_REPAIR" in x.keys()
                     else "",
                     style="white",
                 )
@@ -306,7 +306,7 @@ def get_metrics(evaluation_filename: str):
     if "merging_REPAIR_test_accs" in keys:
         result["acc_merging_REPAIR"] = metrics["merging_REPAIR_test_accs"][10].item()
         result["loss_merging_REPAIR"] = metrics["merging_REPAIR_test_losses"][10].item()
-    if "merging_REPAIR_test_accs" in keys:
+    if "partial_merging_REPAIR_1.2_test_accs" in keys:
         result["acc_merging@1.2_REPAIR"] = metrics["partial_merging_REPAIR_1.2_test_accs"][10].item()
         result["loss_merging@1.2_REPAIR"] = metrics["partial_merging_REPAIR_1.2_test_losses"][10].item()
     return result
