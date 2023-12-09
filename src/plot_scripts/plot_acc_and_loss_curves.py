@@ -5,8 +5,9 @@ from pathlib import Path
 from itertools import product
 
 import torch
+from safetensors.torch import load_file
 
-from src.utils import load_model, normalize, get_plots_dir, parse_model_name, get_all_model_names
+from src.utils import load_model, normalize, get_plots_dir, parse_model_name, get_all_model_names, get_evaluations_dir
 from src.evaluate import evaluate_two_models
 
 
@@ -18,7 +19,12 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
     dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
     dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
 
-    metrics = evaluate_two_models(model_name_a, model_name_b)
+    evaluations_dir = get_evaluations_dir(subdir="two_models")
+    filepath = os.path.join(evaluations_dir, f"{model_name_a}{variant_b}.safetensors")
+    if os.path.exists(filepath):
+        metrics = load_file(filepath)
+    else:
+        metrics = evaluate_two_models(model_name_a, model_name_b)
 
     for metric, split in product(["accs", "losses"], ["train", "test"]):
         plt.figure(figsize=(12, 8))
