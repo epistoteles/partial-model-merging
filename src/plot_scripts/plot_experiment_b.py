@@ -22,7 +22,7 @@ def plot_experiment_b(model_name_a: str, model_name_b: str = None):
     if os.path.exists(filepath):
         metrics = load_file(filepath)
     else:
-        raise ValueError("Models not evaluated in experiment b")
+        raise ValueError(f"Models not evaluated in experiment b: {filepath} does not exist")
 
     plt.figure(figsize=(12, 8))
     plt.xlabel("layer")
