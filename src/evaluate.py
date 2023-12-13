@@ -133,8 +133,8 @@ def evaluate_two_models(
     dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
     dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
 
-    if dataset_a in ["CIFAR100A", "CIFAR100B"]:
-        dataset_a = "CIFAR100"  # we don't want to use biased activations for alignment and REPAIR
+    # if dataset_a in ["CIFAR100A", "CIFAR100B"]:
+    #     dataset_a = "CIFAR100"  # we don't want to use biased activations for alignment and REPAIR
 
     assert model_type_a == model_type_b
     assert size_a == size_b
@@ -475,3 +475,89 @@ def experiment_b(model_name_a: str, model_name_b: str = None):
         # print(f"📥 Saved leave-ont-out for {model_name_a}{variant_b} as .csv and .safetensors")
 
     return metrics
+
+
+def experiment_c(model_name_a: str, model_name_b: str = None):
+    """
+    Conducts leave-one-out and agglomerates the results slowly
+    """
+    if model_name_b is None:
+        model_name_b = f"{model_name_a}-b"
+        model_name_a = f"{model_name_a}-a"
+
+    dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
+    dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
+
+    assert model_type_a == model_type_b
+    assert size_a == size_b
+    assert batch_norm_a == batch_norm_b
+    assert width_a == width_b  # not strictly necessary, but always the case in our experiments
+
+    evaluations_dir = get_evaluations_dir(subdir="experiment_b")
+    filepath = os.path.join(evaluations_dir, f"experiment-b-{model_name_a}{variant_b}.safetensors")
+
+    if os.path.exists(filepath):
+        metrics = load_file(filepath)
+        print(f"📤 Loaded saved leave-one-out metrics for {model_name_a}{variant_b} from .safetensors")
+    else:
+        model_a = load_model(model_name_a).cuda()
+        model_b = load_model(model_name_b).cuda()
+
+        train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
+
+        num_layers = model_a.num_layers
+        default_num_params = get_num_params(model_a)
+
+        metrics = {}
+
+        all_expansions = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
+
+        metrics["default_num_params"] = torch.zeros(len(all_expansions), num_layers) * default_num_params
+
+        metrics["only_expand_layer_i_train_accs"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_train_losses"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_test_accs"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_test_losses"] = torch.zeros(len(all_expansions), num_layers)
+
+        metrics["only_expand_layer_i_REPAIR_train_accs"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_REPAIR_train_losses"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_REPAIR_test_accs"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_REPAIR_test_losses"] = torch.zeros(len(all_expansions), num_layers)
+
+        metrics["only_expand_layer_i_num_params"] = torch.zeros(len(all_expansions), model_a.num_layers)
+
+        for i in range(num_layers):
+            for exp_idx, exp in enumerate(all_expansions):
+                print(f"Only expanding layer {i+1} of {num_layers} with factor {exp}")
+                expansions = torch.ones(model_a.num_layers)
+                expansions[i] = exp
+                model_a_exp = expand_model(model_a, expansions).cuda()
+                model_b_exp = expand_model(model_b, expansions).cuda()
+                model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader).cuda()
+                train_acc, train_loss = evaluate_two_models_merging(
+                    model_a_exp, model_b_exp_perm, train_noaug_loader, 1
+                )
+                test_acc, test_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, test_loader, 1)
+                train_acc_REPAIR, train_loss_REPAIR = evaluate_two_models_merging_REPAIR(
+                    model_a_exp, model_b_exp_perm, train_noaug_loader, train_aug_loader, 1
+                )
+                test_acc_REPAIR, test_loss_REPAIR = evaluate_two_models_merging_REPAIR(
+                    model_a_exp, model_b_exp_perm, test_loader, train_aug_loader, 1
+                )
+                num_params = get_num_params(smart_interpolate_models(model_a_exp, model_b_exp_perm), ignore_zeros=True)
+
+                metrics["only_expand_layer_i_train_accs"][exp_idx][i] = train_acc
+                metrics["only_expand_layer_i_train_losses"][exp_idx][i] = train_loss
+                metrics["only_expand_layer_i_test_accs"][exp_idx][i] = test_acc
+                metrics["only_expand_layer_i_test_losses"][exp_idx][i] = test_loss
+
+                metrics["only_expand_layer_i_REPAIR_train_accs"][exp_idx][i] = train_acc_REPAIR
+                metrics["only_expand_layer_i_REPAIR_train_losses"][exp_idx][i] = train_loss_REPAIR
+                metrics["only_expand_layer_i_REPAIR_test_accs"][exp_idx][i] = test_acc_REPAIR
+                metrics["only_expand_layer_i_REPAIR_test_losses"][exp_idx][i] = test_loss_REPAIR
+
+                metrics["only_expand_layer_i_num_params"][exp_idx][i] = num_params
+
+                print(f"Layer {i}, expansion {exp}: {test_acc=}, {test_acc_REPAIR=}")
+                save_evaluation_checkpoint(metrics, filepath, csv=False)
+                metrics = load_file(filepath)  # necessary because of a safetensors bug
