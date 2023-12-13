@@ -543,9 +543,11 @@ def experiment_b_ResNet(model_name_a: str, model_name_b: str = None):
 
         for i in range(12):
             for exp_idx, exp in enumerate(all_expansions):
-                if exp not in [1.2, 1.5, 1.8]:
-                    continue
-                print(f"Doing expansion {i} of 12 on layers {','.join([str(x) for x in indices[i]])} with factor {exp}")
+                # if exp not in [1.2, 1.5, 1.8]:
+                #     continue
+                print(
+                    f"Doing expansion {i+1} of 12 on layers {','.join([str(x) for x in indices[i]])} with factor {exp}"
+                )
                 expansions = torch.ones(model_a.num_layers)
                 for index in indices[i]:
                     expansions[index] = exp
@@ -576,7 +578,7 @@ def experiment_b_ResNet(model_name_a: str, model_name_b: str = None):
 
                 metrics["only_expand_layer_i_num_params"][exp_idx][i] = num_params
 
-                print(f"Layer set {i}, expansion {exp}: {test_acc=}, {test_acc_REPAIR=}")
+                print(f"Layer set {i+1}, expansion {exp}: {test_acc=}, {test_acc_REPAIR=}")
                 save_evaluation_checkpoint(metrics, filepath, csv=False)
                 metrics = load_file(filepath)  # necessary because of a safetensors bug
 
