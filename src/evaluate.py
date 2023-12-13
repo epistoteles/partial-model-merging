@@ -543,24 +543,24 @@ def experiment_b_ResNet(model_name_a: str, model_name_b: str = None):
 
         for i in range(12):
             for exp_idx, exp in enumerate(all_expansions):
-                if exp not in [1.1, 1.5, 2.0]:
+                if exp not in [1.2, 1.5, 1.8]:
                     continue
-                print(f"Only expanding layer {i+1} of {num_layers} with factor {exp}")
+                print(f"Doing expansion {i} of 12 on layers {','.join(indices[i])} with factor {exp}")
                 expansions = torch.ones(model_a.num_layers)
                 for index in indices[i]:
                     expansions[index] = exp
                 model_a_exp = expand_model(model_a, expansions).cuda()
                 model_b_exp = expand_model(model_b, expansions).cuda()
-                model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader).cuda()
+                model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_noaug_loader).cuda()
                 train_acc, train_loss = evaluate_two_models_merging(
                     model_a_exp, model_b_exp_perm, train_noaug_loader, 1
                 )
                 test_acc, test_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, test_loader, 1)
                 train_acc_REPAIR, train_loss_REPAIR = evaluate_two_models_merging_REPAIR(
-                    model_a_exp, model_b_exp_perm, train_noaug_loader, train_aug_loader, 1
+                    model_a_exp, model_b_exp_perm, train_noaug_loader, train_noaug_loader, 1
                 )
                 test_acc_REPAIR, test_loss_REPAIR = evaluate_two_models_merging_REPAIR(
-                    model_a_exp, model_b_exp_perm, test_loader, train_aug_loader, 1
+                    model_a_exp, model_b_exp_perm, test_loader, train_noaug_loader, 1
                 )
                 num_params = get_num_params(smart_interpolate_models(model_a_exp, model_b_exp_perm), ignore_zeros=True)
 
@@ -576,7 +576,7 @@ def experiment_b_ResNet(model_name_a: str, model_name_b: str = None):
 
                 metrics["only_expand_layer_i_num_params"][exp_idx][i] = num_params
 
-                print(f"Layer {i}, expansion {exp}: {test_acc=}, {test_acc_REPAIR=}")
+                print(f"Layer set {i}, expansion {exp}: {test_acc=}, {test_acc_REPAIR=}")
                 save_evaluation_checkpoint(metrics, filepath, csv=False)
                 metrics = load_file(filepath)  # necessary because of a safetensors bug
 
