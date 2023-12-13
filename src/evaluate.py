@@ -477,9 +477,9 @@ def experiment_b(model_name_a: str, model_name_b: str = None):
     return metrics
 
 
-def experiment_c(model_name_a: str, model_name_b: str = None):
+def experiment_b_ResNet(model_name_a: str, model_name_b: str = None):
     """
-    Conducts leave-one-out and agglomerates the results slowly
+    Conducts leave-one-out experiments with full merging vs. ensembling and saves the results
     """
     if model_name_b is None:
         model_name_b = f"{model_name_a}-b"
@@ -526,11 +526,29 @@ def experiment_c(model_name_a: str, model_name_b: str = None):
 
         metrics["only_expand_layer_i_num_params"] = torch.zeros(len(all_expansions), model_a.num_layers)
 
-        for i in range(num_layers):
+        indices = {
+            0: [1],
+            1: [3],
+            2: [5],
+            3: [7],
+            4: [9],
+            5: [11],
+            6: [13],
+            7: [15],
+            8: [0, 2, 4],
+            9: [6, 8],
+            10: [10, 12],
+            11: [14, 16],
+        }
+
+        for i in range(12):
             for exp_idx, exp in enumerate(all_expansions):
+                if exp not in [1.1, 1.5, 2.0]:
+                    continue
                 print(f"Only expanding layer {i+1} of {num_layers} with factor {exp}")
                 expansions = torch.ones(model_a.num_layers)
-                expansions[i] = exp
+                for index in indices[i]:
+                    expansions[index] = exp
                 model_a_exp = expand_model(model_a, expansions).cuda()
                 model_b_exp = expand_model(model_b, expansions).cuda()
                 model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader).cuda()
@@ -561,3 +579,5 @@ def experiment_c(model_name_a: str, model_name_b: str = None):
                 print(f"Layer {i}, expansion {exp}: {test_acc=}, {test_acc_REPAIR=}")
                 save_evaluation_checkpoint(metrics, filepath, csv=False)
                 metrics = load_file(filepath)  # necessary because of a safetensors bug
+
+    return metrics
