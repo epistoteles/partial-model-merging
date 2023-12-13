@@ -37,7 +37,7 @@ def plot_experiment_b(model_name_a: str, model_name_b: str = None):
 
     for idx, k in enumerate(expansions):
         sns.lineplot(
-            x=range(1, len(accs[0] + 1)),
+            x=range(1, len(accs[0]) + 1),
             y=accs[idx],
             label=f"+{int(round((k - 1) * 100))}% buffer",
             color=plt.cm.rainbow(k - 1),
