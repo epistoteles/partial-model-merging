@@ -545,7 +545,7 @@ def experiment_b_ResNet(model_name_a: str, model_name_b: str = None):
             for exp_idx, exp in enumerate(all_expansions):
                 if exp not in [1.2, 1.5, 1.8]:
                     continue
-                print(f"Doing expansion {i} of 12 on layers {','.join(indices[i])} with factor {exp}")
+                print(f"Doing expansion {i} of 12 on layers {','.join([str(x) for x in indices[i]])} with factor {exp}")
                 expansions = torch.ones(model_a.num_layers)
                 for index in indices[i]:
                     expansions[index] = exp
