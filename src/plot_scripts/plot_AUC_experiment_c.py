@@ -52,9 +52,9 @@ for m, metric in enumerate(metrics):
 
         barrier_reduction_absolute_REPAIR = test_REPAIR - metrics_dict[f"{metric}_merging"]
         barrier_reduction_relative_REPAIR = barrier_reduction_absolute_REPAIR / full_barrier_absolute
-        first_value_REPAIR = (
-            metrics_dict[f"{metric}_merging_REPAIR"] - metrics_dict[f"{metric}_merging"]
-        ) / full_barrier_absolute
+        first_value_REPAIR = torch.Tensor(
+            [(metrics_dict[f"{metric}_merging_REPAIR"] - metrics_dict[f"{metric}_merging"]) / full_barrier_absolute]
+        )
 
         param_increase = (
             metrics["only_expand_layer_i_num_params"][:, :8]
