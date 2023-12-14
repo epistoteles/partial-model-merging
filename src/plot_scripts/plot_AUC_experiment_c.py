@@ -73,16 +73,16 @@ for m, metric in enumerate(metrics):
         sns.lineplot(x=torch.linspace(0, 100, 11), y=[100] * 11, color="grey")
 
         sns.lineplot(
-            x=param_increase.T.flatten() * 100,
-            y=barrier_reduction_relative.T.flatten() * 100,
-            label="smart",
+            x=torch.cat((torch.Tensor([0]), param_increase.T.flatten() * 100)),
+            y=torch.cat((torch.Tensor([0]), barrier_reduction_relative.T.flatten() * 100)),
+            label="left to right",
             color="red",
             # marker="o",
             # markersize=4,
         )
         sns.lineplot(
-            x=param_increase.T.flatten() * 100,
-            y=barrier_reduction_relative_REPAIR.T.flatten() * 100,
+            x=torch.cat((torch.Tensor([0]), param_increase.T.flatten() * 100)),
+            y=torch.cat((torch.Tensor([0]), barrier_reduction_relative_REPAIR.T.flatten() * 100)),
             dashes=(2, 2),
             color="red",
             # marker="o",
