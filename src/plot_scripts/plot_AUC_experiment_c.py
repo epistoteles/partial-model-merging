@@ -53,9 +53,10 @@ for m, metric in enumerate(metrics):
         barrier_reduction_absolute_REPAIR = test_REPAIR - metrics_dict[f"{metric}_merging"]
         barrier_reduction_relative_REPAIR = barrier_reduction_absolute_REPAIR / full_barrier_absolute
 
-        param_increase = metrics["only_expand_layer_i_num_params"][:, :8] / get_num_params(
-            model_like(f"{dataset}-{architecture}{size}-{'bn-' if bn else ''}{width}x-a")
-        )
+        param_increase = (
+            metrics["only_expand_layer_i_num_params"][:, :8]
+            / get_num_params(model_like(f"{dataset}-{architecture}{size}-{'bn-' if bn else ''}{width}x-a"))
+        ) - 1
 
         plt.figure(figsize=(6, 6))
         plt.xlabel("added parameters (%)")
@@ -73,7 +74,7 @@ for m, metric in enumerate(metrics):
 
         sns.lineplot(
             x=param_increase.T.flatten() * 100,
-            y=(barrier_reduction_relative.T.flatten() - 1) * 100,
+            y=barrier_reduction_relative.T.flatten() * 100,
             label="smart",
             color="red",
             # marker="o",
@@ -81,7 +82,7 @@ for m, metric in enumerate(metrics):
         )
         sns.lineplot(
             x=param_increase.T.flatten() * 100,
-            y=(barrier_reduction_relative_REPAIR.T.flatten() - 1) * 100,
+            y=barrier_reduction_relative_REPAIR.T.flatten() * 100,
             dashes=(2, 2),
             color="red",
             # marker="o",
