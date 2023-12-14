@@ -73,19 +73,19 @@ for m, metric in enumerate(metrics):
 
         sns.lineplot(
             x=param_increase.T.flatten() * 100,
-            y=barrier_reduction_relative.T.flatten() * 100,
+            y=(barrier_reduction_relative.T.flatten() - 1) * 100,
             label="smart",
             color="red",
-            marker="o",
-            markersize=4,
+            # marker="o",
+            # markersize=4,
         )
         sns.lineplot(
             x=param_increase.T.flatten() * 100,
-            y=barrier_reduction_relative_REPAIR.T.flatten() * 100,
+            y=(barrier_reduction_relative_REPAIR.T.flatten() - 1) * 100,
             dashes=(2, 2),
             color="red",
-            marker="o",
-            markersize=4,
+            # marker="o",
+            # markersize=4,
         )
 
         # just for the REPAIR label
