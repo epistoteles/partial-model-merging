@@ -665,16 +665,16 @@ def experiment_c(model_name_a: str, model_name_b: str = None):
                     expansions[index] = exp
                 model_a_exp = expand_model(model_a, expansions).cuda()
                 model_b_exp = expand_model(model_b, expansions).cuda()
-                model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_noaug_loader).cuda()
+                model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader).cuda()
                 train_acc, train_loss = evaluate_two_models_merging(
                     model_a_exp, model_b_exp_perm, train_noaug_loader, 1
                 )
                 test_acc, test_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, test_loader, 1)
                 train_acc_REPAIR, train_loss_REPAIR = evaluate_two_models_merging_REPAIR(
-                    model_a_exp, model_b_exp_perm, train_noaug_loader, train_noaug_loader, 1
+                    model_a_exp, model_b_exp_perm, train_noaug_loader, train_aug_loader, 1
                 )
                 test_acc_REPAIR, test_loss_REPAIR = evaluate_two_models_merging_REPAIR(
-                    model_a_exp, model_b_exp_perm, test_loader, train_noaug_loader, 1
+                    model_a_exp, model_b_exp_perm, test_loader, train_aug_loader, 1
                 )
                 num_params = get_num_params(smart_interpolate_models(model_a_exp, model_b_exp_perm), ignore_zeros=True)
 
