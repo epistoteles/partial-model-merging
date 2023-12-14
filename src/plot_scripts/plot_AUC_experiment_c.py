@@ -55,6 +55,7 @@ for m, metric in enumerate(metrics):
         first_value_REPAIR = torch.Tensor(
             [(metrics_dict[f"{metric}_merging_REPAIR"] - metrics_dict[f"{metric}_merging"]) / full_barrier_absolute]
         )
+        print(first_value_REPAIR)
 
         param_increase = (
             metrics["only_expand_layer_i_num_params"][:, :8]
