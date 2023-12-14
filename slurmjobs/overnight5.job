@@ -26,12 +26,8 @@ print('-'*50)
 python -c "\
 from src.evaluate import *; \
 from src.plot_scripts.plot_acc_and_loss_curves import *; \
-evaluate_two_models('CIFAR10C-VGG11-bn-1x-c', 'CIFAR10D-VGG11-bn-1x-d', expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
-evaluate_two_models('SVHNC-VGG11-bn-1x-c', 'SVHND-VGG11-bn-1x-d', expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
-evaluate_two_models('CIFAR10C-ResNet18-bn-1x-c', 'CIFAR10D-ResNet18-bn-1x-d', expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
-evaluate_two_models('SVHNC-ResNet18-bn-1x-c', 'SVHND-ResNet18-bn-1x-d', expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
-plot_acc_and_loss_curves('CIFAR10C-VGG11-bn-1x-c', 'CIFAR10D-VGG11-bn-1x-d'); \
-plot_acc_and_loss_curves('SVHNC-VGG11-bn-1x-c', 'SVHND-VGG11-bn-1x-d'); \
-plot_acc_and_loss_curves('CIFAR10C-ResNet18-bn-1x-c', 'CIFAR10D-ResNet18-bn-1x-d'); \
-plot_acc_and_loss_curves('SVHNC-ResNet18-bn-1x-c', 'SVHND-ResNet18-bn-1x-d'); \
+evaluate_two_models('CIFAR10C-ResNet18-bn-4x-c', 'CIFAR10D-ResNet18-bn-4x-d', expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
+evaluate_two_models('SVHNC-ResNet18-bn-4x-c', 'SVHND-ResNet18-bn-4x-d', expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
+plot_acc_and_loss_curves('CIFAR10C-ResNet18-bn-4x-c', 'CIFAR10D-ResNet18-bn-4x-d'); \
+plot_acc_and_loss_curves('SVHNC-ResNet18-bn-4x-c', 'SVHND-ResNet18-bn-4x-d'); \
 "
