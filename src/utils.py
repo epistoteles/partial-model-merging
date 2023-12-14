@@ -1526,7 +1526,9 @@ def get_variance_per_layer(model, loader):
 
 def get_num_classes(dataset: str):
     """Returns the number of classes in a dataset"""
-    cfg = {"CIFAR10": 10, "CIFAR100": 100, "CIFAR100A": 100, "CIFAR100B": 100, "SVHN": 10, "MNIST": 10}
+    if dataset[-1] in ["A", "B", "C", "D"]:
+        dataset = dataset[:-1]
+    cfg = {"CIFAR10": 10, "CIFAR100": 100, "SVHN": 10, "MNIST": 10}
     return cfg[dataset]
 
 
