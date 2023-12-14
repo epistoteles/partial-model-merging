@@ -133,8 +133,8 @@ def evaluate_two_models(
     dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
     dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
 
-    # if dataset_a in ["CIFAR100A", "CIFAR100B"]:
-    #     dataset_a = "CIFAR100"  # we don't want to use biased activations for alignment and REPAIR
+    if dataset_a[-1] in ["A", "B", "C", "D"]:
+        dataset_a = dataset_a[:-1]  # we don't want to use subsampled activations for alignment and REPAIR - or do we?
 
     assert model_type_a == model_type_b
     assert size_a == size_b
