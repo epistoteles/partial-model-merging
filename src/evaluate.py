@@ -613,26 +613,11 @@ def experiment_c(model_name_a: str, model_name_b: str = None):
 
         train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
 
-        num_layers = 12
         default_num_params = get_num_params(model_a)
 
         metrics = {}
 
         all_expansions = [1.2, 1.4, 1.6, 1.8, 2.0]
-
-        metrics["default_num_params"] = torch.zeros(len(all_expansions), num_layers) * default_num_params
-
-        metrics["only_expand_layer_i_train_accs"] = torch.zeros(len(all_expansions), num_layers)
-        metrics["only_expand_layer_i_train_losses"] = torch.zeros(len(all_expansions), num_layers)
-        metrics["only_expand_layer_i_test_accs"] = torch.zeros(len(all_expansions), num_layers)
-        metrics["only_expand_layer_i_test_losses"] = torch.zeros(len(all_expansions), num_layers)
-
-        metrics["only_expand_layer_i_REPAIR_train_accs"] = torch.zeros(len(all_expansions), num_layers)
-        metrics["only_expand_layer_i_REPAIR_train_losses"] = torch.zeros(len(all_expansions), num_layers)
-        metrics["only_expand_layer_i_REPAIR_test_accs"] = torch.zeros(len(all_expansions), num_layers)
-        metrics["only_expand_layer_i_REPAIR_test_losses"] = torch.zeros(len(all_expansions), num_layers)
-
-        metrics["only_expand_layer_i_num_params"] = torch.zeros(len(all_expansions), model_a.num_layers)
 
         if model_type_a == "ResNet":
             indices = {
@@ -653,6 +638,20 @@ def experiment_c(model_name_a: str, model_name_b: str = None):
         else:
             indices = {x: [x] for x in range(model_a.num_layers)}
             sorted_layers = range(len(indices))
+
+        metrics["default_num_params"] = torch.zeros(len(all_expansions), len(sorted_layers)) * default_num_params
+
+        metrics["only_expand_layer_i_train_accs"] = torch.zeros(len(all_expansions), len(sorted_layers))
+        metrics["only_expand_layer_i_train_losses"] = torch.zeros(len(all_expansions), len(sorted_layers))
+        metrics["only_expand_layer_i_test_accs"] = torch.zeros(len(all_expansions), len(sorted_layers))
+        metrics["only_expand_layer_i_test_losses"] = torch.zeros(len(all_expansions), len(sorted_layers))
+
+        metrics["only_expand_layer_i_REPAIR_train_accs"] = torch.zeros(len(all_expansions), len(sorted_layers))
+        metrics["only_expand_layer_i_REPAIR_train_losses"] = torch.zeros(len(all_expansions), len(sorted_layers))
+        metrics["only_expand_layer_i_REPAIR_test_accs"] = torch.zeros(len(all_expansions), len(sorted_layers))
+        metrics["only_expand_layer_i_REPAIR_test_losses"] = torch.zeros(len(all_expansions), len(sorted_layers))
+
+        metrics["only_expand_layer_i_num_params"] = torch.zeros(len(all_expansions), len(sorted_layers))
 
         expansions = torch.ones(model_a.num_layers)
 
