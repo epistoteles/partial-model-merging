@@ -108,7 +108,21 @@ parser.add_argument(
     "-d",
     "--dataset",
     type=str,
-    choices=["CIFAR10", "CIFAR100", "CIFAR100A", "CIFAR100B", "SVHN", "ImageNet", "MNIST"],
+    choices=[
+        "CIFAR10",
+        "CIFAR10C",
+        "CIFAR10B",
+        "CIFAR10C",
+        "CIFAR10D",
+        "CIFAR100",
+        "CIFAR100A",
+        "CIFAR100B",
+        "SVHN",
+        "SVHNC",
+        "SVHND",
+        "ImageNet",
+        "MNIST",
+    ],
     default="CIFAR10",
 )
 parser.add_argument("-m", "--model_type", type=str, choices=["VGG", "ResNet", "MLP"], default="VGG")
