@@ -656,10 +656,10 @@ def experiment_c(model_name_a: str, model_name_b: str = None):
 
         expansions = torch.ones(model_a.num_layers)
 
-        for i in sorted_layers:
+        for layer_idx, i in enumerate(sorted_layers):
             for exp_idx, exp in enumerate(all_expansions):
                 print(
-                    f"Doing expansion {i+1} of 12 on layers {','.join([str(x) for x in indices[i]])} with factor {exp}"
+                    f"Doing expansion {layer_idx+1} of 12 on layers {','.join([str(x) for x in indices[i]])} with factor {exp}"
                 )
                 for index in indices[i]:
                     expansions[index] = exp
