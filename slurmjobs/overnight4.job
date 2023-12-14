@@ -26,11 +26,11 @@ print('-'*50)
 python src/train.py --dataset CIFAR10C --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant c -bn -wandb -test
 python src/train.py --dataset CIFAR10D --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant d -bn -wandb -test
 
-python src/train.py --dataset CIFAR10C --model VGG --size 11 --width 1 -variant c -bn -wandb -test
+python src/train.py --dataset CIFAR10C --model VGG --size 11 --width 1 --variant c -bn -wandb -test
 python src/train.py --dataset CIFAR10D --model VGG --size 11 --width 1 --variant d -bn -wandb -test
 
 python src/train.py --dataset SVHNC --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant c -bn -wandb -test
 python src/train.py --dataset SVHND --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant d -bn -wandb -test
 
-python src/train.py --dataset SVHNC --model VGG --size 11 --width 1 -variant c -bn -wandb -test
+python src/train.py --dataset SVHNC --model VGG --size 11 --width 1 --variant c -bn -wandb -test
 python src/train.py --dataset SVHND --model VGG --size 11 --width 1 --variant d -bn -wandb -test
