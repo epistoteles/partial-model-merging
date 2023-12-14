@@ -51,7 +51,7 @@ width = 1
 for m, metric in enumerate(metrics):
     for dataset in datasets:
         dir = get_evaluations_dir(subdir="experiment_c")
-        filename = f"{dir}/OLD-experiment-c-{dataset}-{architecture}{size}-{'bn-' if bn else ''}{width}x-ab.safetensors"
+        filename = f"{dir}/experiment-c-{dataset}-{architecture}{size}-{'bn-' if bn else ''}{width}x-ab.safetensors"
         metrics = load_file(filename)
         metrics_dict = get_metrics(dataset, architecture, size, bn, width)
 
