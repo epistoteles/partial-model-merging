@@ -55,7 +55,6 @@ for m, metric in enumerate(metrics):
         first_value_REPAIR = torch.Tensor(
             [(metrics_dict[f"{metric}_merging_REPAIR"] - metrics_dict[f"{metric}_merging"]) / full_barrier_absolute]
         )
-        print(first_value_REPAIR)
 
         param_increase = (
             metrics["only_expand_layer_i_num_params"][:, :8]
@@ -86,7 +85,7 @@ for m, metric in enumerate(metrics):
         )
         sns.lineplot(
             x=torch.cat((torch.Tensor([0]), param_increase.T.flatten() * 100)),
-            y=torch.cat((first_value_REPAIR, barrier_reduction_relative_REPAIR.T.flatten() * 100)),
+            y=torch.cat((first_value_REPAIR * 100, barrier_reduction_relative_REPAIR.T.flatten() * 100)),
             dashes=(2, 2),
             color="red",
             # marker="o",
