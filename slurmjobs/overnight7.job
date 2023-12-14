@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=3
 #SBATCH --threads-per-core=1
 #SBATCH --mem-per-gpu=32G
-#SBATCH --job-name=overnight6
+#SBATCH --job-name=overnight7
 
 export CUDA_DEVICE_ORDER="PCI_BUS_ID"
 export CUDA_VISIBLE_DEVICES=$(echo $SLURM_JOB_GPUS | cut -d "," -f1)
@@ -24,10 +24,9 @@ print('-'*50)
 "
 
 python -c "\
-from src.evaluate import *; \
 from src.plot_scripts.plot_acc_and_loss_curves import *; \
-experiment_c('CIFAR10C-VGG11-bn-1x-c', 'CIFAR10D-VGG11-bn-1x-d'); \
-experiment_c('SVHNC-VGG11-bn-1x-c', 'SVHND-VGG11-bn-1x-d'); \
-experiment_c('CIFAR10C-ResNet18-bn-4x-c', 'CIFAR10D-ResNet18-bn-4x-d'); \
-experiment_c('SVHNC-ResNet18-bn-4x-c', 'SVHND-ResNet18-bn-4x-d'); \
+plot_acc_and_loss_curves('CIFAR10C-VGG11-bn-1x-c', 'CIFAR10D-VGG11-bn-1x-d'); \
+plot_acc_and_loss_curves('SVHNC-VGG11-bn-1x-c', 'SVHND-VGG11-bn-1x-d'); \
+plot_acc_and_loss_curves('CIFAR10C-ResNet18-bn-4x-c', 'CIFAR10D-ResNet18-bn-4x-d'); \
+plot_acc_and_loss_curves('SVHNC-ResNet18-bn-4x-c', 'SVHND-ResNet18-bn-4x-d'); \
 "
