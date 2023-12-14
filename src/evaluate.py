@@ -477,7 +477,7 @@ def experiment_b(model_name_a: str, model_name_b: str = None):
     return metrics
 
 
-def experiment_b_ResNet(model_name_a: str, model_name_b: str = None):
+def experiment_b_ResNet18(model_name_a: str, model_name_b: str = None):
     """
     Conducts leave-one-out experiments with full merging vs. ensembling and saves the results
     """
@@ -505,7 +505,7 @@ def experiment_b_ResNet(model_name_a: str, model_name_b: str = None):
 
         train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
 
-        num_layers = model_a.num_layers
+        num_layers = 12
         default_num_params = get_num_params(model_a)
 
         metrics = {}
@@ -549,6 +549,118 @@ def experiment_b_ResNet(model_name_a: str, model_name_b: str = None):
                     f"Doing expansion {i+1} of 12 on layers {','.join([str(x) for x in indices[i]])} with factor {exp}"
                 )
                 expansions = torch.ones(model_a.num_layers)
+                for index in indices[i]:
+                    expansions[index] = exp
+                model_a_exp = expand_model(model_a, expansions).cuda()
+                model_b_exp = expand_model(model_b, expansions).cuda()
+                model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_noaug_loader).cuda()
+                train_acc, train_loss = evaluate_two_models_merging(
+                    model_a_exp, model_b_exp_perm, train_noaug_loader, 1
+                )
+                test_acc, test_loss = evaluate_two_models_merging(model_a_exp, model_b_exp_perm, test_loader, 1)
+                train_acc_REPAIR, train_loss_REPAIR = evaluate_two_models_merging_REPAIR(
+                    model_a_exp, model_b_exp_perm, train_noaug_loader, train_noaug_loader, 1
+                )
+                test_acc_REPAIR, test_loss_REPAIR = evaluate_two_models_merging_REPAIR(
+                    model_a_exp, model_b_exp_perm, test_loader, train_noaug_loader, 1
+                )
+                num_params = get_num_params(smart_interpolate_models(model_a_exp, model_b_exp_perm), ignore_zeros=True)
+
+                metrics["only_expand_layer_i_train_accs"][exp_idx][i] = train_acc
+                metrics["only_expand_layer_i_train_losses"][exp_idx][i] = train_loss
+                metrics["only_expand_layer_i_test_accs"][exp_idx][i] = test_acc
+                metrics["only_expand_layer_i_test_losses"][exp_idx][i] = test_loss
+
+                metrics["only_expand_layer_i_REPAIR_train_accs"][exp_idx][i] = train_acc_REPAIR
+                metrics["only_expand_layer_i_REPAIR_train_losses"][exp_idx][i] = train_loss_REPAIR
+                metrics["only_expand_layer_i_REPAIR_test_accs"][exp_idx][i] = test_acc_REPAIR
+                metrics["only_expand_layer_i_REPAIR_test_losses"][exp_idx][i] = test_loss_REPAIR
+
+                metrics["only_expand_layer_i_num_params"][exp_idx][i] = num_params
+
+                print(f"Layer set {i+1}, expansion {exp}: {test_acc=}, {test_acc_REPAIR=}")
+                save_evaluation_checkpoint(metrics, filepath, csv=False)
+                metrics = load_file(filepath)  # necessary because of a safetensors bug
+
+    return metrics
+
+
+def experiment_c(model_name_a: str, model_name_b: str = None):
+    """
+    Expands the model from front to back
+    """
+    if model_name_b is None:
+        model_name_b = f"{model_name_a}-b"
+        model_name_a = f"{model_name_a}-a"
+
+    dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
+    dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
+
+    assert model_type_a == model_type_b
+    assert size_a == size_b
+    assert batch_norm_a == batch_norm_b
+    assert width_a == width_b  # not strictly necessary, but always the case in our experiments
+
+    evaluations_dir = get_evaluations_dir(subdir="experiment_c")
+    filepath = os.path.join(evaluations_dir, f"experiment-c-{model_name_a}{variant_b}.safetensors")
+
+    if os.path.exists(filepath):
+        metrics = load_file(filepath)
+        print(f"📤 Loaded saved leave-one-out metrics for {model_name_a}{variant_b} from .safetensors")
+    else:
+        model_a = load_model(model_name_a).cuda()
+        model_b = load_model(model_name_b).cuda()
+
+        train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
+
+        num_layers = 12
+        default_num_params = get_num_params(model_a)
+
+        metrics = {}
+
+        all_expansions = [1.2, 1.4, 1.6, 1.8, 2.0]
+
+        metrics["default_num_params"] = torch.zeros(len(all_expansions), num_layers) * default_num_params
+
+        metrics["only_expand_layer_i_train_accs"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_train_losses"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_test_accs"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_test_losses"] = torch.zeros(len(all_expansions), num_layers)
+
+        metrics["only_expand_layer_i_REPAIR_train_accs"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_REPAIR_train_losses"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_REPAIR_test_accs"] = torch.zeros(len(all_expansions), num_layers)
+        metrics["only_expand_layer_i_REPAIR_test_losses"] = torch.zeros(len(all_expansions), num_layers)
+
+        metrics["only_expand_layer_i_num_params"] = torch.zeros(len(all_expansions), model_a.num_layers)
+
+        if model_type_a == "ResNet":
+            indices = {
+                0: [1],
+                1: [3],
+                2: [5],
+                3: [7],
+                4: [9],
+                5: [11],
+                6: [13],
+                7: [15],
+                8: [0, 2, 4],
+                9: [6, 8],
+                10: [10, 12],
+                11: [14, 16],
+            }
+            sorted_layers = [8, 0, 1, 2, 9, 3, 4, 10, 5, 6, 11, 7]
+        else:
+            indices = {x: [x] for x in range(model_a.num_layers)}
+            sorted_layers = range(len(indices))
+
+        expansions = torch.ones(model_a.num_layers)
+
+        for i in sorted_layers:
+            for exp_idx, exp in enumerate(all_expansions):
+                print(
+                    f"Doing expansion {i+1} of 12 on layers {','.join([str(x) for x in indices[i]])} with factor {exp}"
+                )
                 for index in indices[i]:
                     expansions[index] = exp
                 model_a_exp = expand_model(model_a, expansions).cuda()

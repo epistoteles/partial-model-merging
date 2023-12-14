@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=3
 #SBATCH --threads-per-core=1
 #SBATCH --mem-per-gpu=32G
-#SBATCH --job-name=overnight2
+#SBATCH --job-name=overnight3
 
 export CUDA_DEVICE_ORDER="PCI_BUS_ID"
 export CUDA_VISIBLE_DEVICES=$(echo $SLURM_JOB_GPUS | cut -d "," -f1)
@@ -26,8 +26,8 @@ print('-'*50)
 python -c "\
 from src.evaluate import *; \
 from src.plot_scripts.plot_acc_and_loss_curves import *; \
-model_name = 'CIFAR10-ResNet18-bn-1x'; \
+model_name = 'CIFAR10-VGG11-bn-1x'; \
 experiment_c(model_name); \
-model_name = 'SVHN-ResNet18-bn-1x'; \
+model_name = 'SVHN-VGG11-bn-1x'; \
 experiment_c(model_name); \
 "

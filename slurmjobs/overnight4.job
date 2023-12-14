@@ -1,0 +1,36 @@
+#!/bin/bash
+
+#SBATCH --output=./slurmjobs/slurmlogs/%j.out
+#SBATCH --gres=gpu:rtx3060:1
+#SBATCH --cpus-per-task=3
+#SBATCH --threads-per-core=1
+#SBATCH --mem-per-gpu=32G
+#SBATCH --job-name=overnight4
+
+export CUDA_DEVICE_ORDER="PCI_BUS_ID"
+export CUDA_VISIBLE_DEVICES=$(echo $SLURM_JOB_GPUS | cut -d "," -f1)
+
+source venv/bin/activate
+python -c \
+"\
+import os; \
+import torch; \
+import psutil; \
+print('-------------------SBATCH STATS-------------------'); \
+print(f'Total CPU cores:      {os.cpu_count()}'); \
+print(f'Visible CPU cores:    {len(os.sched_getaffinity(0))}'); \
+print(f'Visible GPUs:         {torch.cuda.get_device_name(torch.cuda.current_device())}'); \
+print('-'*50)
+"
+
+python src/train.py --dataset CIFAR10C --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant c -bn -wandb -test
+python src/train.py --dataset CIFAR10D --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant d -bn -wandb -test
+
+python src/train.py --dataset CIFAR10C --model VGG --size 11 --width 1 -variant c -bn -wandb -test
+python src/train.py --dataset CIFAR10D --model VGG --size 11 --width 1 --variant d -bn -wandb -test
+
+python src/train.py --dataset SVHNC --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant c -bn -wandb -test
+python src/train.py --dataset SVHND --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant d -bn -wandb -test
+
+python src/train.py --dataset SVHNC --model VGG --size 11 --width 1 -variant c -bn -wandb -test
+python src/train.py --dataset SVHND --model VGG --size 11 --width 1 --variant d -bn -wandb -test

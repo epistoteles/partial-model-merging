@@ -1553,7 +1553,17 @@ def _download_dataset(dataset) -> tuple[torch.utils.data.Dataset, torch.utils.da
     if dataset == "CIFAR10":
         train_dset = torchvision.datasets.CIFAR10(data_dir, train=True, download=True)
         test_dset = torchvision.datasets.CIFAR10(data_dir, train=False, download=True)
+    elif dataset in ["CIFAR10C", "CIFAR10D"]:
+        train_dset = torchvision.datasets.CIFAR10(data_dir, train=True, download=True)
+        test_dset = torchvision.datasets.CIFAR10(data_dir, train=False, download=True)
+        indices = index_sampler(train_dset.targets, dataset[-1])
+        train_dset = torch.utils.data.Subset(train_dset, indices)
     elif dataset in ["CIFAR100A", "CIFAR100B"]:
+        train_dset = torchvision.datasets.CIFAR100(data_dir, train=True, download=True)
+        test_dset = torchvision.datasets.CIFAR100(data_dir, train=False, download=True)
+        indices = index_sampler(train_dset.targets, dataset[-1])
+        train_dset = torch.utils.data.Subset(train_dset, indices)
+    elif dataset in ["CIFAR100C", "CIFAR100D"]:
         train_dset = torchvision.datasets.CIFAR100(data_dir, train=True, download=True)
         test_dset = torchvision.datasets.CIFAR100(data_dir, train=False, download=True)
         indices = index_sampler(train_dset.targets, dataset[-1])
@@ -1564,6 +1574,11 @@ def _download_dataset(dataset) -> tuple[torch.utils.data.Dataset, torch.utils.da
     elif dataset == "SVHN":
         train_dset = torchvision.datasets.SVHN(data_dir, split="train", download=True)
         test_dset = torchvision.datasets.SVHN(data_dir, split="test", download=True)
+    elif dataset in ["SVHNC", "SVHND"]:
+        train_dset = torchvision.datasets.SVHN(data_dir, split="train", download=True)
+        test_dset = torchvision.datasets.SVHN(data_dir, split="test", download=True)
+        indices = index_sampler(train_dset.labels, dataset[-1])
+        train_dset = torch.utils.data.Subset(train_dset, indices)
     elif dataset == "MNIST":
         train_dset = torchvision.datasets.MNIST(data_dir, train=True, download=True)
         test_dset = torchvision.datasets.MNIST(data_dir, train=False, download=True)
@@ -1591,28 +1606,42 @@ def _get_beton_path(dataset) -> tuple[str, str]:
 
 def index_sampler(labels: list[int], split: str):
     """
-    Given a list of dataset labels (CIFAR10 or CIFAR100), creates a list of indices that are used
+    Given a list of dataset labels (e.g. CIFAR10 or CIFAR100), creates a list of indices that are used
     in disjoint split "a" or "b", where "a" has 80% labels 0-4/0-49 and 20% labels 5-9/50-99 or
-    vice versa for "b".
+    vice versa for "b" (biased case) or in disjoint split "c" and "d", where each split has half of each label.
     :param labels: the list of labels
-    :param split: "a" or "b"
+    :param split: "a", "b", "c" or "d"
     :return: the list of indices in the selected split
     """
     split = split.lower()
-    assert split in ["a", "b"], "split must be 'a' or 'b'"
+    assert split in ["a", "b", "c", "d"], "split must be 'a', 'b', 'c', or 'd'"
 
     num_classes = len(set(labels))
+    samples_per_class = len(labels) // num_classes
     class_indices = {i: [] for i in range(num_classes)}
     for idx, label in enumerate(labels):
         class_indices[label].append(idx)
 
-    subset_A_indices = {k: v[:400] if k < 50 else v[400:] for k, v in class_indices.items()}
-    subset_B_indices = {k: v[400:] if k < 50 else v[:400] for k, v in class_indices.items()}
+    threshold_biased = int(samples_per_class * 0.8)
+    subset_A_indices = {
+        k: v[:threshold_biased] if k < num_classes // 2 else v[threshold_biased:] for k, v in class_indices.items()
+    }
+    subset_B_indices = {
+        k: v[threshold_biased:] if k < num_classes // 2 else v[:threshold_biased] for k, v in class_indices.items()
+    }
+
+    threshold_balanced = samples_per_class // 2
+    subset_C_indices = {k: v[:threshold_balanced] for k, v in class_indices.items()}
+    subset_D_indices = {k: v[threshold_balanced:] for k, v in class_indices.items()}
 
     if split == "a":
         indices = [item for sublist in subset_A_indices.values() for item in sublist]
     elif split == "b":
         indices = [item for sublist in subset_B_indices.values() for item in sublist]
+    elif split == "c":
+        indices = [item for sublist in subset_C_indices.values() for item in sublist]
+    elif split == "d":
+        indices = [item for sublist in subset_D_indices.values() for item in sublist]
 
     random.shuffle(indices)
     return indices
@@ -1627,15 +1656,15 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader] | tuple[DataLoade
     :return: (train_aug_loader, train_noaug_loader, test_loader)
     """
     dataset = dataset.upper()
-    if dataset == "CIFAR10":
+    if dataset in ["CIFAR10", "CIFAR10C", "CIFAR10D"]:
         MEAN = [125.307, 122.961, 113.8575]  # correct (these values are from the FFCV CIFAR example)
         STD = [51.5865, 50.847, 51.255]  # too low, but kept as is for reproducibility
         # MEAN = [125.30691805, 122.95039414, 113.86538318]  # correct values
         # STD = [62.99321928, 62.08870764, 66.70489964]      # correct values
-    elif dataset in ["CIFAR100", "CIFAR100A", "CIFAR100B"]:
+    elif dataset in ["CIFAR100", "CIFAR100A", "CIFAR100B", "CIFAR100C", "CIFAR100D"]:
         MEAN = [129.30416561, 124.0699627, 112.43405006]
         STD = [68.1702429, 65.39180804, 70.41837019]
-    elif dataset == "SVHN":
+    elif dataset in ["SVHN", "SVHNC", "SVHND"]:
         MEAN = [111.60893668, 113.16127466, 120.56512767]
         STD = [50.49768174, 51.2589843, 50.24421614]
     elif dataset == "MNIST":
