@@ -105,7 +105,8 @@ for m, metric in enumerate(metrics):
         )
         sns.lineplot(
             x=metrics_dict["param_increase_expansions"] * 100,
-            y=(metrics_dict[f"{metric}_expansions"] - metrics_dict[f"{metric}_avg"]) / full_barrier_absolute * 100,
+            y=100
+            - (metrics_dict[f"{metric}_avg"] - metrics_dict[f"{metric}_expansions"]) / full_barrier_absolute * 100,
             label="all layers",
             color="orange",
             # marker="o",
@@ -113,7 +114,8 @@ for m, metric in enumerate(metrics):
         )
         sns.lineplot(
             x=metrics_dict["param_increase_expansions"] * 100,
-            y=(metrics_dict[f"{metric}_avg"] - metrics_dict[f"{metric}_expansions_REPAIR"])
+            y=100
+            - (metrics_dict[f"{metric}_avg"] - metrics_dict[f"{metric}_expansions_REPAIR"])
             / full_barrier_absolute
             * 100,
             dashes=(2, 2),
