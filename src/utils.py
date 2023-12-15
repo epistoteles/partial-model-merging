@@ -224,6 +224,39 @@ def model_table(dataset: str, architecture: str, bn: bool):
         table.add_row(
             "",
             *[
+                Text(
+                    f"ensembling:   {x['acc_ensembling']:.4f} / {x['loss_ensembling']:.4f}" if x else "", style="white"
+                )
+                for x in accs
+            ],
+        )
+        table.add_row(
+            "",
+            *[
+                Text(
+                    f"B ensembling: {x['acc_endpoint_avg'] - x['acc_ensembling']:.4f} / {x['loss_ensembling'] - x['loss_endpoint_avg']:.4f}"
+                    if x
+                    else "",
+                    style="white",
+                )
+                for x in accs
+            ],
+        )
+        table.add_row(
+            "",
+            *[
+                Text(
+                    f"D ensembling: {((x['acc_endpoint_avg'] - x['acc_ensembling']) / (x['acc_endpoint_avg'] - x['acc_merging']) - 1) * 100:.1f}% / {((x['loss_ensembling'] - x['loss_endpoint_avg']) / (x['loss_merging'] - x['loss_endpoint_avg']) - 1) * 100:.1f}%"
+                    if x
+                    else "",
+                    style="white",
+                )
+                for x in accs
+            ],
+        )
+        table.add_row(
+            "",
+            *[
                 Text(f"merging:      {x['acc_merging']:.4f} / {x['loss_merging']:.4f}" if x else "", style="white")
                 for x in accs
             ],
