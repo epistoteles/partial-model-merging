@@ -92,16 +92,16 @@ for m, metric in enumerate(metrics):
             y=torch.cat((torch.Tensor([0]), barrier_reduction_relative.T.flatten() * 100)),
             label="left to right",
             color="red",
-            # marker="o",
-            # markersize=4,
+            marker="o",
+            markersize=4,
         )
         sns.lineplot(
             x=torch.cat((torch.Tensor([0]), param_increase.T.flatten() * 100)),
             y=torch.cat((first_value_REPAIR * 100, barrier_reduction_relative_REPAIR.T.flatten() * 100)),
             dashes=(2, 2),
             color="red",
-            # marker="o",
-            # markersize=4,
+            marker="o",
+            markersize=4,
         )
         sns.lineplot(
             x=metrics_dict["param_increase_expansions"] * 100,
@@ -109,8 +109,8 @@ for m, metric in enumerate(metrics):
             - (metrics_dict[f"{metric}_avg"] - metrics_dict[f"{metric}_expansions"]) / full_barrier_absolute * 100,
             label="all layers",
             color="orange",
-            # marker="o",
-            # markersize=4,
+            marker="o",
+            markersize=4,
         )
         sns.lineplot(
             x=metrics_dict["param_increase_expansions"] * 100,
@@ -120,8 +120,8 @@ for m, metric in enumerate(metrics):
             * 100,
             dashes=(2, 2),
             color="orange",
-            # marker="o",
-            # markersize=4,
+            marker="o",
+            markersize=4,
         )
 
         # just for the REPAIR label
