@@ -617,7 +617,7 @@ def experiment_c(model_name_a: str, model_name_b: str = None):
 
         metrics = {}
 
-        all_expansions = [1.2, 1.4, 1.6, 1.8, 2.0]
+        all_expansions = [1.5, 2.0]
 
         if model_type_a == "ResNet":
             indices = {

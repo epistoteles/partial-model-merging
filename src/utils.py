@@ -231,7 +231,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"merging + REP: {x['acc_merging_REPAIR']:.4f} / {x['loss_merging_REPAIR']:.4f}" if x else "",
+                    f"merg + REP: {x['acc_merging_REPAIR']:.4f} / {x['loss_merging_REPAIR']:.4f}" if x else "",
                     style="white",
                 )
                 for x in accs
@@ -241,7 +241,19 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"merg+REP@1.2: {x['acc_merging@1.2_REPAIR']-x['acc_merging_REPAIR']:.4f} / {x['loss_merging@1.2_REPAIR']-x['loss_merging_REPAIR']:.4f}"
+                    f"B merg + REP: {x['acc_merging_REPAIR']-x['acc_merging']:.4f} / {x['loss_merging_REPAIR']-x['loss_merging']:.4f}"
+                    if x
+                    else "",
+                    style="white",
+                )
+                for x in accs
+            ],
+        )
+        table.add_row(
+            "",
+            *[
+                Text(
+                    f"B mer+RE@1.2: {x['acc_merging@1.2_REPAIR']-x['acc_merging_REPAIR']:.4f} / {x['loss_merging@1.2_REPAIR']-x['loss_merging_REPAIR']:.4f}"
                     if "acc_merging@1.2_REPAIR" in x
                     else "",
                     style="white",
