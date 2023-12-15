@@ -43,10 +43,10 @@ def get_metrics(dataset, architecture, size, bn, width):
 
 metrics = ["acc", "loss"]
 datasets = ["CIFAR10", "SVHN"]
-architecture = "VGG"
-size = 11
+architecture = "ResNet"
+size = 18
 bn = True
-width = 1
+width = 4
 
 for m, metric in enumerate(metrics):
     for dataset in datasets:
