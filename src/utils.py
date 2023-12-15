@@ -265,6 +265,16 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
+                    f"mer+RE@1.2: {x['acc_merging@1.2_REPAIR']:.4f} / {x['loss_merging@1.2_REPAIR']:.4f}" if x else "",
+                    style="white",
+                )
+                for x in accs
+            ],
+        )
+        table.add_row(
+            "",
+            *[
+                Text(
                     f"B mer+RE@1.2: {x['acc_endpoint_avg']-x['acc_merging@1.2_REPAIR']:.4f} / {x['loss_endpoint_avg']-x['loss_merging@1.2_REPAIR']:.4f}"
                     if "acc_merging@1.2_REPAIR" in x
                     else "",
