@@ -11,12 +11,12 @@ from src.utils import get_plots_dir, get_evaluations_dir
 
 
 dataset = "CIFAR10"
-architecture = "VGG"
+architecture = "ResNet"
 bn = True
 
 metrics = ["acc", "loss"]
-sizes = [11, 13, 16, 19]
-widths = [0.25, 0.5, 1, 2]
+sizes = [11, 13, 16, 19] if architecture == "VGG" else [18]
+widths = [0.25, 0.5, 1, 2] if architecture == "VGG" else [1, 2, 4, 8]
 expansions = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
 endpoint = torch.zeros(len(metrics), len(widths), len(sizes))
 ensembling = torch.zeros(len(metrics), len(widths), len(sizes))
@@ -82,8 +82,14 @@ for m, metric in enumerate(["accuracy", "loss"]):
             sns.lineplot(x=torch.linspace(0, 100, 11), y=[100] * 11, color="grey")
 
             param_increase = (
-                torch.Tensor([1, 1.1897, 1.3587, 1.5107, 1.6398, 1.74, 1.8396, 1.9093, 1.960, 1.9899, 1.9999]) - 1
-            ) * 100
+                (torch.Tensor([1, 1.1897, 1.3587, 1.5107, 1.6398, 1.74, 1.8396, 1.9093, 1.960, 1.9899, 1.9999]) - 1)
+                if architecture == "VGG"
+                else (
+                    torch.Tensor([1, 1.1886, 1.3616, 1.5053, 1.6381, 1.7477, 1.8375, 1.9092, 1.9577, 1.9892, 2.0000])
+                    - 1
+                )
+            )
+            param_increase *= 100
 
             widths_sizes = widths if wrt == "width" else sizes
             for idx, (width_size, color) in enumerate(
