@@ -46,7 +46,7 @@ datasets = ["CIFAR10", "SVHN"]
 architecture = "ResNet"
 size = "18"
 bn = True
-width = 4
+width = 1
 
 for m, metric in enumerate(metrics):
     for dataset in datasets:
