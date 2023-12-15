@@ -43,8 +43,8 @@ def get_metrics(dataset, architecture, size, bn, width):
 
 metrics = ["acc", "loss"]
 datasets = ["CIFAR10", "SVHN"]
-architecture = "ResNet"
-size = "18"
+architecture = "VGG"
+size = 11
 bn = True
 width = 1
 
