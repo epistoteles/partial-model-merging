@@ -72,7 +72,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
             plt.ylabel(f"{metric} barrier reduction (%)")
             plt.xticks(torch.linspace(0, 100, 11))
             plt.title(
-                f"{metric.title()} barrier reduction w.r.t. added {xaxis}\n{dataset}, {architecture+('11' if architecture == 'VGG' else '5') if wrt =='width' else '1×width'}, bn={bn}"
+                f"{metric.title()} barrier reduction w.r.t. added {xaxis}\n{dataset}, {architecture+str(sizes[0]) if wrt =='width' else '1×width'}, bn={bn}"
             )
 
             # AUC diagonal
