@@ -355,7 +355,11 @@ def model_table(dataset: str, architecture: str, bn: bool):
                 f"{{\\color[HTML]{{707070}}\\small{{-5.6\\%p}}\\;\\tiny{{(-123.7\\%)}}}}\\\\{{\\color[HTML]{{707070}}\\small{{-0.123}}\\;\\tiny{{(-123.7\\%)}}}}}}"
             )
 
-        result = [exists(x) if x != "" and "acc_merging@1.2_REPAIR" in x.keys() else not_exists for x in accs]
+        result = (
+            f"${width}\\times$ & "
+            + " & ".join([exists(x) if x != "" and "acc_merging@1.2_REPAIR" in x.keys() else not_exists for x in accs])
+            + f" \\\\ \\cline{{2-5}} \\cline{{7-10}}"
+        )
         print(result)
     console = Console()
     console.print(table)
