@@ -352,8 +352,10 @@ def model_table(dataset: str, architecture: str, bn: bool):
         def exists(x):
             return (
                 f"\\makecell[cc]{{\\small{{{round((x['acc_endpoint_avg'] - x['acc_merging']) * 100, 1)}\\%p}}\\\\\\small{{{round((x['loss_endpoint_avg'] - x['loss_merging']) * 100, 1)}}}\\\\"
-                f"{{\\color[HTML]{{5c06d4}}\\small{{{round((x['acc_endpoint_avg'] - x['acc_merging_REPAIR']) * 100, 1)}}}\\%p\\;\\tiny{{({x}\\%)}}}}\\\\ {{\\color[HTML]{{5c06d4}}\\small{{{round((x['loss_endpoint_avg'] - x['loss_merging_REPAIR']) * 100, 1)}}}\\;\\tiny{{({x}\\%)}}}}\\\\"
-                f"{{\\color[HTML]{{707070}}\\small{{{x}\\%p}}\\;\\tiny{{({x}\\%)}}}}\\\\{{\\color[HTML]{{707070}}\\small{{{x}}}\\;\\tiny{{({x}\\%)}}}}}}"
+                f"{{\\color[HTML]{{5c06d4}}\\small{{{round((x['acc_endpoint_avg'] - x['acc_merging_REPAIR']) * 100, 1)}}}\\%p\\;\\tiny{{({0}\\%)}}}}\\\\ "
+                f"{{\\color[HTML]{{5c06d4}}\\small{{{round((x['loss_endpoint_avg'] - x['loss_merging_REPAIR']) * 100, 1)}}}\\;\\tiny{{({0}\\%)}}}}\\\\"
+                f"{{\\color[HTML]{{707070}}\\small{{{0}\\%p}}\\;\\tiny{{({0}\\%)}}}}\\\\"
+                f"{{\\color[HTML]{{707070}}\\small{{{0}}}\\;\\tiny{{({0}\\%)}}}}}}"
             )
 
         result = " & ".join(
