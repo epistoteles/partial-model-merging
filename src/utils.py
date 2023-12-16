@@ -215,7 +215,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"endpoint avg: {x['acc_endpoint_avg']*100:.1f}% / {x['loss_endpoint_avg']:.4f}" if x else "",
+                    f"endpoint avg: {x['acc_endpoint_avg'] * 100:.1f}% / {x['loss_endpoint_avg']:.4f}" if x else "",
                     style="white",
                 )
                 for x in accs
@@ -224,7 +224,9 @@ def model_table(dataset: str, architecture: str, bn: bool):
         table.add_row(
             "",
             *[
-                Text(f"merging:      {x['acc_merging']*100:.1f}% / {x['loss_merging']:.4f}" if x else "", style="white")
+                Text(
+                    f"merging:      {x['acc_merging'] * 100:.1f}% / {x['loss_merging']:.4f}" if x else "", style="white"
+                )
                 for x in accs
             ],
         )
@@ -232,7 +234,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"B merging:    {(x['acc_endpoint_avg']-x['acc_merging'])*100:.1f}%p / {x['loss_merging']-x['loss_endpoint_avg']:.4f}"
+                    f"B merging:    {(x['acc_endpoint_avg'] - x['acc_merging']) * 100:.1f}%p / {x['loss_merging'] - x['loss_endpoint_avg']:.4f}"
                     if x
                     else "",
                     style="white",
@@ -244,7 +246,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"merg + REP:   {x['acc_merging_REPAIR']*100:.1f}% / {x['loss_merging_REPAIR']:.4f}" if x else "",
+                    f"merg + REP:   {x['acc_merging_REPAIR'] * 100:.1f}% / {x['loss_merging_REPAIR']:.4f}" if x else "",
                     style="white",
                 )
                 for x in accs
@@ -254,7 +256,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"B merg + REP: {(x['acc_endpoint_avg']-x['acc_merging_REPAIR'])*100:.1f}%p / {x['loss_merging_REPAIR']-x['loss_endpoint_avg']:.4f}"
+                    f"B merg + REP: {(x['acc_endpoint_avg'] - x['acc_merging_REPAIR']) * 100:.1f}%p / {x['loss_merging_REPAIR'] - x['loss_endpoint_avg']:.4f}"
                     if x
                     else "",
                     style="white",
@@ -266,7 +268,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"D merg + REP: {((x['acc_endpoint_avg']-x['acc_merging_REPAIR'])/(x['acc_endpoint_avg']-x['acc_merging'])-1)*100:.1f}% / {((x['loss_merging_REPAIR']-x['loss_endpoint_avg'])/(x['loss_merging']-x['loss_endpoint_avg'])-1)*100:.1f}%"
+                    f"D merg + REP: {((x['acc_endpoint_avg'] - x['acc_merging_REPAIR']) / (x['acc_endpoint_avg'] - x['acc_merging']) - 1) * 100:.1f}% / {((x['loss_merging_REPAIR'] - x['loss_endpoint_avg']) / (x['loss_merging'] - x['loss_endpoint_avg']) - 1) * 100:.1f}%"
                     if x
                     else "",
                     style="white",
@@ -278,7 +280,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"mer+RE@1.2:   {x['acc_merging@1.2_REPAIR']*100:.1f}% / {x['loss_merging@1.2_REPAIR']:.4f}"
+                    f"mer+RE@1.2:   {x['acc_merging@1.2_REPAIR'] * 100:.1f}% / {x['loss_merging@1.2_REPAIR']:.4f}"
                     if x != "" and "acc_merging@1.2_REPAIR" in x.keys()
                     else "",
                     style="white",
@@ -290,7 +292,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"B mer+RE@1.2: {(x['acc_endpoint_avg']-x['acc_merging@1.2_REPAIR'])*100:.1f}%p / {x['loss_merging@1.2_REPAIR']-x['loss_endpoint_avg']:.4f}"
+                    f"B mer+RE@1.2: {(x['acc_endpoint_avg'] - x['acc_merging@1.2_REPAIR']) * 100:.1f}%p / {x['loss_merging@1.2_REPAIR'] - x['loss_endpoint_avg']:.4f}"
                     if x != "" and "acc_merging@1.2_REPAIR" in x.keys()
                     else "",
                     style="white",
@@ -302,7 +304,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"D mer+RE@1.2: {((x['acc_endpoint_avg']-x['acc_merging@1.2_REPAIR']) / (x['acc_endpoint_avg'] - x['acc_merging']) - 1)*100:.1f}% / {((x['loss_merging@1.2_REPAIR']-x['loss_endpoint_avg']) / (x['loss_merging'] - x['loss_endpoint_avg']) - 1)*100:.1f}%"
+                    f"D mer+RE@1.2: {((x['acc_endpoint_avg'] - x['acc_merging@1.2_REPAIR']) / (x['acc_endpoint_avg'] - x['acc_merging']) - 1) * 100:.1f}% / {((x['loss_merging@1.2_REPAIR'] - x['loss_endpoint_avg']) / (x['loss_merging'] - x['loss_endpoint_avg']) - 1) * 100:.1f}%"
                     if x != "" and "acc_merging@1.2_REPAIR" in x.keys()
                     else "",
                     style="white",
@@ -344,19 +346,17 @@ def model_table(dataset: str, architecture: str, bn: bool):
                 for x in accs
             ],
         )
-        # table.add_row(
-        #     "",
-        #     *[
-        #         Text(
-        #             f"relative: {(x['acc_merging_REPAIR']-x['acc_merging@1.2_REPAIR'])/(x['acc_endpoint_avg']-x['acc_merging_REPAIR']):.4f} / {(x['loss_merging_REPAIR']-x['loss_merging@1.2_REPAIR'])/(x['loss_endpoint_avg']-x['loss_merging_REPAIR']):.4f}"
-        #             if "acc_merging@1.2_REPAIR" in x
-        #             else "",
-        #             style="white",
-        #         )
-        #         for x in accs
-        #     ],
-        # )
         table.add_section()
+        not_exists = f"\\makecell[cc]{{--}}"
+
+        def exists(x):
+            return (
+                f"\\makecell[cc]{{\\small{{{round((x['acc_endpoint_avg'] - x['acc_merging']) * 100, 1)}\\%p}}\\\\\\small{{0.577}}\\\\{{\\color[HTML]{{5c06d4}}\\small{{17.6}}\\%p\\;\\tiny{{(-82.7\\%)}}}}\\\\ {{\\color[HTML]{{5c06d4}}\\small{{0.123}}\\;\\tiny{{(-80.7\\%)}}}}\\\\"
+                f"{{\\color[HTML]{{707070}}\\small{{-5.6\\%p}}\\;\\tiny{{(-123.7\\%)}}}}\\\\{{\\color[HTML]{{707070}}\\small{{-0.123}}\\;\\tiny{{(-123.7\\%)}}}}}}"
+            )
+
+        result = [exists(x) if x != "" and "acc_merging@1.2_REPAIR" in x.keys() else not_exists for x in accs]
+        print(result)
     console = Console()
     console.print(table)
 
