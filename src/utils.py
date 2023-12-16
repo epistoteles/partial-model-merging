@@ -312,7 +312,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             *[
                 Text(
                     f"mer+RE@1.2:   {x['acc_merging@1.2_REPAIR']:.4f} / {x['loss_merging@1.2_REPAIR']:.4f}"
-                    if x
+                    if "acc_merging@1.2_REPAIR" in x.keys()
                     else "",
                     style="white",
                 )
@@ -336,7 +336,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             *[
                 Text(
                     f"D mer+RE@1.2: {((x['acc_endpoint_avg']-x['acc_merging@1.2_REPAIR']) / (x['acc_endpoint_avg'] - x['acc_merging']) - 1)*100:.1f}% / {((x['loss_merging@1.2_REPAIR']-x['loss_endpoint_avg']) / (x['loss_merging'] - x['loss_endpoint_avg']) - 1)*100:.1f}%"
-                    if x
+                    if "acc_merging@1.2_REPAIR" in x.keys()
                     else "",
                     style="white",
                 )
