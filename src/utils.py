@@ -351,14 +351,13 @@ def model_table(dataset: str, architecture: str, bn: bool):
 
         def exists(x):
             return (
-                f"\\makecell[cc]{{\\small{{{round((x['acc_endpoint_avg'] - x['acc_merging']) * 100, 1)}\\%p}}\\\\\\small{{0.577}}\\\\{{\\color[HTML]{{5c06d4}}\\small{{17.6}}\\%p\\;\\tiny{{(-82.7\\%)}}}}\\\\ {{\\color[HTML]{{5c06d4}}\\small{{0.123}}\\;\\tiny{{(-80.7\\%)}}}}\\\\"
-                f"{{\\color[HTML]{{707070}}\\small{{-5.6\\%p}}\\;\\tiny{{(-123.7\\%)}}}}\\\\{{\\color[HTML]{{707070}}\\small{{-0.123}}\\;\\tiny{{(-123.7\\%)}}}}}}"
+                f"\\makecell[cc]{{\\small{{{round((x['acc_endpoint_avg'] - x['acc_merging']) * 100, 1)}\\%p}}\\\\\\small{{{round((x['loss_endpoint_avg'] - x['loss_merging']) * 100, 1)}}}\\\\"
+                f"{{\\color[HTML]{{5c06d4}}\\small{{{round((x['acc_endpoint_avg'] - x['acc_merging_REPAIR']) * 100, 1)}}}\\%p\\;\\tiny{{({x}\\%)}}}}\\\\ {{\\color[HTML]{{5c06d4}}\\small{{{round((x['loss_endpoint_avg'] - x['loss_merging_REPAIR']) * 100, 1)}}}\\;\\tiny{{({x}\\%)}}}}\\\\"
+                f"{{\\color[HTML]{{707070}}\\small{{{x}\\%p}}\\;\\tiny{{({x}\\%)}}}}\\\\{{\\color[HTML]{{707070}}\\small{{{x}}}\\;\\tiny{{({x}\\%)}}}}}}"
             )
 
-        result = (
-            f"${width}\\times$ & "
-            + " & ".join([exists(x) if x != "" and "acc_merging@1.2_REPAIR" in x.keys() else not_exists for x in accs])
-            + f" \\\\ \\cline{{2-5}} \\cline{{7-10}}"
+        result = " & ".join(
+            [exists(x) if x != "" and "acc_merging@1.2_REPAIR" in x.keys() else not_exists for x in accs]
         )
         print(result)
     console = Console()
