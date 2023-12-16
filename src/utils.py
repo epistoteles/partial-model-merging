@@ -352,10 +352,10 @@ def model_table(dataset: str, architecture: str, bn: bool):
         def exists(x):
             return (
                 f"\\makecell[cc]{{\\small{{{round((x['acc_endpoint_avg'] - x['acc_merging']) * 100, 1)}\\%p}}\\\\\\small{{{round((x['loss_merging'] - x['loss_endpoint_avg']), 3)}}}\\\\"
-                f"{{\\color[HTML]{{5c06d4}}\\small{{{round((x['acc_endpoint_avg'] - x['acc_merging_REPAIR']) * 100, 1)}}}\\%p\\;\\tiny{{({round(((x['acc_endpoint_avg'] - x['acc_merging_REPAIR']) / (x['acc_endpoint_avg'] - x['acc_merging']) - 1) * 100, 1)}\\%)}}}}\\\\ "
-                f"{{\\color[HTML]{{5c06d4}}\\small{{{round((x['loss_merging_REPAIR'] - x['loss_endpoint_avg']), 3)}}}\\;\\tiny{{({round(((x['loss_merging_REPAIR'] - x['loss_endpoint_avg']) / (x['loss_merging'] - x['loss_endpoint_avg']) - 1) * 100, 1)}\\%)}}}}\\\\"
-                f"{{\\color[HTML]{{707070}}\\small{{{round((x['acc_endpoint_avg'] - x['acc_ensembling']) * 100, 1)}\\%p}}\\;\\tiny{{({round(((x['acc_endpoint_avg'] - x['acc_ensembling']) / (x['acc_endpoint_avg'] - x['acc_merging']) - 1) * 100,1)}\\%)}}}}\\\\"
-                f"{{\\color[HTML]{{707070}}\\small{{{round(x['loss_ensembling'] - x['loss_endpoint_avg'], 3)}}}\\;\\tiny{{({round(((x['loss_ensembling'] - x['loss_endpoint_avg']) / (x['loss_merging'] - x['loss_endpoint_avg']) - 1) * 100, 1)}\\%)}}}}}}"
+                f"{{\\color[HTML]{{5c06d4}}\\small{{{round((x['acc_endpoint_avg'] - x['acc_merging_REPAIR']) * 100, 1)}}}\\%p\\;\\footnotesize{{({round(((x['acc_endpoint_avg'] - x['acc_merging_REPAIR']) / (x['acc_endpoint_avg'] - x['acc_merging']) - 1) * 100, 1)}\\%)}}}}\\\\ "
+                f"{{\\color[HTML]{{5c06d4}}\\small{{{round((x['loss_merging_REPAIR'] - x['loss_endpoint_avg']), 3)}}}\\;\\footnotesize{{({round(((x['loss_merging_REPAIR'] - x['loss_endpoint_avg']) / (x['loss_merging'] - x['loss_endpoint_avg']) - 1) * 100, 1)}\\%)}}}}\\\\"
+                f"{{\\color[HTML]{{707070}}\\small{{{round((x['acc_endpoint_avg'] - x['acc_ensembling']) * 100, 1)}\\%p}}\\;\\footnotesize{{({round(((x['acc_endpoint_avg'] - x['acc_ensembling']) / (x['acc_endpoint_avg'] - x['acc_merging']) - 1) * 100,1)}\\%)}}}}\\\\"
+                f"{{\\color[HTML]{{707070}}\\small{{{round(x['loss_ensembling'] - x['loss_endpoint_avg'], 3)}}}\\;\\footnotesize{{({round(((x['loss_ensembling'] - x['loss_endpoint_avg']) / (x['loss_merging'] - x['loss_endpoint_avg']) - 1) * 100, 1)}\\%)}}}}}}"
             )
 
         result = (
