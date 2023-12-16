@@ -215,7 +215,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"endpoints:    {x['acc_endpoint_avg']*100:.1f}% / {x['loss_endpoint_avg']:.4f}" if x else "",
+                    f"endpoint avg: {x['acc_endpoint_avg']*100:.1f}% / {x['loss_endpoint_avg']:.4f}" if x else "",
                     style="white",
                 )
                 for x in accs
@@ -258,9 +258,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
         table.add_row(
             "",
             *[
-                Text(
-                    f"merging:      {x['acc_merging']*100:.1f}%p / {x['loss_merging']:.4f}" if x else "", style="white"
-                )
+                Text(f"merging:      {x['acc_merging']*100:.1f}% / {x['loss_merging']:.4f}" if x else "", style="white")
                 for x in accs
             ],
         )
@@ -268,7 +266,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"B merging:    {(x['acc_endpoint_avg']-x['acc_merging'])*100:.1f}% / {x['loss_merging']-x['loss_endpoint_avg']:.4f}"
+                    f"B merging:    {(x['acc_endpoint_avg']-x['acc_merging'])*100:.1f}%p / {x['loss_merging']-x['loss_endpoint_avg']:.4f}"
                     if x
                     else "",
                     style="white",
