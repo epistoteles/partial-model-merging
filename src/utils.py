@@ -358,10 +358,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
                 f"{{\\color[HTML]{{707070}}\\small{{{round(x['loss_ensembling'] - x['loss_endpoint_avg'], 3)}}}\\;\\footnotesize{{({round(((x['loss_ensembling'] - x['loss_endpoint_avg']) / (x['loss_merging'] - x['loss_endpoint_avg']) - 1) * 100, 1)}\\%)}}}}}}"
             )
 
-        result = (
-            " & ".join([exists(x) if x != "" and "acc_merging@1.2_REPAIR" in x.keys() else not_exists for x in accs])
-            + "\n\n"
-        )
+        result = " & ".join([exists(x) if x != "" else not_exists for x in accs]) + "\n\n"
         print(result)
     console = Console()
     console.print(table)
