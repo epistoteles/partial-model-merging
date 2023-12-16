@@ -224,40 +224,6 @@ def model_table(dataset: str, architecture: str, bn: bool):
         table.add_row(
             "",
             *[
-                Text(
-                    f"ensembling:   {x['acc_ensembling']*100:.1f}% / {x['loss_ensembling']:.4f}" if x else "",
-                    style="white",
-                )
-                for x in accs
-            ],
-        )
-        table.add_row(
-            "",
-            *[
-                Text(
-                    f"B ensembling: {(x['acc_endpoint_avg'] - x['acc_ensembling'])*100:.1f}%p / {x['loss_ensembling'] - x['loss_endpoint_avg']:.4f}"
-                    if x
-                    else "",
-                    style="white",
-                )
-                for x in accs
-            ],
-        )
-        table.add_row(
-            "",
-            *[
-                Text(
-                    f"D ensembling: {((x['acc_endpoint_avg'] - x['acc_ensembling']) / (x['acc_endpoint_avg'] - x['acc_merging']) - 1) * 100:.1f}% / {((x['loss_ensembling'] - x['loss_endpoint_avg']) / (x['loss_merging'] - x['loss_endpoint_avg']) - 1) * 100:.1f}%"
-                    if x
-                    else "",
-                    style="white",
-                )
-                for x in accs
-            ],
-        )
-        table.add_row(
-            "",
-            *[
                 Text(f"merging:      {x['acc_merging']*100:.1f}% / {x['loss_merging']:.4f}" if x else "", style="white")
                 for x in accs
             ],
@@ -278,7 +244,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"merg + REP:   {x['acc_merging_REPAIR']*100:.1f}%p / {x['loss_merging_REPAIR']:.4f}" if x else "",
+                    f"merg + REP:   {x['acc_merging_REPAIR']*100:.1f}% / {x['loss_merging_REPAIR']:.4f}" if x else "",
                     style="white",
                 )
                 for x in accs
@@ -338,6 +304,40 @@ def model_table(dataset: str, architecture: str, bn: bool):
                 Text(
                     f"D mer+RE@1.2: {((x['acc_endpoint_avg']-x['acc_merging@1.2_REPAIR']) / (x['acc_endpoint_avg'] - x['acc_merging']) - 1)*100:.1f}% / {((x['loss_merging@1.2_REPAIR']-x['loss_endpoint_avg']) / (x['loss_merging'] - x['loss_endpoint_avg']) - 1)*100:.1f}%"
                     if x != "" and "acc_merging@1.2_REPAIR" in x.keys()
+                    else "",
+                    style="white",
+                )
+                for x in accs
+            ],
+        )
+        table.add_row(
+            "",
+            *[
+                Text(
+                    f"ensembling:   {x['acc_ensembling'] * 100:.1f}% / {x['loss_ensembling']:.4f}" if x else "",
+                    style="white",
+                )
+                for x in accs
+            ],
+        )
+        table.add_row(
+            "",
+            *[
+                Text(
+                    f"B ensembling: {(x['acc_endpoint_avg'] - x['acc_ensembling']) * 100:.1f}%p / {x['loss_ensembling'] - x['loss_endpoint_avg']:.4f}"
+                    if x
+                    else "",
+                    style="white",
+                )
+                for x in accs
+            ],
+        )
+        table.add_row(
+            "",
+            *[
+                Text(
+                    f"D ensembling: {((x['acc_endpoint_avg'] - x['acc_ensembling']) / (x['acc_endpoint_avg'] - x['acc_merging']) - 1) * 100:.1f}% / {((x['loss_ensembling'] - x['loss_endpoint_avg']) / (x['loss_merging'] - x['loss_endpoint_avg']) - 1) * 100:.1f}%"
+                    if x
                     else "",
                     style="white",
                 )
