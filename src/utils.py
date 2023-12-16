@@ -215,7 +215,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"endpoints:    {x['acc_endpoint_avg']:.4f} / {x['loss_endpoint_avg']:.4f}" if x else "",
+                    f"endpoints:    {x['acc_endpoint_avg']*100:.1f}% / {x['loss_endpoint_avg']:.4f}" if x else "",
                     style="white",
                 )
                 for x in accs
@@ -225,7 +225,8 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"ensembling:   {x['acc_ensembling']:.4f} / {x['loss_ensembling']:.4f}" if x else "", style="white"
+                    f"ensembling:   {x['acc_ensembling']*100:.1f}% / {x['loss_ensembling']:.4f}" if x else "",
+                    style="white",
                 )
                 for x in accs
             ],
@@ -234,7 +235,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"B ensembling: {x['acc_endpoint_avg'] - x['acc_ensembling']:.4f} / {x['loss_ensembling'] - x['loss_endpoint_avg']:.4f}"
+                    f"B ensembling: {(x['acc_endpoint_avg'] - x['acc_ensembling'])*100:.1f}%p / {x['loss_ensembling'] - x['loss_endpoint_avg']:.4f}"
                     if x
                     else "",
                     style="white",
@@ -267,7 +268,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"B merging:    {(x['acc_endpoint_avg']-x['acc_merging'])*100:.1f}%p / {x['loss_merging']-x['loss_endpoint_avg']:.4f}"
+                    f"B merging:    {(x['acc_endpoint_avg']-x['acc_merging'])*100:.1f}% / {x['loss_merging']-x['loss_endpoint_avg']:.4f}"
                     if x
                     else "",
                     style="white",
@@ -313,7 +314,7 @@ def model_table(dataset: str, architecture: str, bn: bool):
             "",
             *[
                 Text(
-                    f"mer+RE@1.2:   {x['acc_merging@1.2_REPAIR']*100:.1f}%p / {x['loss_merging@1.2_REPAIR']:.4f}"
+                    f"mer+RE@1.2:   {x['acc_merging@1.2_REPAIR']*100:.1f}% / {x['loss_merging@1.2_REPAIR']:.4f}"
                     if x != "" and "acc_merging@1.2_REPAIR" in x.keys()
                     else "",
                     style="white",
