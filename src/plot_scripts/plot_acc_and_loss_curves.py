@@ -49,9 +49,7 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
         sns.lineplot(x=metrics["alphas"], y=metrics[f"ensembling_{split}_{metric}"], label="ensembling", color="black")
         # sns.lineplot(x=metrics["alphas"], y=metrics[f"naive_{split}_{metric}"], label="naive merging", color='')
         sns.lineplot(
-            x=metrics["alphas"],
-            y=metrics[f"merging_{split}_{metric}"],
-            color=plt.cm.rainbow(0),  # label="full merging"
+            x=metrics["alphas"], y=metrics[f"merging_{split}_{metric}"], color=plt.cm.rainbow(0), label="full merging"
         )
 
         green = "#f5ffeb"
