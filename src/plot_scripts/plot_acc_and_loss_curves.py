@@ -76,14 +76,14 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
                 )
 
         ax = plt.gca()
-        ax.set_facecolor("##ffebeb" if metric == "acc" else "##f5ffeb")
+        ax.set_facecolor("#ffebeb" if metric == "acc" else "#f5ffeb")
         m_1 = metrics[f"ensembling_{split}_{metric}"][0]
         m_2 = metrics[f"ensembling_{split}_{metric}"][-1]
         xlim = ax.get_xlim()
         ylim = ax.get_ylim()
         vertices = [(0, m_1), (1, m_2), (xlim[1], ylim[1]), (xlim[0], ylim[1]), (0, m_1)]
         polygon = patches.Polygon(
-            vertices, closed=True, facecolor="##f5ffeb" if metric == "acc" else "##ffebeb", edgecolor="none", zorder=-1
+            vertices, closed=True, facecolor="#f5ffeb" if metric == "acc" else "#ffebeb", edgecolor="none", zorder=-1
         )
         ax.add_patch(polygon)
         ax.set_xlim(xlim)
