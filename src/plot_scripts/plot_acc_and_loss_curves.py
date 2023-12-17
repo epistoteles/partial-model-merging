@@ -54,8 +54,10 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
             color=plt.cm.rainbow(0),  # label="full merging"
         )
 
+        green = "#f5ffeb"
+        red = "#ffebeb"
         ax = plt.gca()
-        ax.set_facecolor("#ffebeb" if metric == "acc" else "#f5ffeb")
+        ax.set_facecolor(red if metric == "accs" else green)
         m_1 = metrics[f"ensembling_{split}_{metric}"][0]
         m_2 = metrics[f"ensembling_{split}_{metric}"][-1]
         m_diff = m_1 - m_2
@@ -68,7 +70,7 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
             (xlim[0], ylim[1]),
         ]
         polygon = patches.Polygon(
-            vertices, closed=True, facecolor="#f5ffeb" if metric == "acc" else "#ffebeb", edgecolor="none", zorder=-1
+            vertices, closed=True, facecolor=green if metric == "accs" else red, edgecolor="none", zorder=-1
         )
         ax.add_patch(polygon)
         ax.set_xlim(xlim)
@@ -111,7 +113,7 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
             sns.lineplot(
                 x=metrics["alphas"],
                 y=metrics[f"merging_REPAIR_{split}_{metric}"],
-                label="merging + REPAIR ",
+                # label="merging + REPAIR ",
                 color=plt.cm.rainbow(0),
                 dashes=(2, 2),
             )
