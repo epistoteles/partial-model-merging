@@ -80,7 +80,7 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
         m_2 = metrics[f"ensembling_{split}_{metric}"][-1]
         xlim = ax.get_xlim()
         ylim = ax.get_ylim()
-        vertices = [(0, m_1), (1, m_2), (1, ylim[1]), (0, ylim[1]), (0, m_1)]
+        vertices = [(0, m_1), (1, m_2), (xlim[1], ylim[1]), (xlim[0], ylim[1]), (0, m_1)]
         polygon = patches.Polygon(vertices, closed=True, facecolor="lightgrey", edgecolor="none", zorder=-1)
         ax.add_patch(polygon)
         ax.set_xlim(xlim)
@@ -110,7 +110,7 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
                 sns.lineplot(
                     x=metrics["alphas"],
                     y=metrics[f"partial_merging_REPAIR_{k}_{split}_{metric}"],
-                    label=f"partial merging + REPAIR (+{int(round((k-1)*100))}% buffer)",
+                    # label=f"partial merging + REPAIR (+{int(round((k-1)*100))}% buffer)",
                     color=plt.cm.rainbow(k - 1),
                     dashes=(2, 2),
                 )
