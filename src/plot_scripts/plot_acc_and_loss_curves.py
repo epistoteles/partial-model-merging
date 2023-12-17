@@ -52,6 +52,21 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
             x=metrics["alphas"], y=metrics[f"merging_{split}_{metric}"], label="full merging", color=plt.cm.rainbow(0)
         )
 
+        ax = plt.gca()
+        ax.set_facecolor("#ffebeb" if metric == "acc" else "#f5ffeb")
+        m_1 = metrics[f"ensembling_{split}_{metric}"][0]
+        m_2 = metrics[f"ensembling_{split}_{metric}"][-1]
+        m_diff = m_1 - m_2
+        xlim = ax.get_xlim()
+        ylim = ax.get_ylim()
+        vertices = [(xlim[0], m_1 + m_diff * xlim[0]), (1, m_2), (xlim[1], ylim[1]), (xlim[0], ylim[1]), (0, m_1)]
+        polygon = patches.Polygon(
+            vertices, closed=True, facecolor="#f5ffeb" if metric == "acc" else "#ffebeb", edgecolor="none", zorder=-1
+        )
+        ax.add_patch(polygon)
+        ax.set_xlim(xlim)
+        ax.set_ylim(ylim)
+
         plots_dir = get_plots_dir(subdir=Path(__file__).stem)
         os.makedirs(os.path.join(plots_dir, f"{model_name_a}{variant_b}/"), exist_ok=True)
         plt.savefig(
@@ -74,20 +89,6 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
                     label=f"partial merging (+{int(round((k-1)*100))}% buffer)",
                     color=plt.cm.rainbow(k - 1),
                 )
-
-        ax = plt.gca()
-        ax.set_facecolor("#ffebeb" if metric == "acc" else "#f5ffeb")
-        m_1 = metrics[f"ensembling_{split}_{metric}"][0]
-        m_2 = metrics[f"ensembling_{split}_{metric}"][-1]
-        xlim = ax.get_xlim()
-        ylim = ax.get_ylim()
-        vertices = [(0, m_1), (1, m_2), (xlim[1], ylim[1]), (xlim[0], ylim[1]), (0, m_1)]
-        polygon = patches.Polygon(
-            vertices, closed=True, facecolor="#f5ffeb" if metric == "acc" else "#ffebeb", edgecolor="none", zorder=-1
-        )
-        ax.add_patch(polygon)
-        ax.set_xlim(xlim)
-        ax.set_ylim(ylim)
 
         plt.savefig(
             os.path.join(
