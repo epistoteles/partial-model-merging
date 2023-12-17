@@ -58,6 +58,7 @@ plt.savefig(
         "param_count.png",
     ),
     dpi=600,
+    bbox_inches="tight",
 )
 plt.close()
 print("📊 param count plot saved")
