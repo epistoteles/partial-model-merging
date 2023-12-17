@@ -10,15 +10,15 @@ from safetensors.torch import load_file
 from src.utils import get_plots_dir, get_evaluations_dir
 
 
-plt.figure(figsize=(4.5, 4.5))
+plt.figure(figsize=(4, 4))
 plt.xlabel("added buffers in both endpoint (%)")
-plt.ylabel("added parameter count (%)")
+plt.ylabel("added non-zero parameter count (%)")
 plt.xticks(torch.linspace(0, 100, 11))
 plt.yticks(torch.linspace(0, 100, 6))
 plt.title("Width increase vs. parameter increase")
 
-# AUC diagonal
-sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), color="grey")
+# # AUC diagonal
+# sns.lineplot(x=torch.linspace(0, 100, 11), y=torch.linspace(0, 100, 11), color="grey")
 
 expansions = torch.linspace(0, 100, 11)
 
