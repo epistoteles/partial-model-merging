@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 import seaborn as sns
 import os
 from pathlib import Path
@@ -27,12 +28,16 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
         metrics = evaluate_two_models(model_name_a, model_name_b)
 
     for metric, split in product(["accs", "losses"], ["train", "test"]):
-        plt.figure(figsize=(12, 8))
+        fig, ax = plt.figure(figsize=(12, 8))
         plt.xlabel("alpha")
         plt.ylabel(f"{split} {metric}")
         plt.title(
             f"{dataset_a}, {model_type_a}{size_a},{' bn,' if batch_norm_a else ''} {width_a}×width, model {variant_a} vs. {variant_b}"
         )
+
+        vertices = [(0, 0), (0, 0.1), (0.1, 0.1), (0.1, 0), (0, 0)]
+        polygon = patches.Polygon(vertices, closed=True, facecolor="lightgrey", edgecolor="none")
+        ax.add_patch(polygon)
 
         if metric == "losses":
             sns.lineplot(
