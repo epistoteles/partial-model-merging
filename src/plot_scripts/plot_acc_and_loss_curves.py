@@ -30,7 +30,7 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
     for metric, split in product(["accs", "losses"], ["train", "test"]):
         plt.figure(figsize=(12, 8))
         plt.xlabel("alpha")
-        plt.ylabel(f"{split} {metric}")
+        plt.ylabel(f"{split} {'accuracies' if metric == 'accs' else metric}")
         plt.title(
             f"{dataset_a}, {model_type_a}{size_a},{'' if batch_norm_a else ''} {width_a}×width"  # , model {variant_a} vs. {variant_b}"
         )
