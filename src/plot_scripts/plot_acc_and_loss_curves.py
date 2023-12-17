@@ -32,7 +32,7 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
         plt.xlabel("alpha")
         plt.ylabel(f"{split} {metric}")
         plt.title(
-            f"{dataset_a}, {model_type_a}{size_a},{' bn,' if batch_norm_a else ''} {width_a}×width, model {variant_a} vs. {variant_b}"
+            f"{dataset_a}, {model_type_a}{size_a},{'' if batch_norm_a else ''} {width_a}×width"  # , model {variant_a} vs. {variant_b}"
         )
 
         # if metric == "losses":
