@@ -35,10 +35,6 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
             f"{dataset_a}, {model_type_a}{size_a},{' bn,' if batch_norm_a else ''} {width_a}×width, model {variant_a} vs. {variant_b}"
         )
 
-        vertices = [(0, 0), (0, 0.1), (0.1, 0.1), (0.1, 0), (0, 0)]
-        polygon = patches.Polygon(vertices, closed=True, facecolor="lightgrey", edgecolor="none")
-        plt.gca().add_patch(polygon)
-
         if metric == "losses":
             sns.lineplot(
                 x=torch.Tensor([0, 1]),
@@ -78,6 +74,13 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
                     label=f"partial merging (+{int(round((k-1)*100))}% buffer)",
                     color=plt.cm.rainbow(k - 1),
                 )
+
+        ax = plt.gca()
+        m_1 = metrics[f"ensembling_{split}_{metric}"][0]
+        m_2 = metrics[f"ensembling_{split}_{metric}"][0]
+        vertices = [(0, m_1), (1, m_2), (1, ax.get_ylim()), (0, ax.get_ylim()), (0, m_1)]
+        polygon = patches.Polygon(vertices, closed=True, facecolor="lightgrey", edgecolor="none", zorder=-1)
+        ax.add_patch(polygon)
 
         plt.savefig(
             os.path.join(
