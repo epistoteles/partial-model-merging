@@ -126,6 +126,9 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
                     dashes=(2, 2),
                 )
 
+        # just for the REPAIR label
+        sns.lineplot(x=[-1, -1], y=[-1, -1], dashes=(2, 2), label="with REPAIR", color="grey")
+
         plt.savefig(
             os.path.join(
                 plots_dir,
