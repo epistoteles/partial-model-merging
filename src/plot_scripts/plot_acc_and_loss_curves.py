@@ -59,7 +59,7 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
         m_diff = m_1 - m_2
         xlim = ax.get_xlim()
         ylim = ax.get_ylim()
-        vertices = [(xlim[0], m_1 + m_diff * xlim[0]), (1, m_2), (xlim[1], ylim[1]), (xlim[0], ylim[1]), (0, m_1)]
+        vertices = [(xlim[0], m_1 + m_diff * xlim[0]), (xlim[1], m_2), (xlim[1], ylim[1]), (xlim[0], ylim[1])]
         polygon = patches.Polygon(
             vertices, closed=True, facecolor="#f5ffeb" if metric == "acc" else "#ffebeb", edgecolor="none", zorder=-1
         )
