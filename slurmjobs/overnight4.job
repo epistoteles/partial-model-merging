@@ -36,5 +36,8 @@ python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 3.0 --lr 
 python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 3.4 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant a -bn -wandb -test
 python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 3.4 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant b -bn -wandb -test
 
+python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 3.6 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant a -bn -wandb -test
+python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 3.6 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant b -bn -wandb -test
+
 python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 3.8 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant a -bn -wandb -test
 python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 3.8 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant b -bn -wandb -test
