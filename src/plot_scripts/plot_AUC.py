@@ -11,7 +11,7 @@ from src.utils import get_plots_dir, get_evaluations_dir
 
 
 dataset = "SVHN"
-architecture = "ResNet"
+architecture = "VGG"
 bn = True
 
 metrics = ["acc", "loss"]
