@@ -28,7 +28,7 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
         metrics = evaluate_two_models(model_name_a, model_name_b)
 
     for metric, split in product(["accs", "losses"], ["train", "test"]):
-        fig = plt.figure(figsize=(12, 8))
+        plt.figure(figsize=(12, 8))
         plt.xlabel("alpha")
         plt.ylabel(f"{split} {metric}")
         plt.title(
@@ -75,15 +75,15 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
                     color=plt.cm.rainbow(k - 1),
                 )
 
-        fig.set_facecolor("#ffd9d9" if metric == "acc" else "#e7ffd9")
         ax = plt.gca()
+        ax.set_facecolor("##ffebeb" if metric == "acc" else "##f5ffeb")
         m_1 = metrics[f"ensembling_{split}_{metric}"][0]
         m_2 = metrics[f"ensembling_{split}_{metric}"][-1]
         xlim = ax.get_xlim()
         ylim = ax.get_ylim()
         vertices = [(0, m_1), (1, m_2), (xlim[1], ylim[1]), (xlim[0], ylim[1]), (0, m_1)]
         polygon = patches.Polygon(
-            vertices, closed=True, facecolor="#e7ffd9" if metric == "acc" else "#ffd9d9", edgecolor="none", zorder=-1
+            vertices, closed=True, facecolor="##f5ffeb" if metric == "acc" else "##ffebeb", edgecolor="none", zorder=-1
         )
         ax.add_patch(polygon)
         ax.set_xlim(xlim)
