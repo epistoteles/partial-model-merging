@@ -35,21 +35,23 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
             f"{dataset_a}, {model_type_a}{size_a},{' bn,' if batch_norm_a else ''} {width_a}×width, model {variant_a} vs. {variant_b}"
         )
 
-        if metric == "losses":
-            sns.lineplot(
-                x=torch.Tensor([0, 1]),
-                y=torch.Tensor(
-                    [metrics[f"ensembling_{split}_{metric}"][0], metrics[f"ensembling_{split}_{metric}"][-1]]
-                ),
-                label="zero loss barrier",
-                color="grey",
-                dashes=(2, 2),
-            )
+        # if metric == "losses":
+        #     sns.lineplot(
+        #         x=torch.Tensor([0, 1]),
+        #         y=torch.Tensor(
+        #             [metrics[f"ensembling_{split}_{metric}"][0], metrics[f"ensembling_{split}_{metric}"][-1]]
+        #         ),
+        #         label="zero loss barrier",
+        #         color="grey",
+        #         dashes=(2, 2),
+        #     )
 
         sns.lineplot(x=metrics["alphas"], y=metrics[f"ensembling_{split}_{metric}"], label="ensembling", color="black")
         # sns.lineplot(x=metrics["alphas"], y=metrics[f"naive_{split}_{metric}"], label="naive merging", color='')
         sns.lineplot(
-            x=metrics["alphas"], y=metrics[f"merging_{split}_{metric}"], label="full merging", color=plt.cm.rainbow(0)
+            x=metrics["alphas"],
+            y=metrics[f"merging_{split}_{metric}"],
+            color=plt.cm.rainbow(0),  # label="full merging"
         )
 
         ax = plt.gca()
@@ -61,7 +63,7 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None):
         ylim = ax.get_ylim()
         vertices = [
             (xlim[0], m_1 - m_diff * xlim[0]),
-            (xlim[1], m_1 - m_diff * xlim[0]),
+            (xlim[1], m_2 + m_diff * xlim[0]),
             (xlim[1], ylim[1]),
             (xlim[0], ylim[1]),
         ]
