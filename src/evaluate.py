@@ -765,7 +765,7 @@ def experiment_d(model_name_a: str, model_name_b: str = None, interpolation_step
                 metrics[f"adaptive_merging_{threshold:.1f}_test_accs"],
                 metrics[f"adaptive_merging_{threshold:.1f}_test_losses"],
             ) = evaluate_two_models_merging(model_a, model_b_perm, test_loader, interpolation_steps)
-            print(f"Midpoint test acc: {metrics[f'partial_merging_{threshold:.1f}_test_accs'][10]}")
+            print(f"Midpoint test acc: {metrics[f'adaptive_merging_{threshold:.1f}_test_accs'][10]}")
 
             print(f"Collecting adaptive merging + REPAIR metrics ({threshold:.1f}) ...")
             (
