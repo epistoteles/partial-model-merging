@@ -22,6 +22,7 @@ from src.utils import (
     partial_repair,
     get_num_params,
 )
+from src.models.VGG import VGG
 
 
 def get_acc_and_loss(model: torch.nn.Module, loader):
@@ -796,7 +797,7 @@ def get_used_buffer_neurons(model):
     result_absolute = torch.zeros(num_layers)
     result_relative = torch.zeros(num_layers)
 
-    if isinstance(model, torch.nn.VGG):
+    if isinstance(model, VGG):
         i = 0
         for layer in model.features:
             if isinstance(layer, torch.nn.BatchNorm2d):
