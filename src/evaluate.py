@@ -809,4 +809,6 @@ def get_used_buffer_neurons(model):
                 result_relative[i] = used_neurons_relative
                 i += 1
 
+    print(result_absolute)
+    print(result_relative)
     return result_absolute, result_relative
