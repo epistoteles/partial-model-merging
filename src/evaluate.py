@@ -742,7 +742,7 @@ def experiment_d(model_name_a: str, model_name_b: str = None, interpolation_step
         thresholds = [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.6, 0.8]
 
     for threshold in thresholds:
-        if f"adaptive_merging_REPAIR_{threshold:.1f}_test_accs" not in metrics.keys():
+        if f"adaptive_merging_REPAIR_{threshold:g}_test_accs" not in metrics.keys():
             print(f"Collecting adaptive merging metrics ({threshold:g}) ...")
             model_a = load_model(model_name_a).cuda()
             model_b = load_model(model_name_b).cuda()
