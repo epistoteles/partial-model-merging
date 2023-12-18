@@ -741,8 +741,8 @@ def experiment_d(model_name_a: str, model_name_b: str = None, interpolation_step
     thresholds = torch.linspace(0.1, 1.0, 10)
 
     for threshold in thresholds:
-        if f"adaptive_merging_REPAIR_{threshold}_test_accs" not in metrics.keys():
-            print(f"Collecting partial merging metrics ({threshold}) ...")
+        if f"adaptive_merging_REPAIR_{threshold:.1f}_test_accs" not in metrics.keys():
+            print(f"Collecting adaptive merging metrics ({threshold:.1f}) ...")
             model_a = load_model(model_name_a).cuda()
             model_b = load_model(model_name_b).cuda()
 
@@ -752,33 +752,33 @@ def experiment_d(model_name_a: str, model_name_b: str = None, interpolation_step
                 reference_model=model_a, model=model_b, loader=train_aug_loader, threshold=threshold
             )
             (
-                metrics[f"adaptive_merging_{threshold}_used_neurons_absolute"],
-                metrics[f"adaptive_merging_{threshold}_used_neurons_relative"],
+                metrics[f"adaptive_merging_{threshold:.1f}_used_neurons_absolute"],
+                metrics[f"adaptive_merging_{threshold:.1f}_used_neurons_relative"],
             ) = get_used_buffer_neurons(model_b_perm)
             (
-                metrics[f"adaptive_merging_{threshold}_train_accs"],
-                metrics[f"adaptive_merging_{threshold}_train_losses"],
+                metrics[f"adaptive_merging_{threshold:.1f}_train_accs"],
+                metrics[f"adaptive_merging_{threshold:.1f}_train_losses"],
             ) = evaluate_two_models_merging(model_a, model_b_perm, train_noaug_loader, interpolation_steps)
             (
-                metrics[f"adaptive_merging_{threshold}_test_accs"],
-                metrics[f"adaptive_merging_{threshold}_test_losses"],
+                metrics[f"adaptive_merging_{threshold:.1f}_test_accs"],
+                metrics[f"adaptive_merging_{threshold:.1f}_test_losses"],
             ) = evaluate_two_models_merging(model_a, model_b_perm, test_loader, interpolation_steps)
-            print(f"Midpoint test acc: {metrics[f'partial_merging_{threshold}_test_accs'][10]}")
+            print(f"Midpoint test acc: {metrics[f'partial_merging_{threshold:.1f}_test_accs'][10]}")
 
-            print(f"Collecting adaptive merging + REPAIR metrics ({threshold}) ...")
+            print(f"Collecting adaptive merging + REPAIR metrics ({threshold:.1f}) ...")
             (
-                metrics[f"adaptive_merging_REPAIR_{threshold}_train_accs"],
-                metrics[f"adaptive_merging_REPAIR_{threshold}_train_losses"],
+                metrics[f"adaptive_merging_REPAIR_{threshold:.1f}_train_accs"],
+                metrics[f"adaptive_merging_REPAIR_{threshold:.1f}_train_losses"],
             ) = evaluate_two_models_merging_REPAIR(
                 model_a, model_b_perm, train_noaug_loader, train_aug_loader, interpolation_steps
             )
             (
-                metrics[f"adaptive_merging_REPAIR_{threshold}_test_accs"],
-                metrics[f"adaptive_merging_REPAIR_{threshold}_test_losses"],
+                metrics[f"adaptive_merging_REPAIR_{threshold:.1f}_test_accs"],
+                metrics[f"adaptive_merging_REPAIR_{threshold:.1f}_test_losses"],
             ) = evaluate_two_models_merging_REPAIR(
                 model_a, model_b_perm, test_loader, train_aug_loader, interpolation_steps
             )
-            print(f"Midpoint test acc: {metrics[f'adaptive_merging_REPAIR_{threshold}_test_accs'][10]}")
+            print(f"Midpoint test acc: {metrics[f'adaptive_merging_REPAIR_{threshold:.1f}_test_accs'][10]}")
 
             save_evaluation_checkpoint(metrics, filepath)
             metrics = load_file(filepath)  # necessary because of a safetensors bug
