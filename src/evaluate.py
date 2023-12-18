@@ -739,7 +739,7 @@ def experiment_d(model_name_a: str, model_name_b: str = None, interpolation_step
 
     train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
     if thresholds is None:
-        thresholds = [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.6, 0.8]
+        thresholds = [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.6, 0.8, 1.0]
 
     for threshold in thresholds:
         if f"adaptive_merging_REPAIR_{threshold:g}_test_accs" not in metrics.keys():
