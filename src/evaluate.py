@@ -783,7 +783,9 @@ def experiment_d(model_name_a: str, model_name_b: str = None, interpolation_step
             print(f"Midpoint test acc: {metrics[f'adaptive_merging_REPAIR_{threshold:.1f}_test_accs'][10]}")
 
             num_params_adaptive = get_num_params(interpolate_models(model_a, model_b_perm), ignore_zeros=True)
-            metrics[f"adaptive_merging_{threshold:.1f}_param_increase"] = num_params_adaptive / num_params_default
+            metrics[f"adaptive_merging_{threshold:.1f}_param_increase"] = torch.Tensor(
+                [num_params_adaptive / num_params_default]
+            )
 
             save_evaluation_checkpoint(metrics, filepath)
             metrics = load_file(filepath)  # necessary because of a safetensors bug
