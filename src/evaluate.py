@@ -709,3 +709,103 @@ def experiment_c(model_name_a: str, model_name_b: str = None, threshold=1.1):
                 metrics = load_file(filepath)  # necessary because of a safetensors bug
 
     return metrics
+
+
+def experiment_d(model_name_a: str, model_name_b: str = None, interpolation_steps=21, threshold=1.1):
+    """
+    Performs adaptive buffer assignment from 0.1 to 1.0
+    """
+    if model_name_b is None:
+        model_name_b = f"{model_name_a}-b"
+        model_name_a = f"{model_name_a}-a"
+
+    dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
+    dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
+
+    assert model_type_a == model_type_b
+    assert size_a == size_b
+    assert batch_norm_a == batch_norm_b
+    assert width_a == width_b  # not strictly necessary, but always the case in our experiments
+
+    evaluations_dir = get_evaluations_dir(subdir="adaptive")
+    filepath = os.path.join(evaluations_dir, f"adaptive-{model_name_a}{variant_b}.safetensors")
+
+    if os.path.exists(filepath):
+        metrics = load_file(filepath)
+        print(f"📤 Loaded saved metrics for {model_name_a}{variant_b} from .safetensors")
+    else:
+        metrics = {"alphas": torch.linspace(0.0, 1.0, interpolation_steps)}
+
+    train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
+    thresholds = torch.linspace(0.1, 1.0, 10)
+
+    for threshold in thresholds:
+        if f"adaptive_merging_REPAIR_{threshold}_test_accs" not in metrics.keys():
+            print(f"Collecting partial merging metrics ({threshold}) ...")
+            model_a = load_model(model_name_a).cuda()
+            model_b = load_model(model_name_b).cuda()
+
+            model_a = expand_model(model_a, 2).cuda()
+            model_b = expand_model(model_b, 2).cuda()
+            model_b_perm = permute_model(
+                reference_model=model_a, model=model_b, loader=train_aug_loader, threshold=threshold
+            )
+            (
+                metrics[f"adaptive_merging_{threshold}_used_neurons_absolute"],
+                metrics[f"adaptive_merging_{threshold}_used_neurons_relative"],
+            ) = get_used_buffer_neurons(model_b_perm)
+            (
+                metrics[f"adaptive_merging_{threshold}_train_accs"],
+                metrics[f"adaptive_merging_{threshold}_train_losses"],
+            ) = evaluate_two_models_merging(model_a, model_b_perm, train_noaug_loader, interpolation_steps)
+            (
+                metrics[f"adaptive_merging_{threshold}_test_accs"],
+                metrics[f"adaptive_merging_{threshold}_test_losses"],
+            ) = evaluate_two_models_merging(model_a, model_b_perm, test_loader, interpolation_steps)
+            print(f"Midpoint test acc: {metrics[f'partial_merging_{threshold}_test_accs'][10]}")
+
+            print(f"Collecting adaptive merging + REPAIR metrics ({threshold}) ...")
+            (
+                metrics[f"adaptive_merging_REPAIR_{threshold}_train_accs"],
+                metrics[f"adaptive_merging_REPAIR_{threshold}_train_losses"],
+            ) = evaluate_two_models_merging_REPAIR(
+                model_a, model_b_perm, train_noaug_loader, train_aug_loader, interpolation_steps
+            )
+            (
+                metrics[f"adaptive_merging_REPAIR_{threshold}_test_accs"],
+                metrics[f"adaptive_merging_REPAIR_{threshold}_test_losses"],
+            ) = evaluate_two_models_merging_REPAIR(
+                model_a, model_b_perm, test_loader, train_aug_loader, interpolation_steps
+            )
+            print(f"Midpoint test acc: {metrics[f'adaptive_merging_REPAIR_{threshold}_test_accs'][10]}")
+
+            save_evaluation_checkpoint(metrics, filepath)
+            metrics = load_file(filepath)  # necessary because of a safetensors bug
+
+    return metrics
+
+
+def get_used_buffer_neurons(model):
+    """
+    From a model permuted with adaptive buffer assignment, fetches the number of
+    buffer neurons per layer that were actually used.
+    :param model:
+    :return:
+    """
+    num_layers = model.num_layers
+    result_absolute = torch.zeros(num_layers)
+    result_relative = torch.zeros(num_layers)
+
+    if isinstance(model, torch.nn.VGG):
+        i = 0
+        for layer in model.features:
+            if isinstance(layer, torch.nn.BatchNorm2d):
+                # width = len(layer.is_buffer)
+                original_width = (~layer.is_buffer).sum().item()
+                used_neurons_absolute = layer.is_buffer[:original_width].sum().item()
+                used_neurons_relative = used_neurons_absolute / original_width
+                result_absolute[i] = used_neurons_absolute
+                result_relative[i] = used_neurons_relative
+                i += 1
+
+    return result_absolute, result_relative
