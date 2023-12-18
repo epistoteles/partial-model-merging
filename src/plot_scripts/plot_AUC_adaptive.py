@@ -26,7 +26,7 @@ partial_merging = torch.zeros(len(metrics), len(widths), len(sizes), len(expansi
 partial_merging_REPAIR = torch.zeros(len(metrics), len(widths), len(sizes), len(expansions))
 adaptive_merging = torch.zeros(len(metrics), len(widths), len(sizes), len(thresholds))
 adaptive_merging_REPAIR = torch.zeros(len(metrics), len(widths), len(sizes), len(thresholds))
-adaptive_param_increase = torch.zeros(len(widths), len(sizes), len(thresholds))
+adaptive_param_increase = torch.ones(len(widths), len(sizes), len(thresholds))
 
 for i, size in enumerate(sizes):
     for j, width in enumerate(widths):
