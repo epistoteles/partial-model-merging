@@ -133,16 +133,16 @@ for m, metric in enumerate(["accuracy", "loss"]):
 
     # adaptive assignment
     sns.lineplot(
-        x=param_increase,
-        y=barrier_reduction_relative[m][0][0] * 100,
+        x=adaptive_param_increase[0][0],
+        y=adaptive_barrier_reduction_relative[m][0][0] * 100,
         label="adaptive buffer assignment",
         color="orange",
         marker="o",
         markersize=4,
     )
     sns.lineplot(
-        x=param_increase,
-        y=barrier_reduction_relative_REPAIR[m][0][0] * 100,
+        x=adaptive_param_increase[0][0],
+        y=adaptive_barrier_reduction_relative_REPAIR[m][0][0] * 100,
         dashes=(2, 2),
         color="orange",
         marker="o",
