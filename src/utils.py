@@ -777,7 +777,9 @@ def remove_buffer_flags(model):
 #####################
 
 # flake8: noqa: C901
-def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, loader, save_corr_path: str = None):
+def permute_model(
+    reference_model: torch.nn.Module, model: torch.nn.Module, loader, save_corr_path: str = None, threshold=1.1
+):
     """
     Merges the two models using traditional activation matching
     adapted from https://github.com/KellerJordan/REPAIR
@@ -799,7 +801,9 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             subnet_model = subnet(model, layer)
             if layer >= 2:
                 permute_input(perm_map, get_last_layer_from_subnet(subnet_model, "conv/linear"))
-            perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
+            perm_map = get_layer_perm(
+                subnet_ref, subnet_model, loader, save_corr_path, layer=layer, threshold=threshold
+            )
             permute_output(
                 perm_map,
                 get_last_layer_from_subnet(subnet_model, "conv/linear"),
@@ -817,19 +821,25 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             for layer in [1, 3, 7, 11, 15]:
                 subnet_ref = subnet(reference_model, layer)
                 subnet_model = subnet(model, layer)
-                _ = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
+                _ = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer, threshold=threshold)
             for layer in [7, 11, 15]:
                 subnet_ref = subnet(reference_model, layer, only_return="downsample")
                 subnet_model = subnet(model, layer, only_return="downsample")
-                _ = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=f"{layer}.downsample")
+                _ = get_layer_perm(
+                    subnet_ref, subnet_model, loader, save_corr_path, layer=f"{layer}.downsample", threshold=threshold
+                )
                 subnet_ref = subnet(reference_model, layer, only_return="residual")
                 subnet_model = subnet(model, layer, only_return="residual")
-                _ = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=f"{layer}.residual")
+                _ = get_layer_perm(
+                    subnet_ref, subnet_model, loader, save_corr_path, layer=f"{layer}.residual", threshold=threshold
+                )
         # intra-block permutation
         for layer in [2, 4, 6, 8, 10, 12, 14, 16]:
             subnet_ref = subnet(reference_model, layer)
             subnet_model = subnet(model, layer)
-            perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
+            perm_map = get_layer_perm(
+                subnet_ref, subnet_model, loader, save_corr_path, layer=layer, threshold=threshold
+            )
             subnet_model = subnet(model, layer + 1)
             permute_output(perm_map, subnet_model[-1].conv1, subnet_model[-1].bn1)
             permute_input(perm_map, subnet_model[-1].conv2)
@@ -839,7 +849,9 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             subnet_model = subnet(model, layer)
             if layer >= 9:
                 permute_input(perm_map, [subnet_model[-2].conv1, subnet_model[-2].downsample[0]])
-            perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
+            perm_map = get_layer_perm(
+                subnet_ref, subnet_model, loader, save_corr_path, layer=layer, threshold=threshold
+            )
             if layer == 5:  # special case for first conv
                 permute_output(perm_map, model.conv1, model.bn1)
                 permute_input(perm_map, [subnet_model[-1].conv1, subnet_model[-2].conv1])
@@ -857,12 +869,14 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             for layer in [1, 3, 5, 9, 11, 15, 17]:
                 subnet_ref = subnet(reference_model, layer)
                 subnet_model = subnet(model, layer)
-                _ = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
+                _ = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer, threshold=threshold)
         # intra-block permutation
         for layer in [2, 4, 6, 8, 10, 12, 14, 16, 18]:
             subnet_ref = subnet(reference_model, layer)
             subnet_model = subnet(model, layer)
-            perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
+            perm_map = get_layer_perm(
+                subnet_ref, subnet_model, loader, save_corr_path, layer=layer, threshold=threshold
+            )
             subnet_model = subnet(model, layer + 1)
             permute_output(perm_map, subnet_model[-1].conv1, subnet_model[-1].bn1)
             permute_input(perm_map, subnet_model[-1].conv2)
@@ -872,7 +886,9 @@ def permute_model(reference_model: torch.nn.Module, model: torch.nn.Module, load
             subnet_model = subnet(model, layer)
             if layer >= 13:
                 permute_input(perm_map, [subnet_model[-3].conv1, subnet_model[-3].downsample[0]])
-            perm_map = get_layer_perm(subnet_ref, subnet_model, loader, save_corr_path, layer=layer)
+            perm_map = get_layer_perm(
+                subnet_ref, subnet_model, loader, save_corr_path, layer=layer, threshold=threshold
+            )
             if layer == 7:  # special case for first conv
                 permute_output(perm_map, model.conv1, model.bn1)
                 permute_input(perm_map, [subnet_model[-1].conv1, subnet_model[-2].conv1, subnet_model[-3].conv1])
@@ -1148,7 +1164,12 @@ def get_corr_matrix(
 
 
 def smart_get_corr_matrix(
-    subnet_a: torch.nn.Sequential, subnet_b: torch.nn.Sequential, loader: Loader, epochs: int = 1, strategy: int = 1
+    subnet_a: torch.nn.Sequential,
+    subnet_b: torch.nn.Sequential,
+    loader: Loader,
+    epochs: int = 1,
+    strategy: int = 1,
+    threshold=1.1,
 ):
     """
     The same as get_corr_matrix, but takes is_buffer flags into account and modifies the correlation
@@ -1157,9 +1178,9 @@ def smart_get_corr_matrix(
     reference_is_buffer = get_is_buffer_from_subnet(subnet_a)
     model_is_buffer = get_is_buffer_from_subnet(subnet_b)
     corr = get_corr_matrix(subnet_a, subnet_b, loader, epochs, strategy)
-    corr[reference_is_buffer, :] = 1.1
-    corr[:, model_is_buffer] = 1.1
-    corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.1
+    corr[reference_is_buffer, :] = threshold
+    corr[:, model_is_buffer] = threshold
+    corr[reference_is_buffer.unsqueeze(1) & model_is_buffer.unsqueeze(0)] = -1.1 if threshold >= 1.0 else threshold
     return corr
 
 
@@ -1304,7 +1325,7 @@ def get_layer_perm_from_corr(corr_mtx, save_corr_path: str = None, layer: int | 
     return perm_map
 
 
-def get_layer_perm(subnet_a, subnet_b, loader, save_corr_path: str = None, layer: int | str = None):
+def get_layer_perm(subnet_a, subnet_b, loader, save_corr_path: str = None, layer: int | str = None, threshold=1.1):
     """
     Returns the channel permutation map to make the activations of the last layer in subnet_a
     most closely match those in the last layer of subnet_b.
@@ -1315,7 +1336,7 @@ def get_layer_perm(subnet_a, subnet_b, loader, save_corr_path: str = None, layer
     :param layer: which layer we are currently evaluating (relevant for the save_corr_path dict)
     :return: the permutation map
     """
-    corr_mtx = smart_get_corr_matrix(subnet_a, subnet_b, loader)
+    corr_mtx = smart_get_corr_matrix(subnet_a, subnet_b, loader, threshold=threshold)
     return get_layer_perm_from_corr(corr_mtx, save_corr_path, layer)
 
 

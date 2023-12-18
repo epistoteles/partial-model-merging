@@ -82,7 +82,7 @@ def evaluate_single_model(model_name: str):
 
 
 @track_emissions()
-def only_save_correlations(model_name_a: str, model_name_b: str = None) -> None:
+def only_save_correlations(model_name_a: str, model_name_b: str = None, threshold=1.1) -> None:
     """
     Permutes model b and saves the correlations and perm_maps, then does nothing.
     :param model_name_a: the name of the first (reference) model checkpoint
@@ -103,7 +103,13 @@ def only_save_correlations(model_name_a: str, model_name_b: str = None) -> None:
     model_a = load_model(model_name_a).cuda()
     model_b = load_model(model_name_b).cuda()
     train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
-    _ = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader, save_corr_path=save_corr_path)
+    _ = permute_model(
+        reference_model=model_a,
+        model=model_b,
+        loader=train_aug_loader,
+        save_corr_path=save_corr_path,
+        threshold=threshold,
+    )
     print("📥 Correlations and perm_maps saved as .safetensors")
 
 
@@ -113,6 +119,7 @@ def evaluate_two_models(
     model_name_b: str = None,
     interpolation_steps: int = 21,
     expansions: list[float] = None,
+    threshold=1.1,
 ):
     """
     Evaluates two models in terms of accuracy and loss with different combination techniques (and saves the result)
@@ -177,7 +184,11 @@ def evaluate_two_models(
             get_evaluations_dir(subdir="correlations"), f"{model_name_a}{variant_b}.safetensors"
         )
         model_b_perm = permute_model(
-            reference_model=model_a, model=model_b, loader=train_aug_loader, save_corr_path=save_corr_path
+            reference_model=model_a,
+            model=model_b,
+            loader=train_aug_loader,
+            save_corr_path=save_corr_path,
+            threshold=threshold,
         )
         metrics["merging_train_accs"], metrics["merging_train_losses"] = evaluate_two_models_merging(
             model_a, model_b_perm, train_noaug_loader, interpolation_steps
@@ -210,7 +221,9 @@ def evaluate_two_models(
 
             model_a = expand_model(model_a, k).cuda()
             model_b = expand_model(model_b, k).cuda()
-            model_b_perm = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader)
+            model_b_perm = permute_model(
+                reference_model=model_a, model=model_b, loader=train_aug_loader, threshold=threshold
+            )
             (
                 metrics[f"partial_merging_{k}_train_accs"],
                 metrics[f"partial_merging_{k}_train_losses"],
@@ -331,7 +344,7 @@ def evaluate_two_models_merging_REPAIR(
     return torch.FloatTensor(accs), torch.FloatTensor(losses)
 
 
-def experiment_b(model_name_a: str, model_name_b: str = None):
+def experiment_b(model_name_a: str, model_name_b: str = None, threshold=1.1):
     """
     Conducts leave-one-out experiments with full merging vs. ensembling and saves the results
     """
@@ -387,7 +400,7 @@ def experiment_b(model_name_a: str, model_name_b: str = None):
                 expansions[i] = exp
                 model_a_exp = expand_model(model_a, expansions).cuda()
                 model_b_exp = expand_model(model_b, expansions).cuda()
-                model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader).cuda()
+                model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader, threshold=threshold).cuda()
                 train_acc, train_loss = evaluate_two_models_merging(
                     model_a_exp, model_b_exp_perm, train_noaug_loader, 1
                 )
@@ -477,7 +490,7 @@ def experiment_b(model_name_a: str, model_name_b: str = None):
     return metrics
 
 
-def experiment_b_ResNet18(model_name_a: str, model_name_b: str = None):
+def experiment_b_ResNet18(model_name_a: str, model_name_b: str = None, threshold=1.1):
     """
     Conducts leave-one-out experiments with full merging vs. ensembling and saves the results
     """
@@ -553,7 +566,9 @@ def experiment_b_ResNet18(model_name_a: str, model_name_b: str = None):
                     expansions[index] = exp
                 model_a_exp = expand_model(model_a, expansions).cuda()
                 model_b_exp = expand_model(model_b, expansions).cuda()
-                model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_noaug_loader).cuda()
+                model_b_exp_perm = permute_model(
+                    model_a_exp, model_b_exp, train_noaug_loader, threshold=threshold
+                ).cuda()
                 train_acc, train_loss = evaluate_two_models_merging(
                     model_a_exp, model_b_exp_perm, train_noaug_loader, 1
                 )
@@ -585,7 +600,7 @@ def experiment_b_ResNet18(model_name_a: str, model_name_b: str = None):
     return metrics
 
 
-def experiment_c(model_name_a: str, model_name_b: str = None):
+def experiment_c(model_name_a: str, model_name_b: str = None, threshold=1.1):
     """
     Expands the model from front to back
     """
@@ -664,7 +679,7 @@ def experiment_c(model_name_a: str, model_name_b: str = None):
                     expansions[index] = exp
                 model_a_exp = expand_model(model_a, expansions).cuda()
                 model_b_exp = expand_model(model_b, expansions).cuda()
-                model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader).cuda()
+                model_b_exp_perm = permute_model(model_a_exp, model_b_exp, train_aug_loader, threshold=threshold).cuda()
                 train_acc, train_loss = evaluate_two_models_merging(
                     model_a_exp, model_b_exp_perm, train_noaug_loader, 1
                 )
