@@ -1322,18 +1322,25 @@ def get_layer_perm_from_corr(corr_mtx, save_corr_path: str = None, layer: int | 
         print("Candidates:", corr_mtx.mean())
         print("Selected:", corr_mtx[row_ind, col_ind].mean())
         save_file(corrs, filename=save_corr_path)
-    if threshold == -1:  # this means we didn't assign anything to the buffers yet: experiment e -> assign randomly
+    if threshold <= -1:  # -1 -> pull apart randomly; -2 -> pull apart worst matches
         is_buffer_mask = (torch.Tensor(corr_mtx) == threshold).all(dim=1)
         buffer_indices = torch.where(is_buffer_mask)[0]
         no_buffer_indices = torch.where(~is_buffer_mask)[0]
-        randomly_pulled_apart_indices = no_buffer_indices[
-            torch.randperm(no_buffer_indices.size(0))[: buffer_indices.size(0)]
-        ]
-        perm_map[buffer_indices], perm_map[randomly_pulled_apart_indices] = (
-            perm_map[randomly_pulled_apart_indices],
+        if threshold == -1:
+            print("    Randomly pulling apart neurons ...")
+            pulled_apart_indices = no_buffer_indices[
+                torch.randperm(no_buffer_indices.size(0))[: buffer_indices.size(0)]
+            ]
+        elif threshold == -2:
+            print("    Pulling apart smallest corr neurons ...")
+            selected_corrs = torch.Tensor(corr_mtx)[row_ind[no_buffer_indices], col_ind[no_buffer_indices]]
+            _, sorted_indices = torch.sort(selected_corrs)
+            pulled_apart_indices = sorted_indices[buffer_indices.size(0)]
+        perm_map[buffer_indices], perm_map[pulled_apart_indices] = (
+            perm_map[pulled_apart_indices],
             perm_map[buffer_indices].clone(),
         )
-    return perm_map
+    return perm_map.long()
 
 
 def get_layer_perm(subnet_a, subnet_b, loader, save_corr_path: str = None, layer: int | str = None, threshold=1.1):
