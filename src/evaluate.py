@@ -848,3 +848,99 @@ def get_used_buffer_neurons(model):
     print(result_absolute)
     print(result_relative)
     return result_absolute, result_relative
+
+
+def experiment_r(model_name_a: str, model_name_b: str = None, interpolation_steps=21, thresholds=None):
+    """
+    Pulls apart neurons randomly or pulls apart lowest selected corrs
+    """
+    if model_name_b is None:
+        model_name_b = f"{model_name_a}-b"
+        model_name_a = f"{model_name_a}-a"
+
+    dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
+    dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
+
+    assert model_type_a == model_type_b
+    assert size_a == size_b
+    assert batch_norm_a == batch_norm_b
+    assert width_a == width_b  # not strictly necessary, but always the case in our experiments
+
+    evaluations_dir = get_evaluations_dir(subdir="random-or-smallest")
+    filepath = os.path.join(evaluations_dir, f"random-or-smallest-{model_name_a}{variant_b}.safetensors")
+
+    if os.path.exists(filepath):
+        metrics = load_file(filepath)
+        print(f"📤 Loaded saved metrics for {model_name_a}{variant_b} from .safetensors")
+    else:
+        metrics = {"alphas": torch.linspace(0.0, 1.0, interpolation_steps)}
+
+    train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
+
+    for k in torch.linspace(0.1, 1, 10):
+        if f"pull_apart_randomly_merging_REPAIR_{k:g}_test_accs" not in metrics.keys():
+            print(f"Collecting pulling apart merging metrics ({k:g}) ...")
+            model_a = load_model(model_name_a).cuda()
+            model_b = load_model(model_name_b).cuda()
+
+            model_a = expand_model(model_a, 2).cuda()
+            model_b = expand_model(model_b, 2).cuda()
+            model_b_perm = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader, threshold=-1)
+            (
+                metrics[f"pull_apart_randomly_merging_{k:g}_train_accs"],
+                metrics[f"pull_apart_randomly_merging_{k:g}_train_losses"],
+            ) = evaluate_two_models_merging(model_a, model_b_perm, train_noaug_loader, interpolation_steps)
+            (
+                metrics[f"pull_apart_randomly_merging_{k:g}_test_accs"],
+                metrics[f"pull_apart_randomly_merging_{k:g}_test_losses"],
+            ) = evaluate_two_models_merging(model_a, model_b_perm, test_loader, interpolation_steps)
+            print(f"Midpoint test acc: {metrics[f'pull_apart_randomly_merging_{k:g}_test_accs'][10]}")
+
+            print(f"Collecting pull_apart_randomly merging + REPAIR metrics ({k:g}) ...")
+            (
+                metrics[f"pull_apart_randomly_merging_REPAIR_{k:g}_train_accs"],
+                metrics[f"pull_apart_randomly_merging_REPAIR_{k:g}_train_losses"],
+            ) = evaluate_two_models_merging_REPAIR(
+                model_a, model_b_perm, train_noaug_loader, train_aug_loader, interpolation_steps
+            )
+            (
+                metrics[f"pull_apart_randomly_merging_REPAIR_{k:g}_test_accs"],
+                metrics[f"pull_apart_randomly_merging_REPAIR_{k:g}_test_losses"],
+            ) = evaluate_two_models_merging_REPAIR(
+                model_a, model_b_perm, test_loader, train_aug_loader, interpolation_steps
+            )
+            print(f"Midpoint test acc: {metrics[f'pull_apart_randomly_merging_REPAIR_{k:g}_test_accs'][10]}")
+
+            save_evaluation_checkpoint(metrics, filepath)
+            metrics = load_file(filepath)  # necessary because of a safetensors bug
+
+            model_b_perm = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader, threshold=-2)
+            (
+                metrics[f"pull_apart_smallest_merging_{k:g}_train_accs"],
+                metrics[f"pull_apart_smallest_merging_{k:g}_train_losses"],
+            ) = evaluate_two_models_merging(model_a, model_b_perm, train_noaug_loader, interpolation_steps)
+            (
+                metrics[f"pull_apart_smallest_merging_{k:g}_test_accs"],
+                metrics[f"pull_apart_smallest_merging_{k:g}_test_losses"],
+            ) = evaluate_two_models_merging(model_a, model_b_perm, test_loader, interpolation_steps)
+            print(f"Midpoint test acc: {metrics[f'pull_apart_smallest_merging_{k:g}_test_accs'][10]}")
+
+            print(f"Collecting pull_apart_smallest merging + REPAIR metrics ({k:g}) ...")
+            (
+                metrics[f"pull_apart_smallest_merging_REPAIR_{k:g}_train_accs"],
+                metrics[f"pull_apart_smallest_merging_REPAIR_{k:g}_train_losses"],
+            ) = evaluate_two_models_merging_REPAIR(
+                model_a, model_b_perm, train_noaug_loader, train_aug_loader, interpolation_steps
+            )
+            (
+                metrics[f"pull_apart_smallest_merging_REPAIR_{k:g}_test_accs"],
+                metrics[f"pull_apart_smallest_merging_REPAIR_{k:g}_test_losses"],
+            ) = evaluate_two_models_merging_REPAIR(
+                model_a, model_b_perm, test_loader, train_aug_loader, interpolation_steps
+            )
+            print(f"Midpoint test acc: {metrics[f'pull_apart_smallest_merging_REPAIR_{k:g}_test_accs'][10]}")
+
+            save_evaluation_checkpoint(metrics, filepath)
+            metrics = load_file(filepath)  # necessary because of a safetensors bug
+
+    return metrics

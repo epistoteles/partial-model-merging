@@ -1337,7 +1337,7 @@ def get_layer_perm_from_corr(corr_mtx, save_corr_path: str = None, layer: int | 
             _, sorted_indices = torch.sort(selected_corrs)
             pulled_apart_indices = sorted_indices[buffer_indices.size(0)]
         perm_map[buffer_indices], perm_map[pulled_apart_indices] = (
-            perm_map[pulled_apart_indices],
+            perm_map[pulled_apart_indices].clone(),
             perm_map[buffer_indices].clone(),
         )
     return perm_map.long()
