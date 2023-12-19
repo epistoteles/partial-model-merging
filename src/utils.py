@@ -1335,9 +1335,9 @@ def get_layer_perm_from_corr(corr_mtx, save_corr_path: str = None, layer: int | 
             print("    Pulling apart smallest corr neurons ...")
             selected_corrs = torch.Tensor(corr_mtx)[row_ind[no_buffer_indices], col_ind[no_buffer_indices]]
             _, sorted_indices = torch.sort(selected_corrs)
-            pulled_apart_indices = sorted_indices[buffer_indices.size(0)]
+            pulled_apart_indices = sorted_indices[: buffer_indices.size(0)]
         perm_map[buffer_indices], perm_map[pulled_apart_indices] = (
-            perm_map[pulled_apart_indices].clone(),
+            perm_map[pulled_apart_indices],
             perm_map[buffer_indices].clone(),
         )
     return perm_map.long()
