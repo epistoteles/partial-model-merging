@@ -23,6 +23,7 @@ from src.utils import (
     get_num_params,
 )
 from src.models.VGG import VGG
+from src.models.ResNet import ResNet18
 
 
 def get_acc_and_loss(model: torch.nn.Module, loader):
@@ -816,6 +817,34 @@ def get_used_buffer_neurons(model):
                 result_absolute[i] = used_neurons_absolute
                 result_relative[i] = used_neurons_relative
                 i += 1
+
+    if isinstance(model, ResNet18):
+        num_layers = 20  # also counting downsample layers here
+        layers = [
+            model.bn1,
+            model.layer1[0].bn1,
+            model.layer1[0].bn2,
+            model.layer1[1].bn1,
+            model.layer1[1].bn2,
+            model.layer2[0].bn1,
+            model.layer2[0].bn2,
+            model.layer2[1].bn1,
+            model.layer2[1].bn2,
+            model.layer3[0].bn1,
+            model.layer3[0].bn2,
+            model.layer3[1].bn1,
+            model.layer3[1].bn2,
+            model.layer4[0].bn1,
+            model.layer4[0].bn2,
+            model.layer4[1].bn1,
+            model.layer4[1].bn2,
+        ]
+        for i, layer in enumerate(layers):
+            original_width = (~layer.is_buffer).sum().item()
+            used_neurons_absolute = layer.is_buffer[:original_width].sum().item()
+            used_neurons_relative = used_neurons_absolute / original_width
+            result_absolute[i] = used_neurons_absolute
+            result_relative[i] = used_neurons_relative
 
     print(result_absolute)
     print(result_relative)
