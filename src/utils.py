@@ -1297,7 +1297,7 @@ def manipulate_corr_matrix(corr_mtx):  # TODO: check if still used, then delete!
     return corr_mtx
 
 
-def get_layer_perm_from_corr(corr_mtx, save_corr_path: str = None, layer: int | str = None):
+def get_layer_perm_from_corr(corr_mtx, save_corr_path: str = None, layer: int | str = None, threshold=1.1):
     """
     Given a correlation matrix, returns the optimal permutation map that the LAP solver returns.
     :param corr_mtx: a correlation matrix
@@ -1322,6 +1322,17 @@ def get_layer_perm_from_corr(corr_mtx, save_corr_path: str = None, layer: int | 
         print("Candidates:", corr_mtx.mean())
         print("Selected:", corr_mtx[row_ind, col_ind].mean())
         save_file(corrs, filename=save_corr_path)
+    if threshold == -1:  # this means we didn't assign anything to the buffers yet: experiment e -> assign randomly
+        is_buffer_mask = (torch.Tensor(corr_mtx) == threshold).all(dim=1)
+        buffer_indices = torch.where(is_buffer_mask)[0]
+        no_buffer_indices = torch.where(~is_buffer_mask)[0]
+        randomly_pulled_apart_indices = no_buffer_indices[
+            torch.randperm(no_buffer_indices.size(0))[: buffer_indices.size(0)]
+        ]
+        perm_map[buffer_indices], perm_map[randomly_pulled_apart_indices] = (
+            perm_map[randomly_pulled_apart_indices],
+            perm_map[buffer_indices].clone(),
+        )
     return perm_map
 
 
@@ -1337,7 +1348,7 @@ def get_layer_perm(subnet_a, subnet_b, loader, save_corr_path: str = None, layer
     :return: the permutation map
     """
     corr_mtx = smart_get_corr_matrix(subnet_a, subnet_b, loader, threshold=threshold)
-    return get_layer_perm_from_corr(corr_mtx, save_corr_path, layer)
+    return get_layer_perm_from_corr(corr_mtx, save_corr_path, layer, threshold=threshold)
 
 
 ####################
