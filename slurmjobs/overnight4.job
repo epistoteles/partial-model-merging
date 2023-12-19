@@ -24,20 +24,12 @@ print('-'*50)
 "
 
 
-python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 2.2 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant a -bn -wandb -test
-python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 2.2 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant b -bn -wandb -test
+python src/train.py --dataset CIFAR100A --model ResNet --size 20 --width 32 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant a -bn -wandb -test
+python src/train.py --dataset CIFAR100B --model ResNet --size 20 --width 32 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant b -bn -wandb -test
 
-python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 2.6 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant a -bn -wandb -test
-python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 2.6 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant b -bn -wandb -test
-
-python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 3.0 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant a -bn -wandb -test
-python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 3.0 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant b -bn -wandb -test
-
-python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 3.4 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant a -bn -wandb -test
-python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 3.4 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant b -bn -wandb -test
-
-python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 3.6 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant a -bn -wandb -test
-python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 3.6 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant b -bn -wandb -test
-
-python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 3.8 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant a -bn -wandb -test
-python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 3.8 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant b -bn -wandb -test
+python -c "\
+from src.evaluate import *; \
+from src.plot_scripts.plot_acc_and_loss_curves import *; \
+evaluate_two_models('CIFAR100A-ResNet20-bn-32x-a', 'CIFAR100B-ResNet20-bn-32x-b', expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
+plot_acc_and_loss_curves('CIFAR100A-ResNet20-bn-32x-a', 'CIFAR100B-ResNet20-bn-32x-b')
+"

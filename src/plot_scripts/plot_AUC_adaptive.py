@@ -156,7 +156,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
     plt.savefig(
         os.path.join(
             plots_dir,
-            f"{metric}_AUC_{dataset}_{architecture}.png",
+            f"adaptive_{metric}_AUC_{dataset}_{architecture}.png",
         ),
         dpi=600,
     )
