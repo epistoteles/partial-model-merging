@@ -26,13 +26,6 @@ print('-'*50)
 python -c "\
 from src.evaluate import *; \
 from src.plot_scripts.plot_acc_and_loss_curves import *; \
-evaluate_two_models('CIFAR10-ResNet18-bn-2.2x', expansions=[]); \
-evaluate_two_models('CIFAR10-ResNet18-bn-2.4x', expansions=[]); \
-evaluate_two_models('CIFAR10-ResNet18-bn-2.6x', expansions=[]); \
-evaluate_two_models('CIFAR10-ResNet18-bn-2.8x', expansions=[]); \
-evaluate_two_models('CIFAR10-ResNet18-bn-3x', expansions=[]); \
-evaluate_two_models('CIFAR10-ResNet18-bn-3.2x', expansions=[]); \
-evaluate_two_models('CIFAR10-ResNet18-bn-3.4x', expansions=[]); \
-evaluate_two_models('CIFAR10-ResNet18-bn-3.6x', expansions=[]); \
-evaluate_two_models('CIFAR10-ResNet18-bn-3.8x', expansions=[]); \
+experiment_r('CIFAR10-VGG11-bn-1x', expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
+experiment_r('CIFAR10-ResNet18-bn-1x', expansions=[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]); \
 "
