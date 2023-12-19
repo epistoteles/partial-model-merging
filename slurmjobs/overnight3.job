@@ -28,9 +28,10 @@ from src.evaluate import *; \
 from src.plot_scripts.plot_acc_and_loss_curves import *; \
 experiment_d('CIFAR10-ResNet18-bn-1x')
 experiment_d('SVHN-ResNet18-bn-1x')
-experiment_d('SVHN-VGG19-bn-1x')
 experiment_d('CIFAR10-VGG11-bn-4x')
 experiment_d('SVHN-VGG11-bn-4x')
 experiment_d('CIFAR10-ResNet18-bn-4x')
 experiment_d('SVHN-ResNet18-bn-4x')
+experiment_d('CIFAR10-VGG19-bn-1x')
+experiment_d('SVHN-VGG19-bn-1x')
 "
