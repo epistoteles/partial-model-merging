@@ -819,7 +819,6 @@ def get_used_buffer_neurons(model):
                 i += 1
 
     if isinstance(model, ResNet18):
-        num_layers = 20  # also counting downsample layers here
         layers = [
             model.bn1,
             model.layer1[0].bn1,
