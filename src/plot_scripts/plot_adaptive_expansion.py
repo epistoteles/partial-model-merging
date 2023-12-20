@@ -38,17 +38,17 @@ for threshold in thresholds:
         )
 
 sns.lineplot(
-    x=range(1, len(used_neurons_relative) + 1),
+    x=range(1, len(metrics["adaptive_merging_0.1_used_neurons_relative"]) + 1),
     y=[0] * len(used_neurons_relative),
     label="epsilon=0.0",
     color=plt.cm.rainbow(0),
 )
 
 sns.lineplot(
-    x=range(1, len(used_neurons_relative) + 1),
+    x=range(1, len(metrics["adaptive_merging_0.1_used_neurons_relative"]) + 1),
     y=[1] * len(used_neurons_relative),
     label="epsilon=1.0",
-    color=plt.cm.rainbow(1),
+    color=plt.cm.rainbow(0.99),
 )
 
 
