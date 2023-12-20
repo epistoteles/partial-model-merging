@@ -61,7 +61,7 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
         print(last_xtick)
         print(xlim)
         print(last_xtick / xlim)
-        if last_xtick / xlim < 0.9:
+        if last_xtick / xlim > 0.9:
             print(True)
             xlim = last_xtick * 1.3
             print(xlim)
