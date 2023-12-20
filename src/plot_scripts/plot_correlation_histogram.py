@@ -63,9 +63,10 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
         print(last_xtick / xlim)
         if last_xtick / xlim > 0.9:
             print(True)
-            xlim = last_xtick * 1.25
-            print(xlim)
-        axes[i].set_xlim(0, xlim)
+            last_xtick = find_nice_number(xlim * 0.9)
+        #     xlim = last_xtick * 1.25
+        #     print(xlim)
+        # axes[i].set_xlim(0, xlim)
         axes[i].set_xticks([0, last_xtick])
 
         if i == 0:
@@ -82,3 +83,20 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
         bbox_inches="tight",
     )
     print(f"📊 Correlations plot saved for {model_name_a}, {model_name_b}")
+
+
+def find_nice_number(n):
+    half_n = n / 2
+
+    # Check for numbers divisible by 10
+    for i in range(int(n), int(half_n) - 1, -1):
+        if i % 10 == 0:
+            return i
+
+    # If no number divisible by 10, check for numbers divisible by 5
+    for i in range(int(n), int(half_n) - 1, -1):
+        if i % 5 == 0:
+            return i
+
+    # Return None if no such number found
+    return 10
