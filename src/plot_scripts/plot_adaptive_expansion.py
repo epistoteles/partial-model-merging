@@ -28,13 +28,14 @@ plt.ylabel("width increase")
 plt.title(f"expansions resulting from adaptive buffer assignment\n{dataset}, {architecture}{size}, {width}×width")
 
 for threshold in thresholds:
-    used_neurons_relative = metrics[f"adaptive_merging_{threshold:g}_used_neurons_relative"]
-    sns.lineplot(
-        x=range(1, len(used_neurons_relative) + 1),
-        y=used_neurons_relative,
-        label=f"epsilon={threshold:g}",
-        color=plt.cm.rainbow(threshold),
-    )
+    if f"adaptive_merging_{threshold:g}_used_neurons_relative" in metrics.keys():
+        used_neurons_relative = metrics[f"adaptive_merging_{threshold:g}_used_neurons_relative"]
+        sns.lineplot(
+            x=range(1, len(used_neurons_relative) + 1),
+            y=used_neurons_relative,
+            label=f"epsilon={threshold:g}",
+            color=plt.cm.rainbow(threshold),
+        )
 
 plt.tight_layout()
 plots_dir = get_plots_dir(subdir=Path(__file__).stem)
