@@ -53,6 +53,7 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
         if i == 0:
             axes[i].set_yticks([-1, -0.5, 0, 0.5, 1])
             axes[i].set_ylabel("Pearson’s r")
+            axes[i].set_xlabel("count")
         else:
             axes[i].set_yticks([])
 
