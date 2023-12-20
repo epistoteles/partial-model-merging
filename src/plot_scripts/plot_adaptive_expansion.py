@@ -48,14 +48,14 @@ for threshold in reversed(thresholds):
             markersize=4,
         )
 
-sns.lineplot(
-    x=range(1, len(metrics["adaptive_merging_0.1_used_neurons_relative"]) + 1),
-    y=[0] * len(metrics["adaptive_merging_0.1_used_neurons_relative"]),
-    label="epsilon=0.0",
-    color=plt.cm.rainbow(0),
-    marker="o",
-    markersize=4,
-)
+# sns.lineplot(
+#     x=range(1, len(metrics["adaptive_merging_0.1_used_neurons_relative"]) + 1),
+#     y=[0] * len(metrics["adaptive_merging_0.1_used_neurons_relative"]),
+#     label="epsilon=0.0",
+#     color=plt.cm.rainbow(0),
+#     marker="o",
+#     markersize=4,
+# )
 
 plt.xticks(range(1, len(metrics["adaptive_merging_0.1_used_neurons_relative"]) + 1))
 
