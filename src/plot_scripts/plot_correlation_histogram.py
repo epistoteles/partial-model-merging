@@ -58,7 +58,7 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
         else:
             axes[i].set_yticks([])
 
-    plt.subplots_adjust(left=0, right=1)
+    plt.subplots_adjust(wspace=0.05)
     plots_dir = get_plots_dir(subdir=Path(__file__).stem)
     plt.savefig(
         os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a[:-2]}.png"),
