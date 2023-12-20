@@ -38,7 +38,7 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
     perm_maps = [metrics[stem + ".perm_map"] for stem in stems]
     chosen_corrs = [c[torch.arange(0, len(p)).long(), p] for c, p in zip(corrs, perm_maps)]
 
-    fig, axes = plt.subplots(1, len(chosen_corrs), figsize=(1.2 * len(chosen_corrs), 4))
+    fig, axes = plt.subplots(1, len(chosen_corrs), figsize=(1.5 * len(chosen_corrs), 4.5))
     fig.suptitle(
         f"Histogram of correlations selected by LAP solver, per  layer,\n"
         f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width",
@@ -49,7 +49,7 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
         axes[i].axhline(y=0, color="black", linewidth=1)
         sns.histplot(y=chosen_corrs[i], ax=axes[i], binrange=(-1, 1), bins=50)
         axes[i].set_ylim(-1.02, 1.02)
-        axes[i].set_title(stems[i].replace(".", "\n"), size=10)
+        axes[i].set_title(stems[i].replace(".", "\n").replace("layer", "conv"), size=10)
         if i == 0:
             axes[i].set_yticks([-1, -0.5, 0, 0.5, 1])
             axes[i].set_ylabel("Pearson’s r")
