@@ -163,23 +163,23 @@ for m, metric in enumerate(["accuracy", "loss"]):
         markersize=4,
     )
 
-    # smallest corrs
-    sns.lineplot(
-        x=torch.linspace(0, 100, 11),
-        y=smallest_barrier_reduction_relative[m][0][0] * 100,
-        label="smallest corr units (forced)",
-        color="green",
-        marker="o",
-        markersize=4,
-    )
-    sns.lineplot(
-        x=torch.linspace(0, 100, 11),
-        y=smallest_barrier_reduction_relative_REPAIR[m][0][0] * 100,
-        dashes=(2, 2),
-        color="green",
-        marker="o",
-        markersize=4,
-    )
+    # # smallest corrs
+    # sns.lineplot(
+    #     x=torch.linspace(0, 100, 11),
+    #     y=smallest_barrier_reduction_relative[m][0][0] * 100,
+    #     label="smallest corr units (forced)",
+    #     color="green",
+    #     marker="o",
+    #     markersize=4,
+    # )
+    # sns.lineplot(
+    #     x=torch.linspace(0, 100, 11),
+    #     y=smallest_barrier_reduction_relative_REPAIR[m][0][0] * 100,
+    #     dashes=(2, 2),
+    #     color="green",
+    #     marker="o",
+    #     markersize=4,
+    # )
 
     # just for the REPAIR label
     sns.lineplot(x=[0, 0], y=[0, 0], dashes=(2, 2), label="with REPAIR", color="grey")
