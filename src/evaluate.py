@@ -24,6 +24,7 @@ from src.utils import (
 )
 from src.models.VGG import VGG
 from src.models.ResNet import ResNet18
+from src.models.MLP import MLP
 
 
 def get_acc_and_loss(model: torch.nn.Module, loader):
@@ -805,6 +806,18 @@ def get_used_buffer_neurons(model):
     num_layers = model.num_layers
     result_absolute = torch.zeros(num_layers)
     result_relative = torch.zeros(num_layers)
+
+    if isinstance(model, MLP):
+        i = 0
+        for layer in model.classifier:
+            if isinstance(layer, torch.nn.BatchNorm2d):
+                # width = len(layer.is_buffer)
+                original_width = (~layer.is_buffer).sum().item()
+                used_neurons_absolute = layer.is_buffer[:original_width].sum().item()
+                used_neurons_relative = used_neurons_absolute / original_width
+                result_absolute[i] = used_neurons_absolute
+                result_relative[i] = used_neurons_relative
+                i += 1
 
     if isinstance(model, VGG):
         i = 0
