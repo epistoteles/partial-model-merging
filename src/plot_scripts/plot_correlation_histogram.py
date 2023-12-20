@@ -42,7 +42,7 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
     fig, axes = plt.subplots(
         1,
         len(chosen_corrs),
-        figsize=(1.0 * len(chosen_corrs), 5) if model_type_a == "ResNet" else (1.5 * len(chosen_corrs), 4.5),
+        figsize=(1.1 * len(chosen_corrs), 5) if model_type_a == "ResNet" else (1.5 * len(chosen_corrs), 4.5),
     )
     fig.suptitle(
         f"Histogram of correlations selected by LAP solver, per  layer,\n"
@@ -62,7 +62,7 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
         else:
             axes[i].set_yticks([])
 
-    plt.subplots_adjust(wspace=0.05)
+    plt.subplots_adjust(wspace=0.1)
     plots_dir = get_plots_dir(subdir=Path(__file__).stem)
     plt.savefig(
         os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a[:-2]}.png"),
