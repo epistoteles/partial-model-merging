@@ -10,7 +10,7 @@ import os
 
 datasets = ["CIFAR10", "SVHN"]
 architectures = ["ResNet18", "VGG11"]
-width = 1
+width = 4
 
 for dataset in datasets:
     for architecture in architectures:
@@ -70,4 +70,4 @@ for dataset in datasets:
             bbox_inches="tight",
         )
         plt.close()
-        print(f"📊 adaptive expansion{dataset} {architecture} {width} plot saved")
+        print(f"📊 adaptive expansion{dataset} {architecture} {width}x plot saved")
