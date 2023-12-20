@@ -29,14 +29,14 @@ plt.title(f"expansions resulting from adaptive buffer assignment\n{dataset}, {ar
 
 sns.lineplot(
     x=range(1, len(metrics["adaptive_merging_0.1_used_neurons_relative"]) + 1),
-    y=[0] * len(metrics["adaptive_merging_0.1_used_neurons_relative"]),
-    label="epsilon=0.0",
-    color=plt.cm.rainbow(0),
+    y=[100] * len(metrics["adaptive_merging_0.1_used_neurons_relative"]),
+    label="epsilon=1.0",
+    color=plt.cm.rainbow(0.999),
     marker="o",
     markersize=4,
 )
 
-for threshold in thresholds:
+for threshold in reversed(thresholds):
     if f"adaptive_merging_{threshold:g}_used_neurons_relative" in metrics.keys():
         used_neurons_relative = metrics[f"adaptive_merging_{threshold:g}_used_neurons_relative"]
         sns.lineplot(
@@ -50,13 +50,12 @@ for threshold in thresholds:
 
 sns.lineplot(
     x=range(1, len(metrics["adaptive_merging_0.1_used_neurons_relative"]) + 1),
-    y=[100] * len(used_neurons_relative),
-    label="epsilon=1.0",
-    color=plt.cm.rainbow(0.999),
+    y=[0] * len(metrics["adaptive_merging_0.1_used_neurons_relative"]),
+    label="epsilon=0.0",
+    color=plt.cm.rainbow(0),
     marker="o",
     markersize=4,
 )
-
 
 plt.tight_layout()
 plots_dir = get_plots_dir(subdir=Path(__file__).stem)
