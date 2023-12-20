@@ -167,7 +167,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
     sns.lineplot(
         x=torch.linspace(0, 100, 11),
         y=smallest_barrier_reduction_relative[m][0][0] * 100,
-        label="randomly selected units (forced)",
+        label="smallest corr units (forced)",
         color="green",
         marker="o",
         markersize=4,
