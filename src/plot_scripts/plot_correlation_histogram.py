@@ -33,7 +33,7 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
     metrics = load_file(save_corr_path)
     stems = list(dict.fromkeys([key.rsplit(".", 1)[0] for key in metrics.keys()]))
     stems = sorted(stems, key=_sd_item_to_key)
-    stems = [x for x in stems if x not in ["conv7", "conv11", "conv15"]]
+    stems = [x for x in stems if x not in ["layer7", "layer11", "layer15"]]
     print(stems)
 
     corrs = [metrics[stem + ".correlations"] for stem in stems]
