@@ -12,8 +12,8 @@ datasets = ["CIFAR10", "SVHN"]
 architectures = ["ResNet18", "VGG11"]
 width = 4
 
-for dataset in datasets:
-    for architecture in architectures:
+for architecture in architectures:
+    for dataset in datasets:
         metrics = load_file(
             os.path.join(
                 get_evaluations_dir(subdir="adaptive"), f"adaptive-{dataset}-{architecture}-bn-{width}x-ab.safetensors"
