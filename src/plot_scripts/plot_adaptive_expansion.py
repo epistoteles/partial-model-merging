@@ -9,8 +9,8 @@ import os
 
 
 dataset = "CIFAR10"
-architecture = "ResNet"
-size = 18
+architecture = "VGG"
+size = 11
 width = 1
 
 metrics = load_file(
