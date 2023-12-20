@@ -74,7 +74,7 @@ for i, size in enumerate(sizes):
                     f"pull_apart_randomly_merging_REPAIR_{k:g}_test_losses"
                 ][10]
             random_partial_merging[:, j, i, 0] = partial_merging[:, j, i, 0]
-            random_partial_merging[:, j, i, -1] = partial_merging[:, j, i, -1]
+            random_partial_merging_REPAIR[:, j, i, -1] = partial_merging_REPAIR[:, j, i, -1]
 
 full_barrier_absolute = endpoint.unsqueeze(-1) - partial_merging[:, :, :, 0:1]
 
@@ -103,16 +103,9 @@ for m, metric in enumerate(["accuracy", "loss"]):
     # 100% horizontal line
     sns.lineplot(x=torch.linspace(0, 100, 11), y=[100] * 11, color="grey")
 
-    param_increase = (
-        (torch.Tensor([1, 1.1897, 1.3587, 1.5107, 1.6398, 1.74, 1.8396, 1.9093, 1.960, 1.9899, 1.9999]) - 1)
-        if architecture == "VGG"
-        else (torch.Tensor([1, 1.1886, 1.3616, 1.5053, 1.6381, 1.7477, 1.8375, 1.9092, 1.9577, 1.9892, 2.0000]) - 1)
-    )
-    param_increase *= 100
-
     # baseline forced assignment
     sns.lineplot(
-        x=param_increase,
+        x=torch.linspace(0, 100, 11),
         y=barrier_reduction_relative[m][0][0] * 100,
         label="relaxed LAP (forced)",
         color="red",
@@ -120,7 +113,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
         markersize=4,
     )
     sns.lineplot(
-        x=param_increase,
+        x=torch.linspace(0, 100, 11),
         y=barrier_reduction_relative_REPAIR[m][0][0] * 100,
         dashes=(2, 2),
         color="red",
