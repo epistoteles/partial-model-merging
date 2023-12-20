@@ -73,10 +73,27 @@ for i, size in enumerate(sizes):
                 random_partial_merging_REPAIR[1, j, i, idx + 1] = random_metrics[
                     f"pull_apart_randomly_merging_REPAIR_{k:g}_test_losses"
                 ][10]
+            for idx, k in enumerate(expansions[1:-1]):
+                smallest_partial_merging[0, j, i, idx + 1] = random_metrics[
+                    f"pull_apart_smallest_merging_{k:g}_test_accs"
+                ][10]
+                smallest_partial_merging_REPAIR[0, j, i, idx + 1] = random_metrics[
+                    f"pull_apart_smallest_merging_REPAIR_{k:g}_test_accs"
+                ][10]
+                smallest_partial_merging[1, j, i, idx + 1] = random_metrics[
+                    f"pull_apart_smallest_merging_{k:g}_test_losses"
+                ][10]
+                smallest_partial_merging_REPAIR[1, j, i, idx + 1] = random_metrics[
+                    f"pull_apart_smallest_merging_REPAIR_{k:g}_test_losses"
+                ][10]
             random_partial_merging[:, j, i, 0] = partial_merging[:, j, i, 0]
             random_partial_merging[:, j, i, -1] = partial_merging[:, j, i, -1]
             random_partial_merging_REPAIR[:, j, i, 0] = partial_merging_REPAIR[:, j, i, 0]
             random_partial_merging_REPAIR[:, j, i, -1] = partial_merging_REPAIR[:, j, i, -1]
+            smallest_partial_merging[:, j, i, 0] = partial_merging[:, j, i, 0]
+            smallest_partial_merging[:, j, i, -1] = partial_merging[:, j, i, -1]
+            smallest_partial_merging_REPAIR[:, j, i, 0] = partial_merging_REPAIR[:, j, i, 0]
+            smallest_partial_merging_REPAIR[:, j, i, -1] = partial_merging_REPAIR[:, j, i, -1]
 
 full_barrier_absolute = endpoint.unsqueeze(-1) - partial_merging[:, :, :, 0:1]
 
@@ -85,10 +102,15 @@ barrier_reduction_relative = barrier_reduction_absolute / full_barrier_absolute
 barrier_reduction_absolute_REPAIR = partial_merging_REPAIR - partial_merging[:, :, :, 0:1]
 barrier_reduction_relative_REPAIR = barrier_reduction_absolute_REPAIR / full_barrier_absolute
 
-adaptive_barrier_reduction_absolute = random_partial_merging - random_partial_merging[:, :, :, 0:1]
-adaptive_barrier_reduction_relative = adaptive_barrier_reduction_absolute / full_barrier_absolute
-adaptive_barrier_reduction_absolute_REPAIR = random_partial_merging_REPAIR - random_partial_merging[:, :, :, 0:1]
-adaptive_barrier_reduction_relative_REPAIR = adaptive_barrier_reduction_absolute_REPAIR / full_barrier_absolute
+random_barrier_reduction_absolute = random_partial_merging - random_partial_merging[:, :, :, 0:1]
+random_barrier_reduction_relative = random_barrier_reduction_absolute / full_barrier_absolute
+random_barrier_reduction_absolute_REPAIR = random_partial_merging_REPAIR - random_partial_merging[:, :, :, 0:1]
+random_barrier_reduction_relative_REPAIR = random_barrier_reduction_absolute_REPAIR / full_barrier_absolute
+
+smallest_barrier_reduction_absolute = smallest_partial_merging - smallest_partial_merging[:, :, :, 0:1]
+smallest_barrier_reduction_relative = smallest_barrier_reduction_absolute / full_barrier_absolute
+smallest_barrier_reduction_absolute_REPAIR = smallest_partial_merging_REPAIR - smallest_partial_merging[:, :, :, 0:1]
+smallest_barrier_reduction_relative_REPAIR = smallest_barrier_reduction_absolute_REPAIR / full_barrier_absolute
 
 for m, metric in enumerate(["accuracy", "loss"]):
     plt.figure(figsize=(6, 6))
@@ -123,10 +145,10 @@ for m, metric in enumerate(["accuracy", "loss"]):
         markersize=4,
     )
 
-    # adaptive assignment
+    # random neurons
     sns.lineplot(
         x=torch.linspace(0, 100, 11),
-        y=adaptive_barrier_reduction_relative[m][0][0] * 100,
+        y=random_barrier_reduction_relative[m][0][0] * 100,
         label="randomly selected units (forced)",
         color="orange",
         marker="o",
@@ -134,9 +156,27 @@ for m, metric in enumerate(["accuracy", "loss"]):
     )
     sns.lineplot(
         x=torch.linspace(0, 100, 11),
-        y=adaptive_barrier_reduction_relative_REPAIR[m][0][0] * 100,
+        y=random_barrier_reduction_relative_REPAIR[m][0][0] * 100,
         dashes=(2, 2),
         color="orange",
+        marker="o",
+        markersize=4,
+    )
+
+    # smallest corrs
+    sns.lineplot(
+        x=torch.linspace(0, 100, 11),
+        y=smallest_barrier_reduction_relative[m][0][0] * 100,
+        label="randomly selected units (forced)",
+        color="green",
+        marker="o",
+        markersize=4,
+    )
+    sns.lineplot(
+        x=torch.linspace(0, 100, 11),
+        y=smallest_barrier_reduction_relative_REPAIR[m][0][0] * 100,
+        dashes=(2, 2),
+        color="green",
         marker="o",
         markersize=4,
     )
