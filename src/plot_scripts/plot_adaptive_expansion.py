@@ -57,6 +57,8 @@ sns.lineplot(
     markersize=4,
 )
 
+plt.xticks(range(1, len(metrics["adaptive_merging_0.1_used_neurons_relative"]) + 1))
+
 plt.tight_layout()
 plots_dir = get_plots_dir(subdir=Path(__file__).stem)
 plt.savefig(
