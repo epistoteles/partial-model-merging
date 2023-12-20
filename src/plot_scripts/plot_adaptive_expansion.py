@@ -8,7 +8,7 @@ from src.utils import get_plots_dir, get_evaluations_dir
 import os
 
 
-dataset = "CIFAR10"
+dataset = "SVHN"
 architecture = "ResNet"
 size = 18
 width = 1
