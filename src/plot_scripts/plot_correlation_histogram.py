@@ -34,6 +34,7 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
     stems = list(dict.fromkeys([key.rsplit(".", 1)[0] for key in metrics.keys()]))
     stems = sorted(stems, key=_sd_item_to_key)
     stems = [x for x in stems if x not in ["conv7", "conv11", "conv15"]]
+    print(stems)
 
     corrs = [metrics[stem + ".correlations"] for stem in stems]
     perm_maps = [metrics[stem + ".perm_map"] for stem in stems]
