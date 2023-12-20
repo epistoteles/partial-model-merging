@@ -39,7 +39,11 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
     perm_maps = [metrics[stem + ".perm_map"] for stem in stems]
     chosen_corrs = [c[torch.arange(0, len(p)).long(), p] for c, p in zip(corrs, perm_maps)]
 
-    fig, axes = plt.subplots(1, len(chosen_corrs), figsize=(1.5 * len(chosen_corrs), 4.5))
+    fig, axes = plt.subplots(
+        1,
+        len(chosen_corrs),
+        figsize=(1.0 * len(chosen_corrs), 5) if model_type_a == "ResNet" else (1.5 * len(chosen_corrs), 4.5),
+    )
     fig.suptitle(
         f"Histogram of correlations selected by LAP solver, per  layer,\n"
         f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width",
