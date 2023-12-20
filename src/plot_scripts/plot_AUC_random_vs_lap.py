@@ -74,6 +74,8 @@ for i, size in enumerate(sizes):
                     f"pull_apart_randomly_merging_REPAIR_{k:g}_test_losses"
                 ][10]
             random_partial_merging[:, j, i, 0] = partial_merging[:, j, i, 0]
+            random_partial_merging[:, j, i, -1] = partial_merging[:, j, i, -1]
+            random_partial_merging_REPAIR[:, j, i, 0] = partial_merging_REPAIR[:, j, i, 0]
             random_partial_merging_REPAIR[:, j, i, -1] = partial_merging_REPAIR[:, j, i, -1]
 
 full_barrier_absolute = endpoint.unsqueeze(-1) - partial_merging[:, :, :, 0:1]
