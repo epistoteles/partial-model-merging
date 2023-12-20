@@ -877,14 +877,14 @@ def experiment_r(model_name_a: str, model_name_b: str = None, interpolation_step
 
     train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
 
-    for k in torch.linspace(0.1, 1, 10):
+    for k in torch.linspace(1.1, 2, 10):
         if f"pull_apart_randomly_merging_REPAIR_{k:g}_test_accs" not in metrics.keys():
             print(f"Collecting pulling apart merging metrics ({k:g}) ...")
             model_a = load_model(model_name_a).cuda()
             model_b = load_model(model_name_b).cuda()
 
-            model_a = expand_model(model_a, 2).cuda()
-            model_b = expand_model(model_b, 2).cuda()
+            model_a = expand_model(model_a, k).cuda()
+            model_b = expand_model(model_b, k).cuda()
             model_b_perm = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader, threshold=-1)
             (
                 metrics[f"pull_apart_randomly_merging_{k:g}_train_accs"],

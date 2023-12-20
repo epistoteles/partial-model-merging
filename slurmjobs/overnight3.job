@@ -26,6 +26,9 @@ print('-'*50)
 python -c "\
 from src.evaluate import *; \
 from src.plot_scripts.plot_acc_and_loss_curves import *; \
+experiment_r('CIFAR10-VGG11-bn-4x')
+experiment_r('SVHN-ResNet18-bn-1x')
+experiment_r('SVHN-VGG11-bn-1x')
 experiment_r('SVHN-ResNet18-bn-4x')
 experiment_r('CIFAR10-ResNet18-bn-4x')
 "
