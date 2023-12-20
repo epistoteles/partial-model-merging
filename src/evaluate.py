@@ -810,7 +810,7 @@ def get_used_buffer_neurons(model):
     if isinstance(model, MLP):
         i = 0
         for layer in model.classifier:
-            if isinstance(layer, torch.nn.BatchNorm2d):
+            if isinstance(layer, torch.nn.BatchNorm1d):
                 # width = len(layer.is_buffer)
                 original_width = (~layer.is_buffer).sum().item()
                 used_neurons_absolute = layer.is_buffer[:original_width].sum().item()
@@ -818,8 +818,7 @@ def get_used_buffer_neurons(model):
                 result_absolute[i] = used_neurons_absolute
                 result_relative[i] = used_neurons_relative
                 i += 1
-
-    if isinstance(model, VGG):
+    elif isinstance(model, VGG):
         i = 0
         for layer in model.features:
             if isinstance(layer, torch.nn.BatchNorm2d):
@@ -830,8 +829,7 @@ def get_used_buffer_neurons(model):
                 result_absolute[i] = used_neurons_absolute
                 result_relative[i] = used_neurons_relative
                 i += 1
-
-    if isinstance(model, ResNet18):
+    elif isinstance(model, ResNet18):
         layers = [
             model.bn1,
             model.layer1[0].bn1,
