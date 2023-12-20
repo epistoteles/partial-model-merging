@@ -52,10 +52,16 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
 
     for i in range(len(chosen_corrs)):
         axes[i].axhline(y=0, color="black", linewidth=1)
-        sns.histplot(y=chosen_corrs[i], ax=axes[i], binrange=(-1, 1), bins=50, color="#d9ead3ff", stat="proportion")
+        sns.histplot(y=chosen_corrs[i], ax=axes[i], binrange=(-1, 1), bins=50, color="#d9ead3ff", stat="count")
         axes[i].set_ylim(-1.02, 1.02)
         axes[i].set_title(stems[i].replace(".", "\n").replace("layer", "conv"), size=10)
         axes[i].set_xlabel("count")
+        last_xtick = axes[i].get_xticks()[-1]
+        xlim = axes[i].get_xlim()[1]
+        if last_xtick / xlim < 0.9:
+            xlim = last_xtick * 1.3
+        axes[i].set_xlim(0, xlim)
+
         if i == 0:
             axes[i].set_yticks([-1, -0.5, 0, 0.5, 1])
             axes[i].set_ylabel("Pearson’s r")
