@@ -64,10 +64,10 @@ for dataset in datasets:
         plt.savefig(
             os.path.join(
                 plots_dir,
-                f"adaptive_expansion_{dataset}_{architecture}.png",
+                f"adaptive_expansion_{dataset}_{architecture}_{width}x.png",
             ),
             dpi=600,
             bbox_inches="tight",
         )
         plt.close()
-        print(f"📊 adaptive expansion{dataset} {architecture} plot saved")
+        print(f"📊 adaptive expansion{dataset} {architecture} {width} plot saved")
