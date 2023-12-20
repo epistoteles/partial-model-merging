@@ -150,7 +150,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
         x=torch.linspace(0, 100, 11),
         y=random_barrier_reduction_relative[m][0][0] * 100,
         label="randomly selected units (forced)",
-        color="orange",
+        color="#063894",
         marker="o",
         markersize=4,
     )
@@ -158,7 +158,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
         x=torch.linspace(0, 100, 11),
         y=random_barrier_reduction_relative_REPAIR[m][0][0] * 100,
         dashes=(2, 2),
-        color="orange",
+        color="#063894",
         marker="o",
         markersize=4,
     )
