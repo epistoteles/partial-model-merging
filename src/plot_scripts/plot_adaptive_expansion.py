@@ -10,7 +10,7 @@ import os
 
 datasets = ["CIFAR10", "SVHN"]
 architectures = ["ResNet18", "VGG11"]
-width = 4
+width = 1
 
 for architecture in architectures:
     for dataset in datasets:
