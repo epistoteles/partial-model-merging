@@ -16,7 +16,7 @@ bn = True
 
 metrics = ["acc", "loss"]
 sizes = [11] if architecture == "VGG" else [18]
-widths = [1] if architecture == "VGG" else [4]
+widths = [1] if architecture == "VGG" else [1]
 expansions = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
 
 endpoint = torch.zeros(len(metrics), len(widths), len(sizes))
