@@ -20,7 +20,7 @@ metrics = load_file(
 )
 
 
-thresholds = [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.6, 0.8, 1.0]
+thresholds = [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.6, 0.8]
 
 plt.figure(figsize=(12, 8))
 plt.xlabel("layer")
@@ -36,6 +36,21 @@ for threshold in thresholds:
             label=f"epsilon={threshold:g}",
             color=plt.cm.rainbow(threshold),
         )
+
+sns.lineplot(
+    x=range(1, len(used_neurons_relative) + 1),
+    y=[0] * len(used_neurons_relative),
+    label="epsilon=0.0",
+    color=plt.cm.rainbow(0),
+)
+
+sns.lineplot(
+    x=range(1, len(used_neurons_relative) + 1),
+    y=[1] * len(used_neurons_relative),
+    label="epsilon=1.0",
+    color=plt.cm.rainbow(1),
+)
+
 
 plt.tight_layout()
 plots_dir = get_plots_dir(subdir=Path(__file__).stem)
