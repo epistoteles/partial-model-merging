@@ -58,6 +58,9 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
         axes[i].set_xlabel("count")
         last_xtick = axes[i].get_xticks()[-1]
         xlim = axes[i].get_xlim()[1]
+        print(last_xtick)
+        print(xlim)
+        print(last_xtick / xlim)
         if last_xtick / xlim < 0.9:
             xlim = last_xtick * 1.3
         axes[i].set_xlim(0, xlim)
