@@ -57,5 +57,9 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
             axes[i].set_yticks([])
 
     plots_dir = get_plots_dir(subdir=Path(__file__).stem)
-    plt.savefig(os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a[:-2]}.png"), dpi=600)
+    plt.savefig(
+        os.path.join(plots_dir, f"{Path(__file__).stem}_{model_name_a[:-2]}.png"),
+        dpi=600,
+        bbox_inches="tight",
+    )
     print(f"📊 Correlations plot saved for {model_name_a}, {model_name_b}")
