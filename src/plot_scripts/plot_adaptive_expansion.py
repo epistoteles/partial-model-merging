@@ -24,7 +24,7 @@ thresholds = [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.6, 0.8]
 
 plt.figure(figsize=(12, 8))
 plt.xlabel("layer")
-plt.ylabel("width increase")
+plt.ylabel("width increase (%)")
 plt.title(f"expansions resulting from adaptive buffer assignment\n{dataset}, {architecture}{size}, {width}×width")
 
 for threshold in thresholds:
@@ -32,9 +32,11 @@ for threshold in thresholds:
         used_neurons_relative = metrics[f"adaptive_merging_{threshold:g}_used_neurons_relative"]
         sns.lineplot(
             x=range(1, len(used_neurons_relative) + 1),
-            y=used_neurons_relative,
+            y=used_neurons_relative * 100,
             label=f"epsilon={threshold:g}",
             color=plt.cm.rainbow(threshold),
+            marker="o",
+            markersize=4,
         )
 
 sns.lineplot(
@@ -42,13 +44,17 @@ sns.lineplot(
     y=[0] * len(used_neurons_relative),
     label="epsilon=0.0",
     color=plt.cm.rainbow(0),
+    marker="o",
+    markersize=4,
 )
 
 sns.lineplot(
     x=range(1, len(metrics["adaptive_merging_0.1_used_neurons_relative"]) + 1),
-    y=[1] * len(used_neurons_relative),
+    y=[100] * len(used_neurons_relative),
     label="epsilon=1.0",
-    color=plt.cm.rainbow(1),
+    color=plt.cm.rainbow(0.999),
+    marker="o",
+    markersize=4,
 )
 
 
