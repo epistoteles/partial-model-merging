@@ -877,7 +877,7 @@ def experiment_r(model_name_a: str, model_name_b: str = None, interpolation_step
 
     train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
 
-    for k in torch.linspace(1.1, 2, 10):
+    for k in [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9]:
         if f"pull_apart_randomly_merging_REPAIR_{k:g}_test_accs" not in metrics.keys():
             print(f"Collecting pulling apart merging metrics ({k:g}) ...")
             model_a = load_model(model_name_a).cuda()
