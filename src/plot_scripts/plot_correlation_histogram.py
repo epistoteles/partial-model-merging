@@ -56,7 +56,7 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
         axes[i].set_ylim(-1.02, 1.02)
         axes[i].set_title(stems[i].replace(".", "\n").replace("layer", "conv"), size=10)
         axes[i].set_xlabel("count")
-        last_xtick = axes[i].get_xticks()[-1]
+        last_xtick = axes[i].get_xticks()[-2]
         xlim = axes[i].get_xlim()[1]
         print(last_xtick)
         print(xlim)
