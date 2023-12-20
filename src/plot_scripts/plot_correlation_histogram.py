@@ -50,10 +50,10 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
         sns.histplot(y=chosen_corrs[i], ax=axes[i], binrange=(-1, 1), bins=50)
         axes[i].set_ylim(-1.02, 1.02)
         axes[i].set_title(stems[i].replace(".", "\n").replace("layer", "conv"), size=10)
+        axes[i].set_xlabel("count")
         if i == 0:
             axes[i].set_yticks([-1, -0.5, 0, 0.5, 1])
             axes[i].set_ylabel("Pearson’s r")
-            axes[i].set_xlabel("count")
         else:
             axes[i].set_yticks([])
 
