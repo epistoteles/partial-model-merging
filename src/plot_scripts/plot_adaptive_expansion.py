@@ -27,6 +27,15 @@ plt.xlabel("layer")
 plt.ylabel("width increase (%)")
 plt.title(f"expansions resulting from adaptive buffer assignment\n{dataset}, {architecture}{size}, {width}×width")
 
+sns.lineplot(
+    x=range(1, len(metrics["adaptive_merging_0.1_used_neurons_relative"]) + 1),
+    y=[0] * len(metrics["adaptive_merging_0.1_used_neurons_relative"]),
+    label="epsilon=0.0",
+    color=plt.cm.rainbow(0),
+    marker="o",
+    markersize=4,
+)
+
 for threshold in thresholds:
     if f"adaptive_merging_{threshold:g}_used_neurons_relative" in metrics.keys():
         used_neurons_relative = metrics[f"adaptive_merging_{threshold:g}_used_neurons_relative"]
@@ -38,15 +47,6 @@ for threshold in thresholds:
             marker="o",
             markersize=4,
         )
-
-sns.lineplot(
-    x=range(1, len(metrics["adaptive_merging_0.1_used_neurons_relative"]) + 1),
-    y=[0] * len(used_neurons_relative),
-    label="epsilon=0.0",
-    color=plt.cm.rainbow(0),
-    marker="o",
-    markersize=4,
-)
 
 sns.lineplot(
     x=range(1, len(metrics["adaptive_merging_0.1_used_neurons_relative"]) + 1),
