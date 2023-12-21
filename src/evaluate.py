@@ -1018,6 +1018,7 @@ def experiment_k(model_name_a: str, model_name_b: str = None, interpolation_step
             for idx in idxs:
                 width_expansion[idx] = 2
 
+            print(width_expansion)
             model_a = expand_model(model_a, width_expansion).cuda()
             model_b = expand_model(model_b, width_expansion).cuda()
             model_b_perm = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader)
