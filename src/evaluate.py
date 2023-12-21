@@ -1011,7 +1011,7 @@ def experiment_k(model_name_a: str, model_name_b: str = None, interpolation_step
             model_b = load_model(model_name_b).cuda()
 
             if model_type_a == "ResNet":
-                idxs = indices[idxs]
+                idxs = indices[idxs.item()]
             else:
                 idxs = [idxs]
 
