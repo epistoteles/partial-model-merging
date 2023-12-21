@@ -985,6 +985,7 @@ def experiment_k(model_name_a: str, model_name_b: str = None, interpolation_step
     train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
 
     order = get_order(dataset_a, model_type_a, size_a, width_a, f"{variant_a}{variant_b}")
+    print(f"{order=}")
 
     indices = {
         0: [1],
