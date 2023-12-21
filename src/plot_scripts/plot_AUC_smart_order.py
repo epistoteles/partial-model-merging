@@ -10,7 +10,7 @@ from safetensors.torch import load_file
 from src.utils import get_plots_dir, get_evaluations_dir
 
 dataset = "SVHN"
-architecture = "VGG"
+architecture = "ResNet"
 bn = True
 
 metrics = ["acc", "loss"]
@@ -23,7 +23,7 @@ ensembling = torch.zeros(len(metrics), len(widths), len(sizes))
 partial_merging = torch.zeros(len(metrics), len(widths), len(sizes), len(expansions))
 partial_merging_REPAIR = torch.zeros(len(metrics), len(widths), len(sizes), len(expansions))
 
-num_layers = 8 if architecture == "VGG" else 17
+num_layers = 8 if architecture == "VGG" else 12
 
 smart_order_before_merging = torch.zeros(len(metrics), len(widths), len(sizes), num_layers + 1)
 smart_order_before_merging_REPAIR = torch.zeros(len(metrics), len(widths), len(sizes), num_layers + 1)
