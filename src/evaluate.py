@@ -1104,8 +1104,9 @@ def get_order(dataset, architecture, size, width, variants, after_repair, just_u
     _, order = torch.sort(benefits, descending=True)
 
     # we enforce ResNet layer group 15/17 to be the last one - it's just not worth expanding it ...
-    idx_position = (order == 11).nonzero(as_tuple=True)[0]
-    order = torch.cat((order[:idx_position], order[idx_position + 1 :]))
-    order = torch.cat((order, torch.tensor([11])))
+    if architecture == "ResNet":
+        idx_position = (order == 11).nonzero(as_tuple=True)[0]
+        order = torch.cat((order[:idx_position], order[idx_position + 1 :]))
+        order = torch.cat((order, torch.tensor([11])))
 
     return order
