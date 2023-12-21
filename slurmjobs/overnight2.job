@@ -25,8 +25,8 @@ print('-'*50)
 
 python -c "\
 from src.evaluate import *; \
-experiment_k('SVHN-ResNet18-bn-1x', after_repair=False); \
-experiment_k('CIFAR10-ResNet18-bn-1x', after_repair=False); \
-experiment_k('SVHN-ResNet18-bn-1x', after_repair=True); \
-experiment_k('CIFAR10-ResNet18-bn-1x', after_repair=True); \
+experiment_b('CIFAR10C-VGG11-bn-1x-c', 'CIFAR10D-VGG11-bn-1x-d')
+experiment_k('CIFAR10C-VGG11-bn-1x-c', 'CIFAR10D-VGG11-bn-1x-d', after_repair=True); \
+experiment_b_ResNet18('SVHNC-ResNet18-bn-1x-c', 'SVHND-ResNet18-bn-1x-d'); \
+experiment_k('SVHNC-ResNet18-bn-1x-c', 'SVHND-ResNet18-bn-1x-d', after_repair=True); \
 "
