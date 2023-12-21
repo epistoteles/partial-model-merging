@@ -977,7 +977,8 @@ def experiment_k(
 
     evaluations_dir = get_evaluations_dir(subdir="smart_order")
     filepath = os.path.join(
-        evaluations_dir, f"smart_order_{'after' if after_repair else 'before'}-{model_name_a}{variant_b}.safetensors"
+        evaluations_dir,
+        f"smart_order_{'after' if after_repair else 'before'}{'_justaccs' if just_use_accs else ''}-{model_name_a}{variant_b}.safetensors",
     )
 
     if os.path.exists(filepath):
