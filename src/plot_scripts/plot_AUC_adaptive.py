@@ -10,8 +10,8 @@ from safetensors.torch import load_file
 from src.utils import get_plots_dir, get_evaluations_dir
 
 
-dataset = "MNIST"
-architecture = "MLP"
+dataset = "CIFAR10"
+architecture = "VGG"
 bn = True
 
 metrics = ["acc", "loss"]
