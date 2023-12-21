@@ -957,7 +957,7 @@ def experiment_r(model_name_a: str, model_name_b: str = None, interpolation_step
     return metrics
 
 
-def experiment_k(model_name_a: str, model_name_b: str = None, interpolation_steps=21):
+def experiment_k(model_name_a: str, model_name_b: str = None, interpolation_steps=21, after_repair=False):
     """
     Ensembles parts of the model on an order determined by experiment b
     """
@@ -984,7 +984,7 @@ def experiment_k(model_name_a: str, model_name_b: str = None, interpolation_step
 
     train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
 
-    order = get_order(dataset_a, model_type_a, size_a, width_a, f"{variant_a}{variant_b}")
+    order = get_order(dataset_a, model_type_a, size_a, width_a, f"{variant_a}{variant_b}", after_repair=after_repair)
     print(f"{order=}")
 
     indices = {
@@ -1058,7 +1058,7 @@ def experiment_k(model_name_a: str, model_name_b: str = None, interpolation_step
     return metrics
 
 
-def get_order(dataset, architecture, size, width, variants):
+def get_order(dataset, architecture, size, width, variants, after_repair):
     """
     Fetches the order of expansion based on experiment b results
     """
@@ -1073,14 +1073,14 @@ def get_order(dataset, architecture, size, width, variants):
         os.path.join(get_evaluations_dir("two_models"), f"{dataset}-{architecture}{size}-bn-{width}x-ab.safetensors")
     )
 
-    accs = torch.flip(metrics[f"only_expand_layer_i{'_REPAIR' if repair else ''}_test_accs"], dims=[0])[:, :12]
-    # losses = torch.flip(metrics[f"only_expand_layer_i{'_REPAIR' if repair else ''}_test_losses"], dims=[0])[:, :12]
+    accs = torch.flip(metrics[f"only_expand_layer_i{'_REPAIR' if after_repair else ''}_test_accs"], dims=[0])[:, :12]
+    # losses = torch.flip(metrics[f"only_expand_layer_i{'_REPAIR' if after_repair else ''}_test_losses"], dims=[0])[:, :12]
     params = (torch.flip(metrics["only_expand_layer_i_num_params"], dims=[0]) / metrics["default_num_params"])[
         :, :12
     ] - 1
 
     acc_endpoints = metrics_default["ensembling_test_accs"][[0, -1]].mean()
-    acc_merging = metrics_default[f"merging{'_REPAIR' if repair else ''}_test_accs"][10]
+    acc_merging = metrics_default[f"merging{'_REPAIR' if after_repair else ''}_test_accs"][10]
     acc_barrier_reduction = (accs - acc_merging) / (acc_endpoints - acc_merging)
 
     # loss_endpoints = metrics_default["ensembling_test_losses"][[0, -1]].mean()
