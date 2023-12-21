@@ -191,6 +191,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
             f"random_vs_lap_{metric}_AUC_{dataset}_{architecture}.png",
         ),
         dpi=600,
+        bbox_inches="tight",
     )
     plt.close()
     print(f"📊 {metric} AUC {dataset} {architecture} (w.r.t. width) plot saved")
