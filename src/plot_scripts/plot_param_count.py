@@ -11,8 +11,8 @@ from src.utils import get_plots_dir, get_evaluations_dir
 
 
 plt.figure(figsize=(4, 4))
-plt.xlabel("added buffers in both endpoint (%)")
-plt.ylabel("added non-zero parameter count (%)")
+plt.xlabel("added width (%)")
+plt.ylabel("added non-zero parameters (%)")
 plt.xticks(torch.linspace(0, 100, 11))
 plt.yticks(torch.linspace(0, 100, 6))
 plt.title("Width increase vs. parameter increase")
