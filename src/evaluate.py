@@ -1048,6 +1048,7 @@ def experiment_k(model_name_a: str, model_name_b: str = None, interpolation_step
 
             num_params = get_num_params(interpolate_models(model_a, model_b_perm), ignore_zeros=True)
             metrics[f"smart_order_merging_{k:g}_param_increase"] = torch.Tensor([num_params / num_params_default])
+            print(f"Param increase: {num_params / num_params_default}")
 
             save_evaluation_checkpoint(metrics, filepath)
             metrics = load_file(filepath)  # necessary because of a safetensors bug
