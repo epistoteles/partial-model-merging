@@ -1098,6 +1098,6 @@ def get_order(dataset, architecture, size, width, variants, after_repair, just_u
     # loss_merging = metrics_default[f"merging{'_REPAIR' if repair else ''}_test_losses"][10]
     # loss_barrier_reduction = (losses - loss_merging) / (loss_endpoints - loss_merging)
 
-    benefits = acc_barrier_reduction if just_use_accs else (acc_barrier_reduction / (params**2) - 1)[0]
+    benefits = acc_barrier_reduction if just_use_accs else (acc_barrier_reduction / (params**2 - 1))[0]
     _, order = torch.sort(benefits, descending=True)
     return order
