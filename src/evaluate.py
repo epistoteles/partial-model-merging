@@ -1100,7 +1100,7 @@ def get_order(dataset, architecture, size, width, variants, after_repair, just_u
     # loss_merging = metrics_default[f"merging{'_REPAIR' if repair else ''}_test_losses"][10]
     # loss_barrier_reduction = (losses - loss_merging) / (loss_endpoints - loss_merging)
 
-    benefits = acc_barrier_reduction if just_use_accs else (acc_barrier_reduction / params)[0]
+    benefits = acc_barrier_reduction[0] if just_use_accs else (acc_barrier_reduction / params)[0]
     _, order = torch.sort(benefits, descending=True)
 
     # we enforce ResNet layer group 15/17 to be the last one - it's just not worth expanding it ...

@@ -9,8 +9,8 @@ import matplotlib.transforms as transforms
 import os
 
 
-dataset = "SVHN"
-architecture = "VGG"
+dataset = "CIFAR10"
+architecture = "ResNet"
 size = 11 if architecture == "VGG" else 18
 bn = True
 width = 1
