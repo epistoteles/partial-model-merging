@@ -1063,7 +1063,7 @@ def get_order(dataset, architecture, size, width, variants):
     metrics = load_file(
         os.path.join(
             get_evaluations_dir("experiment_b"),
-            f"/experiment-b-{dataset}-{architecture}{size}-bn-{width}x-{variants}.safetensors",
+            f"experiment-b-{dataset}-{architecture}{size}-bn-{width}x-{variants}.safetensors",
         )
     )
     metrics_default = load_file(
