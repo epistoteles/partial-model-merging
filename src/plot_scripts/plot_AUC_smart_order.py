@@ -9,7 +9,7 @@ import torch
 from safetensors.torch import load_file
 from src.utils import get_plots_dir, get_evaluations_dir
 
-dataset = "CIFAR10"
+dataset = "SVHN"
 architecture = "ResNet"
 bn = True
 

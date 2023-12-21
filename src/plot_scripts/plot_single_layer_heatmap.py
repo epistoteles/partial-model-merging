@@ -17,10 +17,10 @@ width = 1
 repair = False
 
 metrics = load_file(
-    f"/home/korbinian/Documents/partial-model-merging/evaluations/experiment_b/experiment-b-{dataset}-{architecture}{size}-bn-{width}x-ab.safetensors"
+    f"/home/korbinian/Documents/Masterarbeit/partial-model-merging/evaluations/experiment_b/experiment-b-{dataset}-{architecture}{size}-bn-{width}x-ab.safetensors"
 )
 metrics_default = load_file(
-    f"/home/korbinian/Documents/partial-model-merging/evaluations/two_models/{dataset}-{architecture}{size}-bn-{width}x-ab.safetensors"
+    f"/home/korbinian/Documents/Masterarbeit/partial-model-merging/evaluations/two_models/{dataset}-{architecture}{size}-bn-{width}x-ab.safetensors"
 )
 
 accs = torch.flip(metrics[f"only_expand_layer_i{'_REPAIR' if repair else ''}_test_accs"], dims=[0])[:, :12]
