@@ -10,7 +10,7 @@ from safetensors.torch import load_file
 from src.utils import get_plots_dir, get_evaluations_dir
 
 dataset = "CIFAR10"
-architecture = "ResNet"
+architecture = "VGG"
 bn = True
 
 metrics = ["acc", "loss"]
