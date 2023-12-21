@@ -957,7 +957,9 @@ def experiment_r(model_name_a: str, model_name_b: str = None, interpolation_step
     return metrics
 
 
-def experiment_k(model_name_a: str, model_name_b: str = None, interpolation_steps=21, after_repair=False):
+def experiment_k(
+    model_name_a: str, model_name_b: str = None, interpolation_steps=21, after_repair=False, just_use_accs=False
+):
     """
     Ensembles parts of the model on an order determined by experiment b
     """
@@ -986,7 +988,15 @@ def experiment_k(model_name_a: str, model_name_b: str = None, interpolation_step
 
     train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
 
-    order = get_order(dataset_a, model_type_a, size_a, width_a, f"{variant_a}{variant_b}", after_repair=after_repair)
+    order = get_order(
+        dataset_a,
+        model_type_a,
+        size_a,
+        width_a,
+        f"{variant_a}{variant_b}",
+        after_repair=after_repair,
+        just_use_accs=just_use_accs,
+    )
     print(f"{order=}")
 
     indices = {
@@ -1060,7 +1070,7 @@ def experiment_k(model_name_a: str, model_name_b: str = None, interpolation_step
     return metrics
 
 
-def get_order(dataset, architecture, size, width, variants, after_repair):
+def get_order(dataset, architecture, size, width, variants, after_repair, just_use_accs=False):
     """
     Fetches the order of expansion based on experiment b results
     """
@@ -1089,6 +1099,6 @@ def get_order(dataset, architecture, size, width, variants, after_repair):
     # loss_merging = metrics_default[f"merging{'_REPAIR' if repair else ''}_test_losses"][10]
     # loss_barrier_reduction = (losses - loss_merging) / (loss_endpoints - loss_merging)
 
-    benefits = (acc_barrier_reduction / params)[0]
+    benefits = acc_barrier_reduction if just_use_accs else (acc_barrier_reduction / params)[0]
     _, order = torch.sort(benefits, descending=True)
     return order

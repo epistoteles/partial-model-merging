@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #SBATCH --output=./slurmjobs/slurmlogs/%j.out
-#SBATCH --gres=gpu:gtx1060:1
+#SBATCH --gres=gpu:rtx3060:1
 #SBATCH --cpus-per-task=3
 #SBATCH --threads-per-core=1
-#SBATCH --mem-per-gpu=20G
+#SBATCH --mem-per-gpu=32G
 #SBATCH --job-name=overnight4
 
 export CUDA_DEVICE_ORDER="PCI_BUS_ID"
@@ -25,5 +25,12 @@ print('-'*50)
 
 python -c "\
 from src.evaluate import *; \
-experiment_d('SVHN-ResNet18-bn-4x')
+experiment_k('SVHN-VGG11-bn-1x', after_repair=False, just_use_accs=True); \
+experiment_k('CIFAR10-VGG11-bn-1x', after_repair=False, just_use_accs=True); \
+experiment_k('SVHN-ResNet18-bn-1x', after_repair=False, just_use_accs=True); \
+experiment_k('CIFAR10-ResNet18-bn-1x', after_repair=False, just_use_accs=True); \
+experiment_k('SVHN-VGG11-bn-1x', after_repair=True, just_use_accs=True); \
+experiment_k('CIFAR10-VGG11-bn-1x', after_repair=True, just_use_accs=True); \
+experiment_k('SVHN-ResNet18-bn-1x', after_repair=True, just_use_accs=True); \
+experiment_k('CIFAR10-ResNet18-bn-1x', after_repair=True, just_use_accs=True); \
 "
