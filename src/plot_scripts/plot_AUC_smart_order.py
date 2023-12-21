@@ -169,7 +169,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
     sns.lineplot(
         x=param_increase,
         y=barrier_reduction_relative[m][0][0] * 100,
-        label="forced buffer assignment",
+        label="parallel expansion",
         color="red",
         marker="o",
         markersize=4,
@@ -187,7 +187,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
     sns.lineplot(
         x=(smart_order_before_param_increase[0][0] - 1) * 100,
         y=smart_order_before_barrier_reduction_relative[m][0][0] * 100,
-        label="smart order before",
+        label="benefit-ordered (benefits before REPAIR)",
         color="#02b54c",
         marker="o",
         markersize=4,
@@ -205,7 +205,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
     sns.lineplot(
         x=(smart_order_after_param_increase[0][0] - 1) * 100,
         y=smart_order_after_barrier_reduction_relative[m][0][0] * 100,
-        label="smart order after",
+        label="benefit-ordered (benefits after REPAIR)",
         color="#10dea7",
         marker="o",
         markersize=4,
