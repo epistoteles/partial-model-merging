@@ -1088,9 +1088,7 @@ def get_order(dataset, architecture, size, width, variants, after_repair, just_u
 
     accs = torch.flip(metrics[f"only_expand_layer_i{'_REPAIR' if after_repair else ''}_test_accs"], dims=[0])[:, :12]
     # losses = torch.flip(metrics[f"only_expand_layer_i{'_REPAIR' if after_repair else ''}_test_losses"], dims=[0])[:, :12]
-    params = (torch.flip(metrics["only_expand_layer_i_num_params"], dims=[0]) / metrics["default_num_params"])[
-        :, :12
-    ] - 1
+    params = (torch.flip(metrics["only_expand_layer_i_num_params"], dims=[0]) / metrics["default_num_params"])[:, :12]
 
     acc_endpoints = metrics_default["ensembling_test_accs"][[0, -1]].mean()
     acc_merging = metrics_default[f"merging{'_REPAIR' if after_repair else ''}_test_accs"][10]
@@ -1100,6 +1098,6 @@ def get_order(dataset, architecture, size, width, variants, after_repair, just_u
     # loss_merging = metrics_default[f"merging{'_REPAIR' if repair else ''}_test_losses"][10]
     # loss_barrier_reduction = (losses - loss_merging) / (loss_endpoints - loss_merging)
 
-    benefits = acc_barrier_reduction if just_use_accs else (acc_barrier_reduction / params)[0]
+    benefits = acc_barrier_reduction if just_use_accs else (acc_barrier_reduction / (params**2))[0]
     _, order = torch.sort(benefits, descending=True)
     return order

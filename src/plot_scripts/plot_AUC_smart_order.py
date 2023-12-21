@@ -206,7 +206,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
         x=(smart_order_after_param_increase[0][0] - 1) * 100,
         y=smart_order_after_barrier_reduction_relative[m][0][0] * 100,
         label="smart order after",
-        color="blue",
+        color="#10dea7",
         marker="o",
         markersize=4,
     )
@@ -214,7 +214,7 @@ for m, metric in enumerate(["accuracy", "loss"]):
         x=(smart_order_after_param_increase[0][0] - 1) * 100,
         y=smart_order_after_barrier_reduction_relative_REPAIR[m][0][0] * 100,
         dashes=(2, 2),
-        color="blue",
+        color="#10dea7",
         marker="o",
         markersize=4,
     )
