@@ -974,7 +974,9 @@ def experiment_k(model_name_a: str, model_name_b: str = None, interpolation_step
     assert width_a == width_b  # not strictly necessary, but always the case in our experiments
 
     evaluations_dir = get_evaluations_dir(subdir="smart_order")
-    filepath = os.path.join(evaluations_dir, f"smart_order-{model_name_a}{variant_b}.safetensors")
+    filepath = os.path.join(
+        evaluations_dir, f"smart_order_{'after' if after_repair else 'before'}-{model_name_a}{variant_b}.safetensors"
+    )
 
     if os.path.exists(filepath):
         metrics = load_file(filepath)
