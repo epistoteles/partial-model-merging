@@ -528,7 +528,7 @@ def experiment_b_ResNet18(model_name_a: str, model_name_b: str = None, threshold
 
         all_expansions = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
 
-        metrics["default_num_params"] = torch.zeros(len(all_expansions), num_layers) * default_num_params
+        metrics["default_num_params"] = torch.ones(len(all_expansions), num_layers) * default_num_params
 
         metrics["only_expand_layer_i_train_accs"] = torch.zeros(len(all_expansions), num_layers)
         metrics["only_expand_layer_i_train_losses"] = torch.zeros(len(all_expansions), num_layers)
@@ -955,3 +955,135 @@ def experiment_r(model_name_a: str, model_name_b: str = None, interpolation_step
             metrics = load_file(filepath)  # necessary because of a safetensors bug
 
     return metrics
+
+
+def experiment_k(model_name_a: str, model_name_b: str = None, interpolation_steps=21):
+    """
+    Ensembles parts of the model on an order determined by experiment b
+    """
+    if model_name_b is None:
+        model_name_b = f"{model_name_a}-b"
+        model_name_a = f"{model_name_a}-a"
+
+    dataset_a, model_type_a, size_a, batch_norm_a, width_a, variant_a = parse_model_name(model_name_a)
+    dataset_b, model_type_b, size_b, batch_norm_b, width_b, variant_b = parse_model_name(model_name_b)
+
+    assert model_type_a == model_type_b
+    assert size_a == size_b
+    assert batch_norm_a == batch_norm_b
+    assert width_a == width_b  # not strictly necessary, but always the case in our experiments
+
+    evaluations_dir = get_evaluations_dir(subdir="smart_order")
+    filepath = os.path.join(evaluations_dir, f"smart_order-{model_name_a}{variant_b}.safetensors")
+
+    if os.path.exists(filepath):
+        metrics = load_file(filepath)
+        print(f"📤 Loaded saved metrics for {model_name_a}{variant_b} from .safetensors")
+    else:
+        metrics = {"alphas": torch.linspace(0.0, 1.0, interpolation_steps)}
+
+    train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
+
+    order = get_order(dataset_a, model_type_a, size_a, width_a, f"{variant_a}{variant_b}")
+
+    indices = {
+        0: [1],
+        1: [3],
+        2: [5],
+        3: [7],
+        4: [9],
+        5: [11],
+        6: [13],
+        7: [15],
+        8: [0, 2, 4],
+        9: [6, 8],
+        10: [10, 12],
+        11: [14, 16],
+    }
+
+    model_a = load_model(model_name_a).cuda()
+    num_params_default = get_num_params(model_a)
+    width_expansion = torch.ones(model_a.num_layers)
+    for k, idxs in enumerate(order):
+        if f"smart_order_merging_REPAIR_{k:g}_test_accs" not in metrics.keys():
+            print(f"Collecting smart_order metrics ({k:g}) ...")
+            model_a = load_model(model_name_a).cuda()
+            model_b = load_model(model_name_b).cuda()
+
+            if model_type_a == "ResNet":
+                idxs = indices[idxs]
+            else:
+                idxs = [idxs]
+
+            for idx in idxs:
+                width_expansion[idx] = 2
+
+            model_a = expand_model(model_a, width_expansion).cuda()
+            model_b = expand_model(model_b, width_expansion).cuda()
+            model_b_perm = permute_model(reference_model=model_a, model=model_b, loader=train_aug_loader)
+            (
+                metrics[f"smart_order_merging_{k:g}_train_accs"],
+                metrics[f"smart_order_merging_{k:g}_train_losses"],
+            ) = evaluate_two_models_merging(model_a, model_b_perm, train_noaug_loader, interpolation_steps)
+            (
+                metrics[f"smart_order_merging_{k:g}_test_accs"],
+                metrics[f"smart_order_merging_{k:g}_test_losses"],
+            ) = evaluate_two_models_merging(model_a, model_b_perm, test_loader, interpolation_steps)
+            print(f"Midpoint test acc: {metrics[f'smart_order_merging_{k:g}_test_accs'][10]}")
+
+            print(f"Collecting smart_order merging + REPAIR metrics ({k:g}) ...")
+            (
+                metrics[f"smart_order_merging_REPAIR_{k:g}_train_accs"],
+                metrics[f"smart_order_merging_REPAIR_{k:g}_train_losses"],
+            ) = evaluate_two_models_merging_REPAIR(
+                model_a, model_b_perm, train_noaug_loader, train_aug_loader, interpolation_steps
+            )
+            (
+                metrics[f"smart_order_merging_REPAIR_{k:g}_test_accs"],
+                metrics[f"smart_order_merging_REPAIR_{k:g}_test_losses"],
+            ) = evaluate_two_models_merging_REPAIR(
+                model_a, model_b_perm, test_loader, train_aug_loader, interpolation_steps
+            )
+            print(f"Midpoint test acc: {metrics[f'smart_order_merging_REPAIR_{k:g}_test_accs'][10]}")
+
+            num_params = get_num_params(interpolate_models(model_a, model_b_perm), ignore_zeros=True)
+            metrics[f"smart_order_merging_{k:g}_param_increase"] = torch.Tensor([num_params / num_params_default])
+
+            save_evaluation_checkpoint(metrics, filepath)
+            metrics = load_file(filepath)  # necessary because of a safetensors bug
+
+    return metrics
+
+
+def get_order(dataset, architecture, size, width, variants):
+    """
+    Fetches the order of expansion based on experiment b results
+    """
+
+    metrics = load_file(
+        os.path.join(
+            get_evaluations_dir("experiment_b"),
+            f"/experiment-b-{dataset}-{architecture}{size}-bn-{width}x-{variants}.safetensors",
+        )
+    )
+    metrics_default = load_file(
+        os.path.join(get_evaluations_dir("two_models"), f"{dataset}-{architecture}{size}-bn-{width}x-ab.safetensors")
+    )
+
+    accs = torch.flip(metrics[f"only_expand_layer_i{'_REPAIR' if repair else ''}_test_accs"], dims=[0])[:, :12]
+    # losses = torch.flip(metrics[f"only_expand_layer_i{'_REPAIR' if repair else ''}_test_losses"], dims=[0])[:, :12]
+    params = (torch.flip(metrics["only_expand_layer_i_num_params"], dims=[0]) / metrics["default_num_params"])[
+        :, :12
+    ] - 1
+
+    acc_endpoints = metrics_default["ensembling_test_accs"][[0, -1]].mean()
+    acc_merging = metrics_default[f"merging{'_REPAIR' if repair else ''}_test_accs"][10]
+    acc_barrier_reduction = (accs - acc_merging) / (acc_endpoints - acc_merging)
+
+    # loss_endpoints = metrics_default["ensembling_test_losses"][[0, -1]].mean()
+    # loss_merging = metrics_default[f"merging{'_REPAIR' if repair else ''}_test_losses"][10]
+    # loss_barrier_reduction = (losses - loss_merging) / (loss_endpoints - loss_merging)
+
+    benefits = (acc_barrier_reduction / params)[0]
+    _, order = torch.sort(benefits, descending=True)
+    return order
