@@ -10,13 +10,13 @@ from safetensors.torch import load_file
 from src.utils import get_plots_dir, get_evaluations_dir
 
 
-dataset = "SVHN"
-architecture = "ResNet"
+dataset = "MNIST"
+architecture = "MLP"
 bn = True
 
 metrics = ["acc", "loss"]
-sizes = [19] if architecture == "VGG" else [18]
-widths = [4] if architecture == "VGG" else [4]
+sizes = [19] if architecture == "VGG" else [6]
+widths = [4] if architecture == "VGG" else [1]
 expansions = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
 thresholds = [0, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.6, 0.8]
 
