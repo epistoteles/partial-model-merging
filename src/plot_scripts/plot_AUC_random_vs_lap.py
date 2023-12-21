@@ -10,12 +10,12 @@ from safetensors.torch import load_file
 from src.utils import get_plots_dir, get_evaluations_dir
 
 
-dataset = "MNIST"
-architecture = "MLP"
+dataset = "CIFAR10"
+architecture = "VGG"
 bn = True
 
 metrics = ["acc", "loss"]
-sizes = [11] if architecture == "VGG" else [6]
+sizes = [11] if architecture == "VGG" else [18]
 widths = [1] if architecture == "VGG" else [1]
 expansions = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
 
