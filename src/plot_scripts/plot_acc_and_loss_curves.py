@@ -12,7 +12,7 @@ from src.utils import load_model, normalize, get_plots_dir, parse_model_name, ge
 from src.evaluate import evaluate_two_models
 
 
-def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None, suffix: str = ""):
+def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None, suffix: str = "", prefix: str = ""):
     if model_name_b is None:
         model_name_b = f"{model_name_a}-b"
         model_name_a = f"{model_name_a}-a"
@@ -32,7 +32,7 @@ def plot_acc_and_loss_curves(model_name_a: str, model_name_b: str = None, suffix
         plt.xlabel("alpha")
         plt.ylabel(f"{split} {'accuracies' if metric == 'accs' else metric}")
         plt.title(
-            f"{dataset_a}, {model_type_a}{size_a},{'' if batch_norm_a else ''} {width_a}×width{suffix}"  # , model {variant_a} vs. {variant_b}"
+            f"{prefix if prefix else dataset_a}, {model_type_a}{size_a},{'' if batch_norm_a else ''} {width_a}×width{suffix}"  # , model {variant_a} vs. {variant_b}"
         )
 
         # if metric == "losses":
