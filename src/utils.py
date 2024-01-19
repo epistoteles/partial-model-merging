@@ -1807,15 +1807,15 @@ def get_loaders(dataset: str) -> tuple[Loader, Loader, Loader] | tuple[DataLoade
     :return: (train_aug_loader, train_noaug_loader, test_loader)
     """
     dataset = dataset.upper()
-    if dataset in ["CIFAR10", "CIFAR10C", "CIFAR10D"]:
+    if dataset in ["CIFAR10", "CIFAR10C", "CIFAR10D", "CIFAR10E", "CIFAR10F"]:
         MEAN = [125.307, 122.961, 113.8575]  # correct (these values are from the FFCV CIFAR example)
         STD = [51.5865, 50.847, 51.255]  # too low, but kept as is for reproducibility
         # MEAN = [125.30691805, 122.95039414, 113.86538318]  # correct values
         # STD = [62.99321928, 62.08870764, 66.70489964]      # correct values
-    elif dataset in ["CIFAR100", "CIFAR100A", "CIFAR100B", "CIFAR100C", "CIFAR100D"]:
+    elif dataset in ["CIFAR100", "CIFAR100A", "CIFAR100B", "CIFAR100C", "CIFAR100D", "CIFAR100E", "CIFAR100F"]:
         MEAN = [129.30416561, 124.0699627, 112.43405006]
         STD = [68.1702429, 65.39180804, 70.41837019]
-    elif dataset in ["SVHN", "SVHNC", "SVHND"]:
+    elif dataset in ["SVHN", "SVHNC", "SVHND", "SVHNE", "SVHNF"]:
         MEAN = [111.60893668, 113.16127466, 120.56512767]
         STD = [50.49768174, 51.2589843, 50.24421614]
     elif dataset == "MNIST":
