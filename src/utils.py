@@ -1687,35 +1687,30 @@ def _convert_dataset_to_beton(dataset: torch.utils.data.Dataset, filename: str):
 def _download_dataset(dataset) -> tuple[torch.utils.data.Dataset, torch.utils.data.Dataset]:
     """
     Returns (and downloads, if necessary) the train and test dataset
-    :param dataset: one of 'CIFAR10', 'CIFAR100', 'SVHN'  TODO: add ImageNet
+    :param dataset: one of 'CIFAR10', 'CIFAR100', 'SVHN'  TODO: add ImageNet?
     :return: (train dataset, test dataset)
     """
     data_dir = _get_data_dir()
     if dataset == "CIFAR10":
         train_dset = torchvision.datasets.CIFAR10(data_dir, train=True, download=True)
         test_dset = torchvision.datasets.CIFAR10(data_dir, train=False, download=True)
-    elif dataset in ["CIFAR10C", "CIFAR10D"]:
+    elif dataset in ["CIFAR10C", "CIFAR10D", "CIFAR10E", "CIFAR10F"]:
         train_dset = torchvision.datasets.CIFAR10(data_dir, train=True, download=True)
         test_dset = torchvision.datasets.CIFAR10(data_dir, train=False, download=True)
-        indices = index_sampler(train_dset.targets, dataset[-1])
-        train_dset = torch.utils.data.Subset(train_dset, indices)
-    elif dataset in ["CIFAR100A", "CIFAR100B"]:
-        train_dset = torchvision.datasets.CIFAR100(data_dir, train=True, download=True)
-        test_dset = torchvision.datasets.CIFAR100(data_dir, train=False, download=True)
-        indices = index_sampler(train_dset.targets, dataset[-1])
-        train_dset = torch.utils.data.Subset(train_dset, indices)
-    elif dataset in ["CIFAR100C", "CIFAR100D"]:
-        train_dset = torchvision.datasets.CIFAR100(data_dir, train=True, download=True)
-        test_dset = torchvision.datasets.CIFAR100(data_dir, train=False, download=True)
         indices = index_sampler(train_dset.targets, dataset[-1])
         train_dset = torch.utils.data.Subset(train_dset, indices)
     elif dataset == "CIFAR100":
         train_dset = torchvision.datasets.CIFAR100(data_dir, train=True, download=True)
         test_dset = torchvision.datasets.CIFAR100(data_dir, train=False, download=True)
+    elif dataset in ["CIFAR100A", "CIFAR100B", "CIFAR100C", "CIFAR100D", "CIFAR100E", "CIFAR100F"]:
+        train_dset = torchvision.datasets.CIFAR100(data_dir, train=True, download=True)
+        test_dset = torchvision.datasets.CIFAR100(data_dir, train=False, download=True)
+        indices = index_sampler(train_dset.targets, dataset[-1])
+        train_dset = torch.utils.data.Subset(train_dset, indices)
     elif dataset == "SVHN":
         train_dset = torchvision.datasets.SVHN(data_dir, split="train", download=True)
         test_dset = torchvision.datasets.SVHN(data_dir, split="test", download=True)
-    elif dataset in ["SVHNC", "SVHND"]:
+    elif dataset in ["SVHNC", "SVHND", "SVHNE", "SVHNF"]:
         train_dset = torchvision.datasets.SVHN(data_dir, split="train", download=True)
         test_dset = torchvision.datasets.SVHN(data_dir, split="test", download=True)
         indices = index_sampler(train_dset.labels, dataset[-1])
@@ -1750,12 +1745,13 @@ def index_sampler(labels: list[int], split: str):
     Given a list of dataset labels (e.g. CIFAR10 or CIFAR100), creates a list of indices that are used
     in disjoint split "a" or "b", where "a" has 80% labels 0-4/0-49 and 20% labels 5-9/50-99 or
     vice versa for "b" (biased case) or in disjoint split "c" and "d", where each split has half of each label.
+    Splits "e" and "f" represent two models trained on disjoint data *and* tasks (e.g. task 1-5, task 6-10).
     :param labels: the list of labels
     :param split: "a", "b", "c" or "d"
     :return: the list of indices in the selected split
     """
     split = split.lower()
-    assert split in ["a", "b", "c", "d"], "split must be 'a', 'b', 'c', or 'd'"
+    assert split in ["a", "b", "c", "d", "e", "f"], "split must be 'a', 'b', 'c', 'd', 'e' or 'f'"
 
     num_classes = len(set(labels))
     samples_per_class = len(labels) // num_classes
@@ -1775,6 +1771,16 @@ def index_sampler(labels: list[int], split: str):
     subset_C_indices = {k: v[:threshold_balanced] for k, v in class_indices.items()}
     subset_D_indices = {k: v[threshold_balanced:] for k, v in class_indices.items()}
 
+    threshold_different_task = int(samples_per_class)
+    subset_E_indices = {
+        k: v[:threshold_different_task] if k < num_classes // 2 else v[threshold_different_task:]
+        for k, v in class_indices.items()
+    }
+    subset_F_indices = {
+        k: v[threshold_different_task:] if k < num_classes // 2 else v[:threshold_different_task]
+        for k, v in class_indices.items()
+    }
+
     if split == "a":
         indices = [item for sublist in subset_A_indices.values() for item in sublist]
     elif split == "b":
@@ -1783,6 +1789,10 @@ def index_sampler(labels: list[int], split: str):
         indices = [item for sublist in subset_C_indices.values() for item in sublist]
     elif split == "d":
         indices = [item for sublist in subset_D_indices.values() for item in sublist]
+    elif split == "e":
+        indices = [item for sublist in subset_E_indices.values() for item in sublist]
+    elif split == "f":
+        indices = [item for sublist in subset_F_indices.values() for item in sublist]
 
     random.shuffle(indices)
     return indices
