@@ -23,4 +23,22 @@ print(f'Visible GPUs:         {torch.cuda.get_device_name(torch.cuda.current_dev
 print('-'*50)
 "
 
-python src/train.py --dataset CIFAR10 --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant c -bn -wandb -test
+python src/train.py --dataset CIFAR10F --model VGG --size 11 --width 1 --variant f -bn -wandb -test
+
+python src/train.py --dataset CIFAR10E --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant e -bn -wandb -test
+python src/train.py --dataset CIFAR10F --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant f -bn -wandb -test
+
+python src/train.py --dataset SVHNE --model VGG --size 11 --width 1 --variant e -bn -wandb -test
+python src/train.py --dataset SVHNF --model VGG --size 11 --width 1 --variant f -bn -wandb -test
+
+python src/train.py --dataset SVHNE --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant e -bn -wandb -test
+python src/train.py --dataset SVHNF --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant f -bn -wandb -test
+
+python src/train.py --dataset CIFAR100E --model VGG --size 11 --width 1 --variant e -bn -wandb -test
+python src/train.py --dataset CIFAR100F --model VGG --size 11 --width 1 --variant f -bn -wandb -test
+
+python src/train.py --dataset CIFAR100E --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant e -bn -wandb -test
+python src/train.py --dataset CIFAR100F --model ResNet --size 18 --width 1 --lr 0.4 --weight_decay 0.0001 --epochs 200 --variant f -bn -wandb -test
+
+python src/train.py --dataset CIFAR10E --model VGG --size 19 --width 1 --variant e -bn -wandb -test
+python src/train.py --dataset CIFAR10F --model VGG --size 19 --width 1 --variant f -bn -wandb -test
