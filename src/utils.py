@@ -176,7 +176,7 @@ def parse_model_name(model_name, as_dict=False):
 
 def model_table(dataset: str, architecture: str, bn: bool):
     """
-    Prints an overview table of trained and evaluated models
+    Prints an overview table of trained and evaluated models on your device
     :param dataset: the dataset (that was trained on)
     :param architecture: the architecture (MLP, VGG, ResNet)
     :param bn: whether bn was used or not
@@ -613,9 +613,35 @@ def truncate_model(
                              alternatively you can provide a list or FloatTensor of length model.num_layers, which
                              truncates each layer of the model by a different factor (at least one must be >1)
     :param append: whether to truncate the weights to the right or the left of the tensor
-    :return: the truncated model
+    :return: the truncated model TODO: implement
     """
     pass
+
+def prune_classifier(model: torch.nn.Module, classes: list[bool] | torch.BoolTensor):
+    """
+    Models trained on datasets ...E and ...F were trained on disjoint classes (e.g. classes 0-4 for E and 5-9 for F).
+    However, they still have 10 output neurons (where half of them have learned to output zeros). This function sets
+    the weights and biases that lead to these irrelevant outputs to exactly zero. We also multiply all classifier
+    weights and biases by 2, so that - after averaging with 0 - they again have their original value (not important
+    for the accuracy, but for the loss). It's a bit hacky, but it works.
+    :param model: the model we want to prune
+    :param classes: a list of length model.num_classes, were True means we set the incoming weights for that class
+                    to zero and False means we leave the weights as they are.
+    :return: the modified model
+    """
+    num_classes = model.num_classes
+    assert len(classes) == num_classes, "classes must have length model.num_classes"
+
+    sd = model.state_dict()
+    if isinstance(model, VGG):
+        sd['classifier.weight'][classes] = 0
+        sd['classifier.bias'][classes] = 0
+        sd['classifier.weight'] *= 2
+        sd['classifier.bias'] *= 2
+
+    new_model = model_like(model)
+    new_model.load_state_dict(sd)
+    return new_model
 
 
 def subnet(
@@ -1710,11 +1736,11 @@ def _download_dataset(dataset) -> tuple[torch.utils.data.Dataset, torch.utils.da
     elif dataset == "SVHN":
         train_dset = torchvision.datasets.SVHN(data_dir, split="train", download=True)
         test_dset = torchvision.datasets.SVHN(data_dir, split="test", download=True)
-    elif dataset in ["SVHNC", "SVHND", "SVHNE", "SVHNF"]:
-        train_dset = torchvision.datasets.SVHN(data_dir, split="train", download=True)
-        test_dset = torchvision.datasets.SVHN(data_dir, split="test", download=True)
-        indices = index_sampler(train_dset.labels, dataset[-1])
-        train_dset = torch.utils.data.Subset(train_dset, indices)
+    # elif dataset in ["SVHNC", "SVHND", "SVHNE", "SVHNF"]:  TODO: Enable again once index_sampler works for imbalanced classes!
+    #     train_dset = torchvision.datasets.SVHN(data_dir, split="train", download=True)
+    #     test_dset = torchvision.datasets.SVHN(data_dir, split="test", download=True)
+    #     indices = index_sampler(train_dset.labels, dataset[-1])
+    #     train_dset = torch.utils.data.Subset(train_dset, indices)
     elif dataset == "MNIST":
         train_dset = torchvision.datasets.MNIST(data_dir, train=True, download=True)
         test_dset = torchvision.datasets.MNIST(data_dir, train=False, download=True)
@@ -1746,6 +1772,7 @@ def index_sampler(labels: list[int], split: str):
     in disjoint split "a" or "b", where "a" has 80% labels 0-4/0-49 and 20% labels 5-9/50-99 or
     vice versa for "b" (biased case) or in disjoint split "c" and "d", where each split has half of each label.
     Splits "e" and "f" represent two models trained on disjoint data *and* tasks (e.g. task 1-5, task 6-10).
+    TODO: Implement for SVHN - this function assumes balanced classes, which SVHN is not!
     :param labels: the list of labels
     :param split: "a", "b", "c" or "d"
     :return: the list of indices in the selected split
