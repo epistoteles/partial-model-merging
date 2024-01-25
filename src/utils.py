@@ -478,6 +478,12 @@ def load_model(filename: str, model: torch.nn.Module = None) -> torch.nn.Module:
         filename = os.path.join(checkpoints_dir, filename)
     state_dict = load_file(filename)
     model.load_state_dict(state_dict)
+    if filename[-1].upper() == 'E':
+        model = prune_classifier(model,
+                                   classes=[False] * (model.num_classes // 2) + [True] * (model.num_classes // 2))
+    elif filename[-1].upper() == 'F':
+        model = prune_classifier(model,
+                                   classes=[True] * (model.num_classes // 2) + [False] * (model.num_classes // 2))
     return model
 
 

@@ -373,15 +373,6 @@ def experiment_b(model_name_a: str, model_name_b: str = None, threshold=1.1):
         model_a = load_model(model_name_a).cuda()
         model_b = load_model(model_name_b).cuda()
 
-        if dataset_a[-1].upper() == 'E':
-            model_a = prune_classifier(model_a, classes=[False] * (model_a.num_classes // 2) + [True] * (model_a.num_classes // 2))
-        elif dataset_a[-1].upper() == 'F':
-            model_a = prune_classifier(model_a, classes=[True] * (model_a.num_classes // 2) + [False] *(model_a.num_classes // 2))
-        if dataset_b[-1].upper() == 'E':
-            model_b = prune_classifier(model_b, classes=[False] * (model_a.num_classes // 2) + [True] * (model_a.num_classes // 2))
-        elif dataset_b[-1].upper() == 'F':
-            model_b = prune_classifier(model_b, classes=[True] * (model_a.num_classes // 2) + [False] * (model_a.num_classes // 2))
-
         if dataset_a[-1].upper() in ['A', 'B', 'C', 'D', 'E', 'F']:
             dataset_a = dataset_a[:-1]
         train_aug_loader, train_noaug_loader, test_loader = get_loaders(dataset_a)
