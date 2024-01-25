@@ -5,7 +5,7 @@ from pathlib import Path
 from safetensors.torch import load_file
 import matplotlib.transforms as transforms
 
-from src.utils import get_evaluations_dir
+from src.utils import get_evaluations_dir, get_plots_dir
 import os
 
 
@@ -76,7 +76,7 @@ for ax in axes:
         plt.subplots_adjust(wspace=-1)
 
 plt.tight_layout()
-plots_dir = "/home/korbinian/Documents/Masterarbeit/partial-model-merging/plots/plot_single_layer_heatmap/"
+plots_dir = get_plots_dir('plot_single_layer_heatmap')
 # plots_dir = get_plots_dir(subdir=Path(__file__).stem)
 plt.savefig(
     os.path.join(
