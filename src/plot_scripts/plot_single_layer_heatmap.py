@@ -15,6 +15,7 @@ size = 11 if architecture == "VGG" else 18
 bn = True
 width = 1
 variants = 'ef'
+absolute = True
 
 for repair in [True, False]:
     eval_dir = get_evaluations_dir()
@@ -37,8 +38,9 @@ for repair in [True, False]:
     loss_merging = metrics_default[f"merging{'_REPAIR' if repair else ''}_test_losses"][10]
     loss_barrier_reduction = (losses - loss_merging) / (loss_endpoints - loss_merging)
 
-    acc_barrier_reduction = accs
-    loss_barrier_reduction = losses / 100
+    if absolute:
+        acc_barrier_reduction = accs
+        loss_barrier_reduction = losses / 100
 
     # Creating subplots
     if architecture == "ResNet":
@@ -50,13 +52,17 @@ for repair in [True, False]:
         f"Expanding individual layers\n{architecture}{size}, {dataset}, {width}×width, {'after' if repair else 'before'} REPAIR"
     )
 
-    axes[0].set_title("Test accuracy barrier reduction (%)")
-    axes[1].set_title("Test loss barrier reduction (%)")
+    if absolute:
+        axes[0].set_title("Test accuracy barrier reduction (%)")
+        axes[1].set_title("Test loss barrier reduction (%)")
+    else:
+        axes[0].set_title("Test accuracy")
+        axes[1].set_title("Test loss")
     axes[2].set_title("Parameter increase (%)")
 
     # Plotting the heatmaps
     sns.heatmap(acc_barrier_reduction * 100, ax=axes[0], cbar=False, annot=True, fmt=".1f" if acc_barrier_reduction.max() < 10 else ".0f")
-    sns.heatmap(loss_barrier_reduction * 100, ax=axes[1], cbar=False, annot=True, fmt=".1f" if loss_barrier_reduction.max() < 10 else ".0f")
+    sns.heatmap(loss_barrier_reduction * 100, ax=axes[1], cbar=False, annot=True, fmt=".2f" if loss_barrier_reduction.max() < 10 else ".0f")
     sns.heatmap(params * 100, ax=axes[2], cbar=False, annot=True, fmt=".1f")
 
     # Setting up the axes
