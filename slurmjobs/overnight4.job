@@ -25,12 +25,5 @@ print('-'*50)
 
 python -c "\
 from src.evaluate import *; \
-experiment_k('SVHN-VGG11-bn-1x', after_repair=False, just_use_accs=True); \
-experiment_k('CIFAR10-VGG11-bn-1x', after_repair=False, just_use_accs=True); \
-experiment_k('SVHN-ResNet18-bn-1x', after_repair=False, just_use_accs=True); \
-experiment_k('CIFAR10-ResNet18-bn-1x', after_repair=False, just_use_accs=True); \
-experiment_k('SVHN-VGG11-bn-1x', after_repair=True, just_use_accs=True); \
-experiment_k('CIFAR10-VGG11-bn-1x', after_repair=True, just_use_accs=True); \
-experiment_k('SVHN-ResNet18-bn-1x', after_repair=True, just_use_accs=True); \
-experiment_k('CIFAR10-ResNet18-bn-1x', after_repair=True, just_use_accs=True); \
+experiment_b('CIFAR10E-VGG11-bn-1x-e', 'CIFAR10F-VGG11-bn-1x-f); \
 "
