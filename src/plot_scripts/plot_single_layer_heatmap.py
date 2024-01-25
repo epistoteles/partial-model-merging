@@ -37,6 +37,9 @@ for repair in [True, False]:
     loss_merging = metrics_default[f"merging{'_REPAIR' if repair else ''}_test_losses"][10]
     loss_barrier_reduction = (losses - loss_merging) / (loss_endpoints - loss_merging)
 
+    acc_barrier_reduction = accs / 100
+    loss_barrier_reduction = losses / 100
+
     # Creating subplots
     if architecture == "ResNet":
         fig, axes = plt.subplots(1, 3, figsize=(13.2, 5.3))
