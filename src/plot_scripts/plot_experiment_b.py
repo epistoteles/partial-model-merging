@@ -17,7 +17,7 @@ def plot_experiment_b(model_name_a: str, model_name_b: str = None):
     evaluations_dir = get_evaluations_dir(subdir="experiment_b")
     filepath = os.path.join(
         evaluations_dir,
-        f"experiment-b-{dataset_a}-{model_type_a}{size_a}{'-bn' if batch_norm_a else ''}-{width_a}x-ab.safetensors",
+        f"experiment-b-{dataset_a}-{model_type_a}{size_a}{'-bn' if batch_norm_a else ''}-{width_a}x-{model_name_a[-1]}{model_name_b[-1]}.safetensors",
     )
     if os.path.exists(filepath):
         metrics = load_file(filepath)
