@@ -10,7 +10,7 @@ import os
 
 
 dataset = "CIFAR10E"
-architecture = "ResNet"
+architecture = "VGG"
 size = 11 if architecture == "VGG" else 18
 bn = True
 width = 1
