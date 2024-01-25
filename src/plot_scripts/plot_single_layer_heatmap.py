@@ -27,7 +27,7 @@ for repair in [True, False]:
 
     accs = torch.flip(metrics[f"only_expand_layer_i{'_REPAIR' if repair else ''}_test_accs"], dims=[0])[:, :12]
     losses = torch.flip(metrics[f"only_expand_layer_i{'_REPAIR' if repair else ''}_test_losses"], dims=[0])[:, :12]
-    params = (torch.flip(metrics["only_expand_layer_i_num_params"], dims=[0]) / metrics["default_num_params"])[:, :12] - 1
+    params = (torch.flip(metrics["only_expand_layer_i_num_params"][:, :12], dims=[0]) / metrics["default_num_params"])[:, :12] - 1
 
     acc_endpoints = metrics_default["ensembling_test_accs"][[0, -1]].mean()
     acc_merging = metrics_default[f"merging{'_REPAIR' if repair else ''}_test_accs"][10]
