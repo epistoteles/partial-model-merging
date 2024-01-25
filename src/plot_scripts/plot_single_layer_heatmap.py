@@ -15,12 +15,13 @@ size = 11 if architecture == "VGG" else 18
 bn = True
 width = 1
 repair = False
+variants = 'ef'
 
 metrics = load_file(
-    f"/home/korbinian/Documents/Masterarbeit/partial-model-merging/evaluations/experiment_b/experiment-b-{dataset}-{architecture}{size}-bn-{width}x-ab.safetensors"
+    f"/home/korbinian/Documents/Masterarbeit/partial-model-merging/evaluations/experiment_b/experiment-b-{dataset}-{architecture}{size}-bn-{width}x-{variants}.safetensors"
 )
 metrics_default = load_file(
-    f"/home/korbinian/Documents/Masterarbeit/partial-model-merging/evaluations/two_models/{dataset}-{architecture}{size}-bn-{width}x-ab.safetensors"
+    f"/home/korbinian/Documents/Masterarbeit/partial-model-merging/evaluations/two_models/{dataset}-{architecture}{size}-bn-{width}x-{variants}.safetensors"
 )
 
 accs = torch.flip(metrics[f"only_expand_layer_i{'_REPAIR' if repair else ''}_test_accs"], dims=[0])[:, :12]
@@ -79,7 +80,7 @@ plots_dir = "/home/korbinian/Documents/Masterarbeit/partial-model-merging/plots/
 plt.savefig(
     os.path.join(
         plots_dir,
-        f"per_layer_{dataset}_{architecture}{'_REPAIR' if repair else ''}.png",
+        f"per_layer_{dataset}_{architecture}{'_REPAIR' if repair else ''}_{variants}.png",
     ),
     dpi=600,
     bbox_inches="tight",
