@@ -25,5 +25,5 @@ print('-'*50)
 
 python -c "\
 from src.evaluate import *; \
-experiment_b('CIFAR10E-VGG11-bn-1x-e', 'CIFAR10F-VGG11-bn-1x-f); \
+experiment_b('CIFAR10E-VGG11-bn-1x-e', 'CIFAR10F-VGG11-bn-1x-f'); \
 "
