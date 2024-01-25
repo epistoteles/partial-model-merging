@@ -1734,16 +1734,22 @@ def _download_dataset(dataset) -> tuple[torch.utils.data.Dataset, torch.utils.da
     elif dataset in ["CIFAR10C", "CIFAR10D", "CIFAR10E", "CIFAR10F"]:
         train_dset = torchvision.datasets.CIFAR10(data_dir, train=True, download=True)
         test_dset = torchvision.datasets.CIFAR10(data_dir, train=False, download=True)
-        indices = index_sampler(train_dset.targets, dataset[-1])
-        train_dset = torch.utils.data.Subset(train_dset, indices)
+        train_indices = index_sampler(train_dset.targets, dataset[-1])
+        train_dset = torch.utils.data.Subset(train_dset, train_indices)
+        if dataset in ["CIFAR10E", "CIFAR10F"]:
+            test_indices = index_sampler(test_dset.targets, dataset[-1])
+            test_dset = torch.utils.data.Subset(test_dset, test_indices)
     elif dataset == "CIFAR100":
         train_dset = torchvision.datasets.CIFAR100(data_dir, train=True, download=True)
         test_dset = torchvision.datasets.CIFAR100(data_dir, train=False, download=True)
     elif dataset in ["CIFAR100A", "CIFAR100B", "CIFAR100C", "CIFAR100D", "CIFAR100E", "CIFAR100F"]:
         train_dset = torchvision.datasets.CIFAR100(data_dir, train=True, download=True)
         test_dset = torchvision.datasets.CIFAR100(data_dir, train=False, download=True)
-        indices = index_sampler(train_dset.targets, dataset[-1])
-        train_dset = torch.utils.data.Subset(train_dset, indices)
+        train_indices = index_sampler(train_dset.targets, dataset[-1])
+        train_dset = torch.utils.data.Subset(train_dset, train_indices)
+        if dataset in ["CIFAR100E", "CIFAR100F"]:
+            test_indices = index_sampler(test_dset.targets, dataset[-1])
+            test_dset = torch.utils.data.Subset(test_dset, test_indices)
     elif dataset == "SVHN":
         train_dset = torchvision.datasets.SVHN(data_dir, split="train", download=True)
         test_dset = torchvision.datasets.SVHN(data_dir, split="test", download=True)
