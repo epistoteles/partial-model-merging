@@ -54,7 +54,7 @@ for repair in [True, False]:
     # Plotting the heatmaps
     sns.heatmap(acc_barrier_reduction * 100, ax=axes[0], cbar=False, annot=True, fmt=".1f")
     sns.heatmap(loss_barrier_reduction * 100, ax=axes[1], cbar=False, annot=True, fmt=".1f")
-    sns.heatmap(params * 100, ax=axes[2], cbar=False, annot=True, fmt=".1f" if (max(params) < 1000).item() else ".0f")
+    sns.heatmap(params * 100, ax=axes[2], cbar=False, annot=True, fmt=".1f" if any(max(params) < 1000) else ".0f")
 
     # Setting up the axes
     # Show y-axis only on the left subplot
