@@ -384,7 +384,7 @@ def experiment_b(model_name_a: str, model_name_b: str = None, threshold=1.1):
 
         all_expansions = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
 
-        metrics["default_num_params"] = torch.zeros(len(all_expansions), num_layers) * default_num_params
+        metrics["default_num_params"] = torch.ones(len(all_expansions), num_layers) * default_num_params
 
         metrics["only_expand_layer_i_train_accs"] = torch.zeros(len(all_expansions), num_layers)
         metrics["only_expand_layer_i_train_losses"] = torch.zeros(len(all_expansions), num_layers)
