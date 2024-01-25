@@ -644,6 +644,11 @@ def prune_classifier(model: torch.nn.Module, classes: list[bool] | torch.BoolTen
         sd['classifier.bias'][classes] = 0
         sd['classifier.weight'] *= 2
         sd['classifier.bias'] *= 2
+    elif isinstance(model, ResNet18 | ResNet20):
+        sd['linear.weight'][classes] = 0
+        sd['linear.bias'][classes] = 0
+        sd['linear.weight'] *= 2
+        sd['linear.bias'] *= 2
 
     new_model = model_like(model)
     new_model.load_state_dict(sd)
