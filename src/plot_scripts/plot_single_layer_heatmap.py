@@ -19,10 +19,10 @@ variants = 'ef'
 for repair in [True, False]:
     eval_dir = get_evaluations_dir()
     metrics = load_file(
-        eval_dir + f"/experiment_b/experiment-b-{dataset}-{architecture}{size}-bn-{width}x-{variants}.safetensors"
+        eval_dir + f"experiment_b/experiment-b-{dataset}-{architecture}{size}-bn-{width}x-{variants}.safetensors"
     )
     metrics_default = load_file(
-        eval_dir + f"/two_models/{dataset}-{architecture}{size}-bn-{width}x-{variants}.safetensors"
+        eval_dir + f"two_models/{dataset}-{architecture}{size}-bn-{width}x-{variants}.safetensors"
     )
 
     accs = torch.flip(metrics[f"only_expand_layer_i{'_REPAIR' if repair else ''}_test_accs"], dims=[0])[:, :12]
