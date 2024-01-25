@@ -1769,7 +1769,7 @@ def _download_dataset(dataset) -> tuple[torch.utils.data.Dataset, torch.utils.da
 def _get_beton_path(dataset) -> tuple[str, str]:
     """
     Returns the .beton filepaths, downloads and converts the dataset first if they don't already exist.
-    :param dataset: one of 'CIFAR10', 'CIFAR100'  TODO: add more
+    :param dataset: one of 'CIFAR10', 'CIFAR100A', etc.
     :return: (train .beton filepath, test .beton filepath)
     """
     data_dir = _get_data_dir()
