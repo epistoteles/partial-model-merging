@@ -5,7 +5,7 @@ from pathlib import Path
 from safetensors.torch import load_file
 import matplotlib.transforms as transforms
 
-# from src.utils import get_plots_dir
+from src.utils import get_evaluations_dir
 import os
 
 
@@ -17,11 +17,12 @@ width = 1
 repair = False
 variants = 'ef'
 
+eval_dir = get_evaluations_dir()
 metrics = load_file(
-    f"/home/korbinian/Documents/Masterarbeit/partial-model-merging/evaluations/experiment_b/experiment-b-{dataset}-{architecture}{size}-bn-{width}x-{variants}.safetensors"
+    eval_dir + f"/experiment_b/experiment-b-{dataset}-{architecture}{size}-bn-{width}x-{variants}.safetensors"
 )
 metrics_default = load_file(
-    f"/home/korbinian/Documents/Masterarbeit/partial-model-merging/evaluations/two_models/{dataset}-{architecture}{size}-bn-{width}x-{variants}.safetensors"
+    eval_dir + f"/two_models/{dataset}-{architecture}{size}-bn-{width}x-{variants}.safetensors"
 )
 
 accs = torch.flip(metrics[f"only_expand_layer_i{'_REPAIR' if repair else ''}_test_accs"], dims=[0])[:, :12]
