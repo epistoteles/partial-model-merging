@@ -52,11 +52,9 @@ for repair in [True, False]:
     axes[2].set_title("Parameter increase (%)")
 
     # Plotting the heatmaps
-    sns.heatmap(acc_barrier_reduction * 100, ax=axes[0], cbar=False, annot=True, fmt=".1f")
-    sns.heatmap(loss_barrier_reduction * 100, ax=axes[1], cbar=False, annot=True, fmt=".1f")
-    print(params)
-    print(max(params))
-    sns.heatmap(params * 100, ax=axes[2], cbar=False, annot=True, fmt=".1f" if all(params < 1000) else ".0f")
+    sns.heatmap(acc_barrier_reduction * 100, ax=axes[0], cbar=False, annot=True, fmt=".1f" if acc_barrier_reduction.max() < 10 else ".0f")
+    sns.heatmap(loss_barrier_reduction * 100, ax=axes[1], cbar=False, annot=True, fmt=".1f" if loss_barrier_reduction.max() < 10 else ".0f")
+    sns.heatmap(params * 100, ax=axes[2], cbar=False, annot=True, fmt=".1f")
 
     # Setting up the axes
     # Show y-axis only on the left subplot
