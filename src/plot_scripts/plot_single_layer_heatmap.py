@@ -9,8 +9,8 @@ from src.utils import get_evaluations_dir, get_plots_dir
 import os
 
 
-dataset = "CIFAR10E"
-architecture = "ResNet"
+dataset = "CIFAR100E"
+architecture = "VGG"
 size = 11 if architecture == "VGG" else 18
 bn = True
 width = 1
