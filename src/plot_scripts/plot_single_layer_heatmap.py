@@ -53,11 +53,11 @@ for repair in [True, False]:
     )
 
     if absolute:
-        axes[0].set_title("Test accuracy barrier reduction (%)")
-        axes[1].set_title("Test loss barrier reduction (%)")
-    else:
         axes[0].set_title("Test accuracy")
         axes[1].set_title("Test loss")
+    else:
+        axes[0].set_title("Test accuracy barrier reduction (%)")
+        axes[1].set_title("Test loss barrier reduction (%)")
     axes[2].set_title("Parameter increase (%)")
 
     # Plotting the heatmaps
