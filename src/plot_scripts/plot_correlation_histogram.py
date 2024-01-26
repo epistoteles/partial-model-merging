@@ -46,7 +46,7 @@ def plot_correlation_histogram(model_name_a: str, model_name_b: str = None):
     )
     fig.suptitle(
         f"Histogram of correlations selected by LAP solver, per  layer,\n"
-        f"{dataset_a}, {model_type_a}{size_a}, {width_a}×width",
+        f"{dataset_a}, {model_type_a}{size_a}, {bn_a}, {width_a}×width",
         y=1.05,
     )
 
